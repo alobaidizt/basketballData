@@ -4,6 +4,8 @@ RecognitionService = Ember.Service.extend
   isListening:      false
   currentKeyword:   undefined
 
+  api:              Ember.inject.service()
+
   setup: (properties = {}) ->
     recognition = new webkitSpeechRecognition()
     for key, val of properties
@@ -16,7 +18,15 @@ RecognitionService = Ember.Service.extend
     recognition.onresult = (event) =>
       that = window.privateVar
       result =  event.results[0][0].transcript
-      #if currentKeyword? =! result
+      currentKeyword = @get('currentKeyword')
+      console.log currentKeyword
+      if Em.isPresent(currentKeyword)
+        console.log 0
+        if currentKeyword != result
+          @get('api').updateKeywordByName(currentKeyword, result).then =>
+            @set('currentKeyword', null)
+
+
 
 
     recognition.onstart = ->
@@ -24,7 +34,6 @@ RecognitionService = Ember.Service.extend
     recognition.onend   = ->
       that = window.privateVar
       that.toggleProperty('isListening')
-      #that.endFunction()
 
 
 `export default RecognitionService`

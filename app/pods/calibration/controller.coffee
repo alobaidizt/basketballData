@@ -5,6 +5,7 @@ CalibrationController = Ember.Controller.extend
   showCalibrationWords: false
   keywords:             undefined
   recognition:          Ember.inject.service()
+  api:                  Ember.inject.service()
 
   init: ->
     @_super()
@@ -18,43 +19,19 @@ CalibrationController = Ember.Controller.extend
       name: $('#name').val().toLowerCase()
       mask: $('#mask').val().toLowerCase()
 
-    @updateKeywordByName(params.name, params.mask).then ->
+    @get('api').updateKeywordByName(params.name, params.mask).then ->
       $('#name').val('')
       $('#mask').val('')
 
   calibrate: ->
-    @getAllKeywords()
+    @get('api').getAllKeywords()
       .then (data) =>
         @set 'keywords', data.keywords
         @toggleProperty('showCalibrationWords')
 
 
-  getAllKeywords: ->
-    # returns a promise
-    $.ajax({
-      type: "GET",
-      url: "http://localhost:3000/api/keywords/",
-    })
-
-  getKeywordByName: (name) ->
-    # returns a promise
-    $.ajax({
-      type: "GET",
-      url: "http://localhost:3000/api/keywords/name/#{name}",
-    })
-
-  updateKeywordByName: (name, mask) ->
-    # returns a promise
-    $.ajax({
-      type: "PUT",
-      url: "http://localhost:3000/api/keywords/name/#{name}",
-      data:
-        mask: mask
-    })
-  
   actions:
     calibrateWord: (word) ->
-      console.log word
       @get('recognition').set('currentKeyword', word)
       @get('recognition').recognition.start()
 
@@ -64,7 +41,7 @@ CalibrationController = Ember.Controller.extend
     test: ->
       name = "new"
       mask = "news"
-      @updateKeywordByName(name, mask).then (data) ->
+      @get('api').updateKeywordByName(name, mask).then (data) ->
         console.log data
 
 `export default CalibrationController`

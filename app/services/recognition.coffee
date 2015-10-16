@@ -19,15 +19,11 @@ RecognitionService = Ember.Service.extend
       that = window.privateVar
       result =  event.results[0][0].transcript
       currentKeyword = @get('currentKeyword')
-      console.log currentKeyword
+      console.log result
       if Em.isPresent(currentKeyword)
-        console.log 0
         if currentKeyword != result
           @get('api').updateKeywordByName(currentKeyword, result).then =>
             @set('currentKeyword', null)
-
-
-
 
     recognition.onstart = ->
       that = window.privateVar

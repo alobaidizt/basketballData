@@ -5,6 +5,7 @@
 # compiled output
 /dist
 /tmp
+/spare
 
 # dependencies
 /node_modules

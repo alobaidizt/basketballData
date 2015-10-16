@@ -30,6 +30,8 @@ RecognitionService = Ember.Service.extend
 
 
     recognition.onstart = ->
+      that = window.privateVar
+      that.toggleProperty('isListening')
     recognition.onstop  = ->
     recognition.onend   = ->
       that = window.privateVar

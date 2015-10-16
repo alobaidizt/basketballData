@@ -7,6 +7,8 @@ CalibrationController = Ember.Controller.extend
   recognition:          Ember.inject.service()
   api:                  Ember.inject.service()
 
+  isListening:          Ember.computed.alias('recognition.isListening')
+
   init: ->
     @_super()
     @get('recognition').setup()

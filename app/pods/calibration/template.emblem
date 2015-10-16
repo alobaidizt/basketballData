@@ -1,6 +1,8 @@
 .page-content
   .row
     .col.s
+      a.btn-floating.btn-med.waves-effect.waves-light.red style="cursor: default; pointer-events: none;" class=isListening:green:red 
+        i.material-icons mic
       a.btn.btn-med.waves-effect.waves-light.blue click="calibrate"
         | Calibrate
     .right

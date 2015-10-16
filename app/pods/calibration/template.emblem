@@ -9,11 +9,10 @@
     if showCalibrationWords
       .container
         .row
-          each keywords
-            .col.s3
-              a.btn.btn-med.waves-effect.waves-light.blue click="calibrateWord"
-                | #{name} 
-        
+          each keywords as |keyword|
+            .col.s3 style="padding-top: 1em;"
+              a.col.s12.btn.btn-med.waves-effect.waves-light.blue onclick={action 'calibrateWord' keyword.name} 
+                | #{keyword.name}
   .divider
   .row
     .col.s

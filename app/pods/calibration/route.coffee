@@ -3,7 +3,7 @@
 CalibrationRoute = Ember.Route.extend
 
   model: ->
-    @store.find('keyword')
+    @store.findAll('keyword')
 
   setupController: (controller, model) ->
     controller.set 'data', model

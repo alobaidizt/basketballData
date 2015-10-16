@@ -420,6 +420,7 @@ SplashController = Ember.Controller.extend
         #console.log @get('duration')
 
     goToCalibrate: ->
+      console.log "hellllo"
       @transitionToRoute('calibration')
 
 `export default SplashController`

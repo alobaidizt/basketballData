@@ -4,26 +4,14 @@ CalibrationController = Ember.Controller.extend
 
   showCalibrationWords: false
   keywords:             undefined
+  recognition:          Ember.inject.service()
 
   init: ->
     @_super()
-    @set 'that', this
+    @get('recognition').setup()
 
-    #recognition = new webkitSpeechRecognition()
-    #recognition.continuous      = false
-    #recognition.interimResults  = false
-
-    #@setProperties
-      #recognition:  recognition
-
-
-    #recognition.onresult = ((event) =>
-      #that = window.privateVar
-    #recognition.onstart = ->
-    #recognition.onstop  = ->
-    #recognition.onend   = ->
-      #that = window.privateVar
-      #that.toggleProperty('isListening')
+  endFunction: ->
+    console.log "success"
 
   addData: ->
     params =
@@ -65,11 +53,13 @@ CalibrationController = Ember.Controller.extend
     })
   
   actions:
+    calibrateWord: (word) ->
+      console.log word
+      @get('recognition').set('currentKeyword', word)
+      @get('recognition').recognition.start()
+
     addData: -> @addData()
     calibrate: -> @calibrate()
-
-    calibrateWord: () ->
-      console.log ''
 
     test: ->
       name = "new"

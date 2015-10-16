@@ -26,7 +26,7 @@ module.exports = function(environment) {
 	  'default-src': "'none'",
 	  'script-src': "'self' 'unsafe-eval' https://cdn.firebase.com/ ",
 	  'font-src': "'self' fonts.gstatic.com",
-	  'connect-src': "'self' http://localhost:3000 ",
+	  'connect-src': "'self' http://localhost:3000 http://104.131.117.229:3000 http://127.0.0.1:3000",
 	  'img-src': "'self' data:",
 	  'style-src': "'self' https://fonts.googleapis.com ",
 	  'media-src': "'self'"

@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose   = require('mongoose');  
-mongoose.connect('mongodb://localhost/webApp'); // Adjust this line if you are not locally hosting MongoDB  
+mongoose.connect('mongodb://localhost:27017/webApp'); // Adjust this line if you are not locally hosting MongoDB  
 
 var app = express();
 var routes = require('./routes/index');  

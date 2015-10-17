@@ -11,30 +11,36 @@ RecognitionService = Ember.Service.extend
       recognition[key] = val
 
     @set 'recognition', recognition
+    window.privateVar = this
 
     recognition.onresult = (event) =>
-
+      that = window.privateVar
+      console.log that
       result =  event.results[0][0].transcript
       currentKeyword = @get('currentKeyword')
 
-      if Em.isPresent(currentKeyword) and Em.isEqual(currentKeyword,result)
-        @notifications.addNotification
+      if Em.isPresent(currentKeyword) and !Em.isEqual(currentKeyword,result)
+        this.notifications.addNotification
           message: "Mismatch! Detected: #{result}."
           type: 'warning'
           autoClear: true
+          clearDuration: 1200
 
         @get('api').updateKeywordByName(currentKeyword, result).then =>
           @set('currentKeyword', null)
       else
-        @notifications.addNotification
+        this.notifications.addNotification
           message: 'Match!'
           type: 'success'
           autoClear: true
+          clearDuration: 1200
 
     recognition.onstart = ->
-      @toggleProperty('isListening')
+      that = window.privateVar
+      that.toggleProperty('isListening')
     recognition.onstop  = ->
     recognition.onend   = ->
-      @toggleProperty('isListening')
+      that = window.privateVar
+      that.toggleProperty('isListening')
 
 `export default RecognitionService`

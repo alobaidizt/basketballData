@@ -22,6 +22,11 @@ CalibrationController = Ember.Controller.extend
       $('#mask').val('')
 
   calibrate: ->
+    @notifications.addNotification
+      message: 'Match!'
+      type: 'success'
+      autoClear: true
+      clearDuration: 1200
     @get('api').getAllKeywords()
       .then (data) =>
         @set 'keywords', data.keywords

@@ -17,6 +17,7 @@ SplashController = Ember.Controller.extend
   startTime:        undefined
   endTime:          undefined
   tsPointer:        null       # Timestamp pointer
+  videoUrl:         "https://www.youtube.com/embed/bR-JsxhmTdA#t=3m"
 
   showTable: Ember.computed 'structuredData', ->
     Ember.isPresent @get('structuredData')
@@ -422,5 +423,4 @@ SplashController = Ember.Controller.extend
     goToCalibrate: ->
       console.log "hellllo"
       @transitionToRoute('calibration')
-
 `export default SplashController`

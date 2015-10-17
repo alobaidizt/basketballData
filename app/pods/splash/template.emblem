@@ -19,21 +19,28 @@
     a.waves-effect.waves-light.btn.deep-orange.lighten-1.grey-text.text-darken-1 Result
     .card-panel.hoverable.transparent.teal-text.text-accent-2 = resultString
   .row.container
-    a.waves-effect.waves-light.btn.deep-orange.lighten-1.grey-text.text-darken-1 Action
-    each item in detectedActions
-      a.waves-effect.waves-light.btn.btn-flat.teal-text.text-accent-2.transparent = item 
-  if showTable
-    .row.container
-      table.centered.hoverable
-        thead.teal-text.text-accent-2
-          tr
-            th Item #
-            th TimeStamp
-        tbody.teal-text.text-accent-3
-          each structuredDatum in structuredData
+    .col.s7
+      a.waves-effect.waves-light.btn.deep-orange.lighten-1.grey-text.text-darken-1 Action
+      each item in detectedActions
+        a.waves-effect.waves-light.btn.btn-flat.teal-text.text-accent-2.transparent = item 
+    .col.s5
+      /*.input-field.left*/
+      label for="url" Video Link
+      = input id="url" class="white-text" type="text" value=videoUrl
+  .row.container
+    .col.s7
+      if showTable
+        table.centered.hoverable
+          thead.teal-text.text-accent-2
             tr
-              each item in structuredDatum
-                td = item
+              th Item #
+              th TimeStamp
+          tbody.teal-text.text-accent-3
+            each structuredDatum in structuredData
+              tr
+                each item in structuredDatum
+                  td = item
+    iframe.right src=videoUrl frameborder="0" style="width: 350px;height: 350px;" 
   .row
 
 == outlet

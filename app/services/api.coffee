@@ -6,24 +6,23 @@ ApiService = Ember.Service.extend
     # returns a promise
     $.ajax({
       type: "GET",
-      url: "https://localhost:444/api/keywords/",
+      url: "https://104.131.117.229:444/api/keywords/",
     })
 
   getKeywordByName: (name) ->
     # returns a promise
     $.ajax({
       type: "GET",
-      url: "https://localhost:444/api/keywords/name/#{name}",
+      url: "https://104.131.117.229:444/api/keywords/name/#{name}",
     })
 
   updateKeywordByName: (name, mask) ->
     # returns a promise
     $.ajax({
       type: "PUT",
-      url: "https://localhost:444/api/keywords/name/#{name}",
+      url: "https://104.131.117.229:444/api/keywords/name/#{name}",
       data:
         mask: mask
     })
-  
 
 `export default ApiService`

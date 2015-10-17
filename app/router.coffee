@@ -5,7 +5,7 @@ Router = Ember.Router.extend
   location: config.locationType
 
 Router.map ->
-  @resource 'splash', { path : "/" }
-  @route 'calibration'
+  @resource 'splash',   { path : '/' }
+  @route 'calibration', { path: '/calibration' }
 
 `export default Router;`

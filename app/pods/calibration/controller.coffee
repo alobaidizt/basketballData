@@ -1,5 +1,4 @@
 `import Ember from 'ember'`
-
 CalibrationController = Ember.Controller.extend
 
   showCalibrationWords: false
@@ -12,13 +11,6 @@ CalibrationController = Ember.Controller.extend
   init: ->
     @_super()
     @get('recognition').setup()
-
-    @notifications.addNotification
-      message: 'hello'
-      type: 'warning'
-
-  endFunction: ->
-    console.log "success"
 
   addData: ->
     params =
@@ -35,7 +27,6 @@ CalibrationController = Ember.Controller.extend
         @set 'keywords', data.keywords
         @toggleProperty('showCalibrationWords')
 
-
   actions:
     calibrateWord: (word) ->
       @get('recognition').set('currentKeyword', word)
@@ -43,11 +34,5 @@ CalibrationController = Ember.Controller.extend
 
     addData: -> @addData()
     calibrate: -> @calibrate()
-
-    test: ->
-      name = "new"
-      mask = "news"
-      @get('api').updateKeywordByName(name, mask).then (data) ->
-        console.log data
 
 `export default CalibrationController`

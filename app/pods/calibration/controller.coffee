@@ -13,6 +13,10 @@ CalibrationController = Ember.Controller.extend
     @_super()
     @get('recognition').setup()
 
+    @notifications.addNotification
+      message: 'hello'
+      type: 'warning'
+
   endFunction: ->
     console.log "success"
 

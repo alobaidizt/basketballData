@@ -22,8 +22,16 @@ RecognitionService = Ember.Service.extend
       console.log result
       if Em.isPresent(currentKeyword)
         if currentKeyword != result
+          #@notifications.addNotification
+            #message: result
+            #type: 'warning'
+
           @get('api').updateKeywordByName(currentKeyword, result).then =>
             @set('currentKeyword', null)
+        #else
+          #@notifications.addNotification
+            #message: 'Saved successfully!'
+            #type: 'success'
 
     recognition.onstart = ->
       that = window.privateVar

@@ -1,23 +1,23 @@
 var express = require('express');
-//var https = require('https');
-//var http = require('http');
+var https = require('https');
+var http = require('http');
 var path = require('path');
-//var fs = require('fs');
+var fs = require('fs');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose   = require('mongoose');  
-mongoose.connect('mongodb://104.131.117.229:27017/webApp'); // Adjust this line if you are not locally hosting MongoDB  
+mongoose.connect('mongodb://localhost:27017/webApp'); // Adjust this line if you are not locally hosting MongoDB  
 
-//var privateKey  = fs.readFileSync('ssl/server.key', 'utf8');
-//var certificate = fs.readFileSync('ssl/server.crt', 'utf8');
+var privateKey  = fs.readFileSync('server.key', 'utf8');
+var certificate = fs.readFileSync('server.cert', 'utf8');
 
-//var credentials = {key: privateKey, cert: certificate};
+var credentials = {key: privateKey, cert: certificate};
 
 var app = express();
-//http.createServer(app).listen(80);
-//https.createServer(credentials, app).listen(443);
+http.createServer(app).listen(3000);
+https.createServer(credentials, app).listen(444);
 
 var routes = require('./routes/index');  
 var api = require('./routes/api'); 
@@ -53,6 +53,7 @@ app.use(cookieParser());
 app.use(allowCrossDomain);
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/', routes);
 app.use('/api', api);
 
 // catch 404 and forward to error handler

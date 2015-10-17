@@ -14,13 +14,11 @@ RecognitionService = Ember.Service.extend
     window.privateVar = this
 
     recognition.onresult = (event) =>
-      that = window.privateVar
-      console.log that
       result =  event.results[0][0].transcript
       currentKeyword = @get('currentKeyword')
 
       if Em.isPresent(currentKeyword) and !Em.isEqual(currentKeyword,result)
-        this.notifications.addNotification
+        @notifications.addNotification
           message: "Mismatch! Detected: #{result}."
           type: 'warning'
           autoClear: true
@@ -29,7 +27,7 @@ RecognitionService = Ember.Service.extend
         @get('api').updateKeywordByName(currentKeyword, result).then =>
           @set('currentKeyword', null)
       else
-        this.notifications.addNotification
+        @notifications.addNotification
           message: 'Match!'
           type: 'success'
           autoClear: true

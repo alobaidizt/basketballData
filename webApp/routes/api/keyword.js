@@ -59,8 +59,9 @@ module.exports.getKeywordByName = function(req, res, name) {
 };
 
 module.exports.updateKeywordByName = function(req, res, name) {  
-  var found = false;
+  var mask = req.body.mask.toLowerCase();
     Keyword.find(function(err, keywords) {
+      var isFound = false;
         if (err) {
             res.send(err);
         }
@@ -74,24 +75,25 @@ module.exports.updateKeywordByName = function(req, res, name) {
         });
 
         map(masks, function(ele) { words = words.concat(ele);}); 
-        words.concat(names);
+        words = words.concat(names);
         
         for(var i = 0; i < words.length; i++) {
-          if (words[i] === name) {
-            found = true;
+          if (words[i] === mask) {
+            isFound = true;
           }
         }
-    });
-    if (found) {
-      res.json({info: "word already exist"});
-    } else {
-      Keyword.update({ name: name }, {$push: { masks: req.body.mask}},{ upsert: true }, function(err, numAffected, raw) {
+      if (isFound || (mask === "")) {
+        res.json(404, {info: "word already exist"});
+        req.abort();
+      } else {
+        Keyword.update({ name: name }, {$push: { masks: mask}},{ upsert: true }, function(err, numAffected, raw) {
           if (err) {
               res.send(err);
           }
           res.json({numAffected: numAffected});
-      });
-    }
+        });
+      }
+    });
 };
 
 module.exports.deleteKeywordByName = function(req, res, name) {  

@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');  
 var Keyword = require('../../models/keyword');
+var map = require('arr-map');
 
 module.exports.addKeyword = function(req, res) {  
     var keyword = new Keyword(req.body.keyword);
@@ -63,17 +64,17 @@ module.exports.updateKeywordByName = function(req, res, name) {
         if (err) {
             res.send(err);
         }
-        var masks = keywords.map(function(keyword) {
-          return keyword.masks
-        };
-        var names = keywords.map(function(keyword) {
-          return keyword.name
-        };
-        var words = names
-          .concat(masks)
-          .reduce(function(a,b) {
-          a.concat(b);
-        };
+        let words = [];
+        // TODO: rewrite this. Looks inefficient. do both in one map
+        var masks = map(keywords, function(keyword) {
+          return keyword.masks;
+        });
+        var names = map(keywords, function(keyword) {
+          return keyword.name;
+        });
+
+        map(masks, function(ele) { words = words.concat(ele);}); 
+        words.concat(names);
         
         for(var i = 0; i < words.length; i++) {
           if (words[i] === name) {

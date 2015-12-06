@@ -104,9 +104,12 @@ SplashController = Ember.Controller.extend
       @filter(resultArray)    if Ember.isPresent(resultArray)
     )
     recognition.onstart = ->
+      console.log "STARTTTED"
     recognition.onstop  = ->
+      console.log "STOPPPED"
     recognition.onend   = =>
-      @toggleProperty('isListening') if Em.isEqual(@get('isListening'))
+      console.log "ENDDDDDED"
+      @get('recognition').start() if Em.isEqual(@get('isListening'), true)
 
   recordTS: (text) ->
     @secondFilter(text,'timestamp')

@@ -64,7 +64,7 @@ module.exports.updateKeywordByName = function(req, res, name) {
         if (err) {
             res.send(err);
         }
-        let words = [];
+        var words = [];
         // TODO: rewrite this. Looks inefficient. do both in one map
         var masks = map(keywords, function(keyword) {
           return keyword.masks;

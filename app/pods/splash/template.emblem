@@ -5,7 +5,6 @@
     .col.s
       a.btn-floating.btn-med.waves-effect.waves-light.red class=isListening:green:red click="startListening"
         i.material-icons = videoIconClass
-        /*i.material-icons mic*/
       a.btn.btn-med.waves-effect.waves-light.red click="goToCalibrate" Control
     .right
       a.waves-effect.waves-light.btn.grey-text.text-darken-1.transparent href="https://www.linkedin.com/pub/ziyad-al-obaidi/70/598/540" target="_blank" Developer
@@ -24,30 +23,6 @@
                 tr
                   each item in structuredDatum
                     td = item
-      /*a.waves-effect.waves-light.btn.deep-orange.lighten-1.grey-text.text-darken-1 onclick={action 'scriptClick'} Script*/
-      /*if showScript*/
-        /*.card-panel.hoverable.transparent.teal-text.text-accent-2*/
-          /*h6 #23 red get the tip, dribbles right to the wing, shoots a 3, makes a 3*/
-          /*h6 #5 blue inbounds the ball to #10 blue, #10 loses the ball to #12 red; steal for #12 red*/
-          /*h6 #12 red passes to #23 red who passes to #33 red who shoots a 2 and is fouled by #23 blue; no basket for #33*/
-          /*h6 #33 red makes the first free throw; #33 red misses the 2nd free throw and #5 blue grabs the rebound*/
-          /*h6 #5 takes the ball, dribbles, and double dribbles. Turnover on #5 blue*/
-  /*.row.container*/
-    /*a.waves-effect.waves-light.btn.deep-orange.lighten-1.grey-text.text-darken-1 Result*/
-    /*.card-panel.hoverable.transparent.teal-text.text-accent-2 = resultString*/
-  /*.row.container*/
-    /*.col.s7*/
-      /*a.waves-effect.waves-light.btn.deep-orange.lighten-1.grey-text.text-darken-1 Action*/
-      /*each item in detectedActions*/
-        /*a.waves-effect.waves-light.btn.btn-flat.teal-text.text-accent-2.transparent = item*/
-    /*.col.s4*/
-      /*[>.input-field.left<]*/
-      /*label for="url" Video Link*/
-      /*= input id="url" class="white-text" type="text" value=videoUrl*/
-    /*.col.s1*/
-      /*a.wave-effect.btn-floating click='videoControl'*/
-        /*i.material-icons = videoIconClass*/
-    /*iframe.right src=videoUrl frameborder="0" style="width: 350px;height: 350px;"*/
   .row
 
 == outlet

@@ -267,6 +267,7 @@ SplashController = Ember.Controller.extend
     finalResults    = new Array()
     currentIndex    = @get('currentIndex')
     finalResults_i  = @get('finalResults_i')
+    _frIndex = 0
 
     while currentIndex < (f2r.length - 1)
       currentElement = @getNextElement(f2r, currentIndex)
@@ -283,13 +284,14 @@ SplashController = Ember.Controller.extend
         type = @getActionParamsType(currentElement)
         actionTS = @getActionTS(currentElement)
         timeStamp = if actionTS? then actionTS else "-"
-        finalResults[finalResults_i] = @getContext(f2r, @get('lastID_i'),currentIndex, type, action)
-        finalResults[finalResults_i].unshift("Item #{finalResults_i + 1}", timeStamp)
+        finalResults[_frIndex] = @getContext(f2r, @get('lastID_i'),currentIndex, type, action)
+        finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timeStamp)
         if actionTS?
           timeInSec = moment(actionTS).diff(@startTime, "seconds")
           console.log "Item #{finalResults_i + 1} ", @get('videoUrl') + timeInSec + "s"
           @set 'detailedTime', @get('videoUrl') + timeInSec + "s"
         @incrementProperty(finalResults_i,1)
+        _frIndex++
       currentIndex++
     return finalResults
 

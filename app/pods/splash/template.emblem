@@ -16,11 +16,13 @@
           table.centered.hoverable
             thead.teal-text.text-accent-2
               tr
+                th Link 
                 th Item #
                 th TimeStamp
             tbody.teal-text.text-accent-3.data-table
               each structuredDatum in structuredData
                 tr
+                  td.action-link onClick={action "grabLink" structuredDatum} = structuredDatum.[0]
                   each item in structuredDatum
                     td = item
   .row

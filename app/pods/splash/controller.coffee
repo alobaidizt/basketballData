@@ -290,7 +290,7 @@ SplashController = Ember.Controller.extend
           timeInSec = moment(actionTS).diff(@startTime, "seconds")
           console.log "Item #{finalResults_i + 1} ", @get('videoUrl') + timeInSec + "s"
           @set 'detailedTime', @get('videoUrl') + timeInSec + "s"
-        @incrementProperty(finalResults_i,1)
+        @incrementProperty('finalResults_i',1)
         _frIndex++
       currentIndex++
     return finalResults
@@ -409,5 +409,15 @@ SplashController = Ember.Controller.extend
 
     goToCalibrate: ->
       @transitionToRoute('calibration')
+
+    grabLink: (val) ->
+      result = val
+        .toString()
+        .split(',')
+        .toArray()[0]
+        .toLowerCase()
+        .replace("item ","")
+
+      alert(result)
 
 `export default SplashController`

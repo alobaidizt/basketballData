@@ -9,7 +9,7 @@
     .right
       a.waves-effect.waves-light.btn.grey-text.text-darken-1.transparent href="https://www.linkedin.com/pub/ziyad-al-obaidi/70/598/540" target="_blank" Developer
   .container
-    iframe src=videoUrl frameborder="0" style="width: 75vw;height: 75vh;"
+    iframe src=videoUrl_Mod frameborder="0" style="width: 75vw;height: 75vh;"
     .row
       .col.s7
         if showTable
@@ -22,7 +22,7 @@
             tbody.teal-text.text-accent-3.data-table
               each structuredDatum in structuredData
                 tr
-                  td.action-link onClick={action "grabLink" structuredDatum} = structuredDatum.[0]
+                  td.action-link onClick={action "grabLink" structuredDatum} Link
                   each item in structuredDatum
                     td = item
   .row

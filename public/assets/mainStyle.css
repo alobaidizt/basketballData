@@ -17,19 +17,7 @@
         -webkit-filter: blur(3px);
     }
 
-#contentt {
-  color: red
-}
 
-#layer-1 {
-  z-index: -1;
-  position: relative;
-  display: inline;
-}
-
-.layer-2 {
-  z-index: 3;
-  position: relative;
-  display: inline;
-  width: 50%;
+.action-link {
+  cursor: pointer;
 }

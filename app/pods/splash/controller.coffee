@@ -13,6 +13,7 @@ SplashController = Ember.Controller.extend
   playersData:      []
   keywords:         []
   replacements:     []
+  linksArray:       []
   recognition:      undefined
   currentIndex:	    undefined
   lastID:           undefined
@@ -22,12 +23,20 @@ SplashController = Ember.Controller.extend
   startTime:        undefined
   endTime:          undefined
   tsPointer:        null       # Timestamp pointer
-  videoUrl:         "https://www.youtube.com/embed/OY3lSTb_DM0"
+  videoUrl:         undefined
   finalResults_i:   undefined
 
   showTable:        true
   #showTable: Ember.computed 'structuredData', ->
     #Ember.isPresent @get('structuredData')
+
+  videoUrl_Mod:     Ember.computed 'videoUrl',
+    get: ->
+      @get('videoUrl').replace('watch?v=','embed/')
+    set: (key,value) ->
+      if !value?
+        return
+      value
 
   videoIconClass: Ember.computed 'isListening', ->
     if @get('isListening')
@@ -40,11 +49,11 @@ SplashController = Ember.Controller.extend
   videoController: Em.observer 'isListening', ->
     #TODO: use youtube-iframe API npm or bower module
     # Video Controls
-    videoURL = @get('videoUrl')
+    videoURL = @get('videoUrl').replace('watch?v=','embed/')
     if @get('isListening')
-      @set 'videoUrl', videoURL + '?autoplay=true'
+      @set 'videoUrl_Mod', videoURL + '?autoplay=true'
     else
-      @set 'videoUrl', videoURL + '?autoplay=false'
+      @set 'videoUrl_Mod', videoURL
 
   init: ->
     @_super()
@@ -79,6 +88,7 @@ SplashController = Ember.Controller.extend
       stitches:       stitches
       timestamps:     []
       finalResults_i: 0 # used in filter 3
+      videoUrl:       "https://www.youtube.com/watch?v=OY3lSTb_DM0"
 
     recognition.onresult = ((event) =>
       interimText   = ''
@@ -287,7 +297,8 @@ SplashController = Ember.Controller.extend
         finalResults[_frIndex] = @getContext(f2r, @get('lastID_i'),currentIndex, type, action)
         finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timeStamp)
         if actionTS?
-          timeInSec = moment(actionTS).diff(@startTime, "seconds")
+          timeInSec = moment(actionTS).diff(@startTime, "seconds") - 2
+          @get('linksArray')[finalResults_i] = @get('videoUrl') + "#t=" + timeInSec + "s"
           console.log "Item #{finalResults_i + 1} ", @get('videoUrl') + timeInSec + "s"
           @set 'detailedTime', @get('videoUrl') + timeInSec + "s"
         @incrementProperty('finalResults_i',1)
@@ -417,7 +428,9 @@ SplashController = Ember.Controller.extend
         .toArray()[0]
         .toLowerCase()
         .replace("item ","")
+      index = result - 1
 
-      alert(result)
+
+      window.open(@get('linksArray')[index])
 
 `export default SplashController`

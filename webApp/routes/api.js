@@ -1,7 +1,8 @@
 var express = require('express');  
 var router = express.Router();
 
-var keywords = require('./api/keyword');
+var keywords  = require('./api/keyword');
+var history   = require('./api/history');
 
 /* Keywords routes */
 router.route('/keywords')  
@@ -18,5 +19,10 @@ router.route('/keywords/name/:keyword_name')
     .get(function(req, res) { keywords.getKeywordByName(req, res, req.params.keyword_name) })
     .put(function(req, res) { keywords.updateKeywordByName(req, res, req.params.keyword_name) })
     .delete(function(req, res) { keywords.deleteKeywordByName(req, res, req.params.keyword_name) });
+
+/* History routes */
+router.route('/history')  
+    .post(function(req,res) { history.addRecord(req,res) })
+    .get(function(req,res) { keywords.getHistoryRecords(req,res) });
 
 module.exports = router;  

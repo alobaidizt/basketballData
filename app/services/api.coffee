@@ -25,4 +25,13 @@ ApiService = Ember.Service.extend
         mask: mask
     })
 
+  addHistoryRecord: (record) ->
+    # returns a promise
+    $.ajax({
+      type: "POST",
+      url: "https://104.131.117.229:444/api/history",
+      data:
+        history: record
+    })
+
 `export default ApiService`

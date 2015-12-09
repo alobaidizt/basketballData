@@ -27,8 +27,6 @@ SplashController = Ember.Controller.extend
   finalResults_i:   undefined
 
   showTable:        true
-  #showTable: Ember.computed 'structuredData', ->
-    #Ember.isPresent @get('structuredData')
 
   videoUrl_Mod:     Ember.computed 'videoUrl',
     get: ->
@@ -149,6 +147,13 @@ SplashController = Ember.Controller.extend
       showResult:   true
     @set 'timestamps', []
 
+    record =
+      beforeEnhancement: f1r
+      afterEnhancement: @get('afterEnhancement')
+      structuredOutput: @get('structuredOutput')
+    @get('api').addHistoryRecord(record).then ->
+      console.log('recorded')
+
   logic: (structData) ->
     for arr in structData
       timestamp = arr[1]
@@ -212,6 +217,7 @@ SplashController = Ember.Controller.extend
         f1r = @replaceAll(stitch[0],stitch[1],f1r)
 
     # The text after enhancment
+    @set('afterEnhacement', f1r)
     console.log f1r
     
     parsedResults = f1r.split(" ")
@@ -304,6 +310,7 @@ SplashController = Ember.Controller.extend
         @incrementProperty('finalResults_i',1)
         _frIndex++
       currentIndex++
+      @set('structuredOutput', finalResults)
     return finalResults
 
   getNextElement: (elements, i) ->

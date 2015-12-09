@@ -5,10 +5,12 @@
 .*.swo
 .*.swn
 .*.swm
+.*.swl
 .swp
 .swo
 .swn
 .swm
+.swl
 
 # compiled output
 /dist

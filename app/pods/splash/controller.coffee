@@ -13,6 +13,7 @@ SplashController = Ember.Controller.extend
   playersData:      []
   keywords:         []
   replacements:     []
+  linksArray:       []
   recognition:      undefined
   currentIndex:	    undefined
   lastID:           undefined
@@ -22,11 +23,20 @@ SplashController = Ember.Controller.extend
   startTime:        undefined
   endTime:          undefined
   tsPointer:        null       # Timestamp pointer
-  videoUrl:         "https://www.youtube.com/embed/OY3lSTb_DM0"
+  videoUrl:         undefined
+  finalResults_i:   undefined
 
   showTable:        true
   #showTable: Ember.computed 'structuredData', ->
     #Ember.isPresent @get('structuredData')
+
+  videoUrl_Mod:     Ember.computed 'videoUrl',
+    get: ->
+      @get('videoUrl').replace('watch?v=','embed/')
+    set: (key,value) ->
+      if !value?
+        return
+      value
 
   videoIconClass: Ember.computed 'isListening', ->
     if @get('isListening')
@@ -39,11 +49,11 @@ SplashController = Ember.Controller.extend
   videoController: Em.observer 'isListening', ->
     #TODO: use youtube-iframe API npm or bower module
     # Video Controls
-    videoURL = @get('videoUrl')
+    videoURL = @get('videoUrl').replace('watch?v=','embed/')
     if @get('isListening')
-      @set 'videoUrl', videoURL + '?autoplay=true'
+      @set 'videoUrl_Mod', videoURL + '?autoplay=true'
     else
-      @set 'videoUrl', videoURL + '?autoplay=false'
+      @set 'videoUrl_Mod', videoURL
 
   init: ->
     @_super()
@@ -73,10 +83,12 @@ SplashController = Ember.Controller.extend
 
 
     @setProperties
-      recognition:  recognition
-      bbActions:    bbActions
-      stitches:     stitches
-      timestamps:   []
+      recognition:    recognition
+      bbActions:      bbActions
+      stitches:       stitches
+      timestamps:     []
+      finalResults_i: 0 # used in filter 3
+      videoUrl:       "https://www.youtube.com/watch?v=OY3lSTb_DM0"
 
     recognition.onresult = ((event) =>
       interimText   = ''
@@ -106,7 +118,7 @@ SplashController = Ember.Controller.extend
     recognition.onstart = ->
     recognition.onstop  = ->
     recognition.onend   = =>
-      @toggleProperty('isListening') if Em.isEqual(@get('isListening'))
+      @get('recognition').start() if Em.isEqual(@get('isListening'), true)
 
   recordTS: (text) ->
     @secondFilter(text,'timestamp')
@@ -259,10 +271,14 @@ SplashController = Ember.Controller.extend
     return output
 
   thirdFilter: (f2r) ->
-    finalResults_i = 0
+    #TODO: maybe do this in init?
     @set('currentIndex', 0)
-    finalResults = new Array()
-    currentIndex = @get('currentIndex')
+
+    finalResults    = new Array()
+    currentIndex    = @get('currentIndex')
+    finalResults_i  = @get('finalResults_i')
+    _frIndex = 0
+
     while currentIndex < (f2r.length - 1)
       currentElement = @getNextElement(f2r, currentIndex)
       if @isID(currentElement)
@@ -278,13 +294,15 @@ SplashController = Ember.Controller.extend
         type = @getActionParamsType(currentElement)
         actionTS = @getActionTS(currentElement)
         timeStamp = if actionTS? then actionTS else "-"
-        finalResults[finalResults_i] = @getContext(f2r, @get('lastID_i'),currentIndex, type, action)
-        finalResults[finalResults_i].unshift("Item #{finalResults_i + 1}", timeStamp)
+        finalResults[_frIndex] = @getContext(f2r, @get('lastID_i'),currentIndex, type, action)
+        finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timeStamp)
         if actionTS?
-          timeInSec = moment(actionTS).diff(@startTime, "seconds")
+          timeInSec = moment(actionTS).diff(@startTime, "seconds") - 2
+          @get('linksArray')[finalResults_i] = @get('videoUrl') + "#t=" + timeInSec + "s"
           console.log "Item #{finalResults_i + 1} ", @get('videoUrl') + timeInSec + "s"
           @set 'detailedTime', @get('videoUrl') + timeInSec + "s"
-        finalResults_i++
+        @incrementProperty('finalResults_i',1)
+        _frIndex++
       currentIndex++
     return finalResults
 
@@ -386,13 +404,10 @@ SplashController = Ember.Controller.extend
     return !isNaN(parseFloat(n)) && isFinite(n)
 
   actions:
-    scriptClick: ->
-      @toggleProperty('showScript')
     startListening: ->
       recognition = @get('recognition')
       status = @get('isListening')
       @toggleProperty('isListening')
-
 
       if !status
         recognition.start()
@@ -406,29 +421,16 @@ SplashController = Ember.Controller.extend
     goToCalibrate: ->
       @transitionToRoute('calibration')
 
-    videoControl: ->
-      
-      kids = $('.data-table').children()
-      text = kids.first().children().last().text()
-      kids.first().children().first().replaceWith("<td><a href=#{@get('videoUrl')}> #{text}</a></td>")
+    grabLink: (val) ->
+      result = val
+        .toString()
+        .split(',')
+        .toArray()[0]
+        .toLowerCase()
+        .replace("item ","")
+      index = result - 1
 
-      #videoURL = @get('videoUrl')
-      #if videoURL.indexOf('autoplay') == -1
-        #@set 'videoUrl', videoURL + '?autoplay=true'
 
-      #@send('startListening')
-
-      #recognition = @get('recognition')
-      #status      = @get('isListening')
-      #@toggleProperty('isListening')
-
-      #if !status
-        #recognition.start()
-        #now = moment()
-        #@set 'startTime', now
-      #else
-        #recognition.stop()
-        #now = moment()
-        #@set 'endTime', now
+      window.open(@get('linksArray')[index])
 
 `export default SplashController`

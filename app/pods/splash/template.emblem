@@ -29,4 +29,8 @@
                     td = item
   .row
 
+  .c-notification__container
+    each notifications as |notification|
+      notification-message notification=notification
+
 == outlet

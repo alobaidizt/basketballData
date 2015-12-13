@@ -29,7 +29,7 @@ ApiService = Ember.Service.extend
     # returns a promise
     $.ajax({
       type: "POST",
-      url: "https://104.131.117.229:444/api/history",
+      url: "https://104.131.117.229:444/api/histories",
       data:
         history: record
     })

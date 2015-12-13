@@ -151,6 +151,7 @@ SplashController = Ember.Controller.extend
       beforeEnhancement: f1r
       afterEnhancement: @get('afterEnhancement')
       structuredOutput: @get('structuredOutput')
+
     @get('api').addHistoryRecord(record).then ->
       console.log('recorded')
 
@@ -217,7 +218,7 @@ SplashController = Ember.Controller.extend
         f1r = @replaceAll(stitch[0],stitch[1],f1r)
 
     # The text after enhancment
-    @set('afterEnhacement', f1r)
+    @set('afterEnhancement', f1r)
     console.log f1r
     
     parsedResults = f1r.split(" ")
@@ -236,42 +237,76 @@ SplashController = Ember.Controller.extend
         output.push(parsedResult)
       if parsedResult.toString().includes('rebound')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('rebound')
       if parsedResult.toString().includes('inbound')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('inbound')
       if parsedResult.toString().includes('bounce')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('bounce')
       if parsedResult.toString().includes('make')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('make')
       if parsedResult.toString().includes('assist')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('assist')
       if parsedResult.toString().includes('take')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('take')
       if parsedResult.toString().includes('miss')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('miss')
       if parsedResult.toString().includes('grab')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('grab')
       if parsedResult.toString().includes('lose')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('lose')
       if parsedResult.toString().includes('pass')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('pass')
       if parsedResult.toString().includes('shoot')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('shoot')
       if parsedResult.toString().includes('turnover-on')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('turnover-on')
       if parsedResult.toString().includes('free-throw')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('free-throw')
       if parsedResult.toString().includes('no-basket-for')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('no-basket-for')
       if parsedResult.toString().includes('foul-by')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('foul-by')
       if parsedResult.toString().includes('foul-on')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('foul-on')
       if parsedResult.toString().includes('ball-to')
         output.push(parsedResult)
       if parsedResult.toString().includes('ball-from')
         output.push(parsedResult)
       if parsedResult.toString().includes('steal-for')
         output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('steal-for')
       if @isNumber(parsedResult.toString())
         output.push(parsedResult)
     return output
@@ -313,6 +348,13 @@ SplashController = Ember.Controller.extend
       @set('structuredOutput', finalResults)
     return finalResults
 
+  _addNotification: (word) ->
+    @notifications.addNotification
+      message: "#{word}"
+      type: 'info'
+      autoClear: true
+      clearDuration: 750
+
   getNextElement: (elements, i) ->
     elements[i]
 
@@ -339,9 +381,9 @@ SplashController = Ember.Controller.extend
         return timestamp
 
   getActionParamsType: (element) ->
-    beforeType = ['make','miss','grab','shoot','take','lose']
+    beforeType = ['make','attempt','miss','grab','shoot','take','lose']
     afterType = ['turnover-on','foul-on','foul-by','no-basket-for','steal-for']
-    bothType = ['pass','inbound','bounce']
+    bothType = ['pass','rebound','inbound','bounce']
     if beforeType.indexOf(element) > -1
       return "before"
     else if afterType.indexOf(element) > -1

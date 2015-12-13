@@ -27,6 +27,7 @@ ApiService = Ember.Service.extend
 
   addHistoryRecord: (record) ->
     # returns a promise
+    size = record.structuredOutput?.length
     $.ajax({
       type: "POST",
       url: "https://104.131.117.229:444/api/histories",
@@ -34,6 +35,7 @@ ApiService = Ember.Service.extend
         beforeEnhancement: record.beforeEnhancement
         afterEnhancement: record.afterEnhancement
         structuredOutput: record.structuredOutput
+        structuredOutputSize: size
     })
 
 `export default ApiService`

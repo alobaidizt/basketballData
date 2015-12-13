@@ -4,6 +4,7 @@ var map = require('arr-map');
 
 module.exports.addRecord = function(req, res) {  
     var history = new History(req.body.history);
+    console.log(req.body.history);
     history.save(function(err) {
         if (err) {
             res.send(err);
@@ -17,6 +18,6 @@ module.exports.getHistoryRecords = function(req, res) {
         if (err) {
             res.send(err);
         }
-        res.json({history: historyRecords});
+        res.json({historyRecords: historyRecords});
     });
 };

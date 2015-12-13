@@ -31,7 +31,9 @@ ApiService = Ember.Service.extend
       type: "POST",
       url: "https://104.131.117.229:444/api/histories",
       data:
-        history: record
+        beforeEnhancement: record.beforeEnhancement
+        afterEnhancement: record.afterEnhancement
+        structuredOutput: record.structuredOutput
     })
 
 `export default ApiService`

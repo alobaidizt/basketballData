@@ -21,8 +21,8 @@ router.route('/keywords/name/:keyword_name')
     .delete(function(req, res) { keywords.deleteKeywordByName(req, res, req.params.keyword_name) });
 
 /* History routes */
-router.route('/history')  
-    .post(function(req,res) { history.addRecord(req,res) })
-    .get(function(req,res) { keywords.getHistoryRecords(req,res) });
+router.route('/histories')  
+    .post(function(req,res) { histories.addRecord(req,res) })
+    .get(function(req,res) { histories.getHistoryRecords(req,res) });
 
 module.exports = router;  

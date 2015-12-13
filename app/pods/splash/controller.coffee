@@ -151,6 +151,7 @@ SplashController = Ember.Controller.extend
       beforeEnhancement: f1r
       afterEnhancement: @get('afterEnhancement')
       structuredOutput: @get('structuredOutput')
+
     @get('api').addHistoryRecord(record).then ->
       console.log('recorded')
 
@@ -217,7 +218,7 @@ SplashController = Ember.Controller.extend
         f1r = @replaceAll(stitch[0],stitch[1],f1r)
 
     # The text after enhancment
-    @set('afterEnhacement', f1r)
+    @set('afterEnhancement', f1r)
     console.log f1r
     
     parsedResults = f1r.split(" ")

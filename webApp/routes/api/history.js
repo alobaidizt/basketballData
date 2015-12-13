@@ -3,7 +3,7 @@ var History = require('../../models/history');
 var map = require('arr-map');
 
 module.exports.addRecord = function(req, res) {  
-    var record = req.body.history
+    var record = req.body.history;
     var history = new History({
       beforeEnhancement: record.beforeEnhancement,
       afterEnhancement:  record.afterEnhancement,

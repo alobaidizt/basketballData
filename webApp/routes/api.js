@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var keywords  = require('./api/keyword');
-var history   = require('./api/history');
+var histories = require('./api/history');
 
 /* Keywords routes */
 router.route('/keywords')  

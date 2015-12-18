@@ -44,10 +44,10 @@
     "ember-export-application-global": "^1.0.3",
     "ember-moment": "3.6.2",
     "ember-paper": "0.2.7",
+    "ember-youtube": "oskarrough/ember-youtube#0ea24be77e807f64e1c62ec67d9f7e06c74860a1",
     "emberfire": "1.5.0",
     "express": "~4.13.3",
     "mongoose": "~4.1.3"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

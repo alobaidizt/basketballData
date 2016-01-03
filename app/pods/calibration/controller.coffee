@@ -10,7 +10,7 @@ CalibrationController = Ember.Controller.extend
 
   init: ->
     @_super()
-    @get('recognition').setup()
+    @get('recognition').setupCalibration()
 
   addData: ->
     params =

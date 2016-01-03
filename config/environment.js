@@ -2,8 +2,8 @@
 
 module.exports = function(environment) {
   var ENV = {
-    modulePrefix: 'basketball-data',
-    podModulePrefix: 'basketball-data/pods',
+    modulePrefix: 'insight-sports',
+    podModulePrefix: 'insight-sports/pods',
     environment: environment,
     firebase: 'https://basketballData.firebaseio.com/',
     baseURL: '/',

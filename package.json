@@ -1,5 +1,5 @@
 {
-  "name": "basketball-data",
+  "name": "insight-sports",
   "version": "0.0.0",
   "description": "Small description for testing-system goes here",
   "private": true,
@@ -21,12 +21,12 @@
   "devDependencies": {
     "broccoli-asset-rev": "2.4.1",
     "ember-cli": "1.13.13",
-    "ember-cli-app-version": "1.0.0",
+    "ember-cli-app-version": "0.5.0",
     "ember-cli-babel": "5.1.6",
     "ember-cli-coffeescript": "1.13.2",
     "ember-cli-content-security-policy": "0.4.0",
     "ember-cli-dependency-checker": "1.2.0",
-    "ember-cli-emblem": "0.3.1",
+    "ember-cli-emblem": "0.3.0",
     "ember-cli-htmlbars": "1.0.1",
     "ember-cli-htmlbars-inline-precompile": "0.3.1",
     "ember-cli-ic-ajax": "0.2.4",

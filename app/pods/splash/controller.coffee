@@ -1,9 +1,12 @@
 `import Ember from 'ember'`
 `import moment from 'moment'`
+`import LogicMixin from 'insight-sports/mixins/logic'`
+`import FiltersMixin from 'insight-sports/mixins/filters'`
 
-SplashController = Ember.Controller.extend
+SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
 
   api:              Ember.inject.service()
+  recognition:      Ember.inject.service()
 
   showScript:	      false
   isListening:      false
@@ -14,7 +17,7 @@ SplashController = Ember.Controller.extend
   keywords:         []
   replacements:     []
   linksArray:       []
-  recognition:      undefined
+  _recognition:     undefined
   currentIndex:	    undefined
   lastID:           undefined
   lastID_i:   	    undefined
@@ -25,47 +28,34 @@ SplashController = Ember.Controller.extend
   tsPointer:        null       # Timestamp pointer
   videoUrl:         undefined
   finalResults_i:   undefined
+  ytPlayer:         {}
 
   showTable:        true
 
-  videoUrl_Mod:     Ember.computed 'videoUrl',
-    get: ->
-      @get('videoUrl').replace('watch?v=','embed/')
-    set: (key,value) ->
-      if !value?
-        return
-      value
+  yt_id:     Ember.computed 'videoUrl', ->
+    @youTubeGetID(@get('videoUrl'))
 
   videoIconClass: Ember.computed 'isListening', ->
     if @get('isListening')
       'pause_circle_filled'
     else
       'play_circle_filled'
-  duration: Em.computed 'startTime', 'endTime', ->
-    @get('endTime').diff(@get('startTime'), 'seconds')
-
-  videoController: Em.observer 'isListening', ->
-    #TODO: use youtube-iframe API npm or bower module
-    # Video Controls
-    videoURL = @get('videoUrl').replace('watch?v=','embed/')
-    if @get('isListening')
-      @set 'videoUrl_Mod', videoURL + '?autoplay=true'
-    else
-      @set 'videoUrl_Mod', videoURL
 
   init: ->
     @_super()
-    recognition = new webkitSpeechRecognition()
 
-    recognition.maxAlternatives = 4
-    recognition.continuous      = true
-    recognition.interimResults  = true
+    config =
+      maxAlternatives: 4
+      continuous: true
+      interimResults: true
+
+    rec = @get('recognition').createRecognizer(config)
+    @set('_recognition', rec)
 
     # TODO: add bbActions to the DB
-    bbActions = ['make','miss','grab','pass','lose','shoot','turnover-on','take','foul-by','foul-on','no-basket-for','steal-for','inbound','bounce']
+    bbActions = ['make','miss','grab','pass','lose','shoot','attempt','score','turnover-on','turnover-for','turnover','take','foul-by','foul-on','no-basket-for','steal-for','inbound','bounce','layup']
     
     # TODO: remove this
-
     @get('api').getAllKeywords().then ({keywords}) =>
       keywords.forEach (keyword) =>
         @get('keywords').pushObject(keyword.name)
@@ -73,22 +63,21 @@ SplashController = Ember.Controller.extend
 
     # Adding Speech Grammar
     for word in @get('keywords')
-      recognition.grammars.addFromString(word)
+      @get('_recognition').grammars.addFromString(word)
 
     # Stiching
     # TODO: add stitches to the DB
-    stitches = [['number ','number-'],[' red','-red'],[' blue','-blue'],['turnover on','turnover-on'],['foul by','foul-by'],['foul on','foul-on'],['no basket for','no-basket-for'],['ball to','ball-to'],['ball from','ball-from'],['steal for','steal-for']]
+    stitches = [['number ','number-'],[' red','-red'],[' blue','-blue'],['turnover on','turnover-on'],['turnover for','turnover-for'],['foul by','foul-by'],['foul on','foul-on'],['no basket for','no-basket-for'],['ball to','ball-to'],['ball from','ball-from'],['steal for','steal-for'],['layup for','layup-for'],['rebound for','rebound-for']]
 
 
     @setProperties
-      recognition:    recognition
       bbActions:      bbActions
       stitches:       stitches
       timestamps:     []
       finalResults_i: 0 # used in filter 3
       videoUrl:       "https://www.youtube.com/watch?v=OY3lSTb_DM0"
 
-    recognition.onresult = ((event) =>
+    @get('_recognition').onresult = ((event) =>
       interimText   = ''
       resultArray   = new Array() # local scope
       resultIndex   = event.resultIndex
@@ -98,12 +87,9 @@ SplashController = Ember.Controller.extend
 
       while resultIndex < event.results.length
         if event.results[resultIndex].isFinal
-
           @set 'tsPointer', null # used in recordTS method
-
           for result,i in event.results[resultIndex]
             resultArray[i] = result.transcript
-
         else
           interimText += event.results[resultIndex][0].transcript
         resultIndex++
@@ -113,10 +99,10 @@ SplashController = Ember.Controller.extend
       
       @filter(resultArray)    if Ember.isPresent(resultArray)
     )
-    recognition.onstart = ->
-    recognition.onstop  = ->
-    recognition.onend   = =>
-      @get('recognition').start() if Em.isEqual(@get('isListening'), true)
+    @get('_recognition').onstart = ->
+    @get('_recognition').onstop  = ->
+    @get('_recognition').onend   = =>
+      @get('_recognition').start() if Em.isEqual(@get('isListening'), true)
 
   recordTS: (text) ->
     @secondFilter(text,'timestamp')
@@ -130,223 +116,6 @@ SplashController = Ember.Controller.extend
         @set('tsPointer', i)
         timestamp = moment().format()
         @get('timestamps').push([word,timestamp])
-
-  filter: (results) ->
-    @set('detectedActions', [])
-
-    f1r = @firstFilter(results)
-    f2r = @secondFilter(f1r,'filter')
-    f3r = @thirdFilter(f2r)
-    #f4r = @logic(f3r)
-    #console.log 'players Data: ', @get('playersData')
-    #console.log 'playerIDs: ', @get('playerIDs')
-
-    @get('structuredData').pushObjects(f3r)
-    @setProperties
-      resultString: f1r
-      showResult:   true
-    @set 'timestamps', []
-
-    record =
-      beforeEnhancement: f1r
-      afterEnhancement: @get('afterEnhancement')
-      structuredOutput: @get('structuredOutput')
-
-    @get('api').addHistoryRecord(record).then ->
-      console.log('recorded')
-
-  logic: (structData) ->
-    for arr in structData
-      timestamp = arr[1]
-      playerID = arr[2]
-      if playerID?.indexOf('#') < 0
-        playerID = arr[arr.length - 1]
-      dataOut = arr.slice(2).join()
-
-      if dataOut.indexOf('make') >= 0 && dataOut.indexOf('free-throw') >= 0
-        console.log playerID + " attempted a free throw at " + timestamp
-        console.log playerID + " made a free throw at " + timestamp
-      if dataOut.indexOf('miss') >= 0 && dataOut.indexOf('free-throw') >= 0
-        console.log playerID + " attempted a free throw at " + timestamp
-        console.log playerID + " missed a free throw at " + timestamp
-      if dataOut.indexOf('shoot') >= 0 && dataOut.indexOf(',3') >= 0
-        console.log playerID + " attempted a 3-point shot at " + timestamp
-      if dataOut.indexOf('shoot') >= 0 && dataOut.indexOf(',2') >= 0
-        console.log playerID + " attempted a 2-point shot at " + timestamp
-      if dataOut.indexOf('make') >= 0 && dataOut.indexOf(',3') >= 0
-        console.log playerID + " made a 3-point shot at " + timestamp
-      if dataOut.indexOf('make') >= 0 && dataOut.indexOf(',2') >= 0
-        console.log playerID + " made a 2-point shot at " + timestamp
-      if dataOut.indexOf('foul-by') >= 0 || dataOut.indexOf('foul-on') >= 0
-        fouledPlayerBeginn = dataOut.substring(dataOut.indexOf('foul'))
-        console.log fouledPlayerBeginn
-        fouledPlayerBegin = fouledPlayerBeginn.indexOf('#')
-        console.log fouledPlayerBegin
-        fouledPlayerEnd = dataOut.substring(fouledPlayerBegin).indexOf(',')
-        console.log fouledPlayerEnd
-        if fouledPlayerEnd > -1
-          fouledPlayer = dataOut.substring(fouledPlayerBegin, fouledPlayerEnd)
-          console.log fouledPlayer
-        else
-          fouledPlayer = dataOut.substring(fouledPlayerBegin)
-          console.log fouledPlayer
-        console.log "Foul on " + fouledPlayer + " at " + timestamp
-
-
-  firstFilter: (results) ->
-    # Returns the the best result from the returned results array from the voiceRecognition 
-    # service
-    scores = new Array()
-    for result,i in results
-      for keyword in @get('keywords')
-        regexStr = new RegExp(keyword,"g")
-        count = (result?.toLowerCase().match(regexStr) || []).length
-        if (typeof scores[i] == 'undefined')
-          scores[i] = 0
-        scores[i] += count
-    matchedIndex = scores.indexOf(Math.max.apply(Math,scores))
-    return results[matchedIndex]?.toLowerCase()
-
-  secondFilter: (f1r, purpose) ->
-    for replacement in @get('replacements')
-      for mask in replacement[1]
-        if (f1r.indexOf(mask) > -1)
-          f1r = @replaceAll(mask,replacement[0],f1r)
-
-    for stitch in @get('stitches')
-      if (f1r.indexOf(stitch[0]) > -1)
-        f1r = @replaceAll(stitch[0],stitch[1],f1r)
-
-    # The text after enhancment
-    @set('afterEnhancement', f1r)
-    console.log f1r
-    
-    parsedResults = f1r.split(" ")
-
-    if purpose == 'filter'
-      output = @get('output')
-    else if purpose == 'timestamp'
-      output = @get('outputTS')
-
-    for parsedResult in parsedResults
-      if parsedResult.toString().includes('number')
-        output.push(parsedResult)
-      if parsedResult.toString().includes('1st')
-        output.push(parsedResult)
-      if parsedResult.toString().includes('2nd')
-        output.push(parsedResult)
-      if parsedResult.toString().includes('rebound')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('rebound')
-      if parsedResult.toString().includes('inbound')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('inbound')
-      if parsedResult.toString().includes('bounce')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('bounce')
-      if parsedResult.toString().includes('make')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('make')
-      if parsedResult.toString().includes('assist')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('assist')
-      if parsedResult.toString().includes('take')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('take')
-      if parsedResult.toString().includes('miss')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('miss')
-      if parsedResult.toString().includes('grab')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('grab')
-      if parsedResult.toString().includes('lose')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('lose')
-      if parsedResult.toString().includes('pass')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('pass')
-      if parsedResult.toString().includes('shoot')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('shoot')
-      if parsedResult.toString().includes('turnover-on')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('turnover-on')
-      if parsedResult.toString().includes('free-throw')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('free-throw')
-      if parsedResult.toString().includes('no-basket-for')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('no-basket-for')
-      if parsedResult.toString().includes('foul-by')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('foul-by')
-      if parsedResult.toString().includes('foul-on')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('foul-on')
-      if parsedResult.toString().includes('ball-to')
-        output.push(parsedResult)
-      if parsedResult.toString().includes('ball-from')
-        output.push(parsedResult)
-      if parsedResult.toString().includes('steal-for')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @_addNotification('steal-for')
-      if @isNumber(parsedResult.toString())
-        output.push(parsedResult)
-    return output
-
-  thirdFilter: (f2r) ->
-    #TODO: maybe do this in init?
-    @set('currentIndex', 0)
-
-    finalResults    = new Array()
-    currentIndex    = @get('currentIndex')
-    finalResults_i  = @get('finalResults_i')
-    _frIndex = 0
-
-    while currentIndex < (f2r.length - 1)
-      currentElement = @getNextElement(f2r, currentIndex)
-      if @isID(currentElement)
-        @set('lastID', currentElement)
-        @set('lastID_i', currentIndex)
-        currentIndex++
-        currentElement = @getNextElement(f2r, currentIndex)
-      if @isAction(currentElement)
-        action = currentElement
-        actions = @get('detectedActions')
-        actions.pushObject(currentElement)
-        @set('detectedActions', actions)
-        type = @getActionParamsType(currentElement)
-        actionTS = @getActionTS(currentElement)
-        timeStamp = if actionTS? then actionTS else "-"
-        finalResults[_frIndex] = @getContext(f2r, @get('lastID_i'),currentIndex, type, action)
-        finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timeStamp)
-        if actionTS?
-          timeInSec = moment(actionTS).diff(@startTime, "seconds") - 2
-          @get('linksArray')[finalResults_i] = @get('videoUrl') + "#t=" + timeInSec + "s"
-          console.log "Item #{finalResults_i + 1} ", @get('videoUrl') + timeInSec + "s"
-          @set 'detailedTime', @get('videoUrl') + timeInSec + "s"
-        @incrementProperty('finalResults_i',1)
-        _frIndex++
-      currentIndex++
-      @set('structuredOutput', finalResults)
-    return finalResults
 
   _addNotification: (word) ->
     @notifications.addNotification
@@ -381,9 +150,9 @@ SplashController = Ember.Controller.extend
         return timestamp
 
   getActionParamsType: (element) ->
-    beforeType = ['make','attempt','miss','grab','shoot','take','lose']
-    afterType = ['turnover-on','foul-on','foul-by','no-basket-for','steal-for']
-    bothType = ['pass','rebound','inbound','bounce']
+    beforeType = ['make','attempt','miss','grab','shoot','attempt','score','take','lose','layup','rebound']
+    afterType = ['turnover-on','turnover-for','foul-on','foul-by','no-basket-for','steal-for','layup-for','rebound-for']
+    bothType = ['pass','inbound','bounce']
     if beforeType.indexOf(element) > -1
       return "before"
     else if afterType.indexOf(element) > -1
@@ -391,11 +160,11 @@ SplashController = Ember.Controller.extend
     else if bothType.indexOf(element) > -1
       "both"
 
-  getContext: (arr,ID_i, current_i,type, action) ->
+  getContext: (arr,player_index, current_i,type, action) ->
     context = []
     contextComplete = false
     if type == "before"
-      playerID = arr[ID_i]
+      playerID = arr[player_index]
       context.push(playerID)
       @addActionToPlayer(playerID, action)
       while (!contextComplete)
@@ -425,7 +194,7 @@ SplashController = Ember.Controller.extend
           currentIndex = current_i
           contextComplete = true
     else if (type == "both")
-      playerID = arr[ID_i]
+      playerID = arr[player_index]
       context.push(playerID)
       @addActionToPlayer(playerID, action)
       while (!contextComplete)
@@ -452,17 +221,35 @@ SplashController = Ember.Controller.extend
   isNumber: (n) ->
     return !isNaN(parseFloat(n)) && isFinite(n)
 
+
+  youTubeGetID: (url) ->
+    # @author: takien
+    # @url: http://takien.com
+    ID = ''
+    url = url.replace(/(>|<)/gi,'').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/)
+    if (url[2] != undefined)
+      ID = url[2].split(/[^0-9a-z_\-]/i)
+      ID = ID[0]
+    else
+      ID = url
+
+
   actions:
     startListening: ->
-      recognition = @get('recognition')
+      console.log @get('structuredData')
+      recognition = @get('_recognition')
       status = @get('isListening')
       @toggleProperty('isListening')
 
       if !status
+        console.log window.emberYouTubePlayer.getCurrentTime()
+        window.emberYouTubePlayer.playVideo()
         recognition.start()
         now = moment()
         @set 'startTime', now
       else
+        console.log window.emberYouTubePlayer.getCurrentTime()
+        window.emberYouTubePlayer.pauseVideo()
         recognition.stop()
         now = moment()
         @set 'endTime', now

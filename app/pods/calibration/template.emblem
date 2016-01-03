@@ -1,43 +1,51 @@
-.page-content
+.row
+  .col.s
+    a.btn-floating.btn-med.waves-effect.waves-light.red style="cursor: default; pointer-events: none;" class=isListening:green:red 
+      i.material-icons mic
+    a.btn.btn-med.waves-effect.waves-light.blue click="calibrate"
+      | Calibrate
+  .right
+    a.waves-effect.waves-light.btn.grey-text.text-darken-1.transparent href="https://www.linkedin.com/pub/ziyad-al-obaidi/70/598/540" target="_blank" Developer
 
-  .row
-    .col.s
-      a.btn-floating.btn-med.waves-effect.waves-light.red style="cursor: default; pointer-events: none;" class=isListening:green:red 
-        i.material-icons mic
-      a.btn.btn-med.waves-effect.waves-light.blue click="calibrate"
-        | Calibrate
-    .right
-      a.waves-effect.waves-light.btn.grey-text.text-darken-1.transparent href="https://www.linkedin.com/pub/ziyad-al-obaidi/70/598/540" target="_blank" Developer
-
-  .row
-    if showCalibrationWords
-      .container
-        .row
-          each keywords as |keyword|
-            .col.s3 style="padding-top: 1em;"
-              a.col.s12.btn.btn-med.waves-effect.waves-light.blue onclick={action 'calibrateWord' keyword.name} 
-                | #{keyword.name}
-
-  .divider
-
-  .row
-    .col.s
-      h5.blue-text Data Input
-    form.col.s12
-      .row
-        .input-field.col.s5
-          input#name.white-text type="text" value=keyword
-          label for="keyword" Keyword
-        .input-field.col.s5
-          input#mask.white-text type="text" value=mask
-          label for="mask" Mask
-        .col.s2
-          a.btn.btn-med.waves-effect.waves-light.blue click="addData"
-            | Add
+.row
+  if showCalibrationWords
     .container
+      .row
+        each keywords as |keyword|
+          .col.s3 style="padding-top: 1em;"
+            a.col.s12.btn.btn-med.waves-effect.waves-light.blue onclick={action 'calibrateWord' keyword.name} 
+              | #{keyword.name}
 
-  .c-notification__container
-    each notifications as |notification|
-      notification-message notification=notification
+.divider
+
+.row
+  .col.s
+    h5.blue-text Data Input
+  form.col.s12
+    .row
+      .input-field.col.s5
+        input#name.white-text type="text" value=keyword
+        label for="keyword" Keyword
+      .input-field.col.s5
+        input#mask.white-text type="text" value=mask
+        label for="mask" Mask
+      .col.s2
+        a.btn.btn-med.waves-effect.waves-light.blue click="addData"
+          | Add
+
+.divider
+
+.row
+  .col.s
+    h5.blue-text Config
+  form.col.s12
+    .row
+      .input-field.col.s2
+        input#link-delay.white-text type="text" value=linkDelay
+        label for="link-delay" Video Link Delay
+
+.c-notification__container
+  each notifications as |notification|
+    notification-message notification=notification
 
 = outlet

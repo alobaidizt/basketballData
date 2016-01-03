@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ConfigSchema = new Schema({  
-    actionCaptureDelay: Integer,
+    actionCaptureDelay: String,
     bbDetectableActions: Array,
     stitchesHash: Array
 });

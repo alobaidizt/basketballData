@@ -245,6 +245,27 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
         now = moment()
         @set 'startTime', now
       else
+        data = @get('playersData').sort((a,b) -> b.length - a.length)
+        #debugger
+        startingNode = document.getElementById('report-summary')
+        startingNode.removeChild(startingNode.childNodes[0]) if startingNode.hasChildNodes()
+        table = document.createElement('table')
+        table.setAttribute('class','centered hoverable table-max-height')
+        tableHeader = table.createTHead()
+        tableHeader.insertRow(0)
+        tableHeader.setAttribute('class','red-text')
+        tableBody = document.createElement('tbody')
+        tableBody.setAttribute('class','red-text text-lighten-1 data-table')
+        for playerStats,i in data
+          tableHeader.rows[0].insertCell(i).innerHTML = playerStats[0]
+          while tableBody.rows.length < (playerStats.length - 1)
+            tableBody.insertRow(tableBody.rows.length)
+          for stat,j in playerStats
+            if j != 0
+              tableBody.rows[j - 1].insertCell(i).innerHTML = stat
+        table.appendChild(tableBody)
+        startingNode.appendChild(table)
+
         console.log window.emberYouTubePlayer.getCurrentTime()
         window.emberYouTubePlayer.pauseVideo()
         recognition.stop()

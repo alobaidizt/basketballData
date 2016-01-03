@@ -5,7 +5,7 @@ RecognitionService = Ember.Service.extend
   currentKeyword:   undefined
   api:              Ember.inject.service()
 
-  setup: (properties = {}) ->
+  setupCalibration: (properties = {}) ->
     recognition = new webkitSpeechRecognition()
     for key, val of properties
       recognition[key] = val
@@ -40,5 +40,14 @@ RecognitionService = Ember.Service.extend
     recognition.onend   = ->
       that = window.privateVar
       that.toggleProperty('isListening')
+
+  createRecognizer: (config) ->
+    recognition = new webkitSpeechRecognition()
+
+    for prop,val of config
+      recognition[prop] = val
+    return recognition
+
+
 
 `export default RecognitionService`

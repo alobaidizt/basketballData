@@ -11,23 +11,23 @@
     .right
       a.waves-effect.waves-light.btn.grey-text.text-darken-1.transparent href="https://www.linkedin.com/pub/ziyad-al-obaidi/70/598/540" target="_blank" Developer
   .container
-    iframe src=videoUrl_Mod frameborder="0" style="width: 75vw;height: 75vh;"
+    ember-youtube ytid=yt_id autoplay=false width="100%" height="550vh"
     .row
       .col.s7
         if showTable
           table.centered.hoverable
             thead.teal-text.text-accent-2
               tr
-                th Link 
+                th Link
                 th Item #
                 th TimeStamp
             tbody.teal-text.text-accent-3.data-table
-              each structuredDatum in structuredData
+              each structuredData as |structuredDatum|
                 tr
                   td.action-link onClick={action "grabLink" structuredDatum} Link
-                  each item in structuredDatum
+                  each structuredDatum as |item|
                     td = item
-  .row
+    .row
 
   .c-notification__container
     each notifications as |notification|

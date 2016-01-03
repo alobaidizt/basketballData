@@ -2,8 +2,8 @@
 
 module.exports = function(environment) {
   var ENV = {
-    modulePrefix: 'basketball-data',
-    podModulePrefix: 'basketball-data/pods',
+    modulePrefix: 'insight-sports',
+    podModulePrefix: 'insight-sports/pods',
     environment: environment,
     firebase: 'https://basketballData.firebaseio.com/',
     baseURL: '/',
@@ -23,8 +23,8 @@ module.exports = function(environment) {
       blueprints: true
     },
     contentSecurityPolicy: {
-	  'default-src': "'none'",
-	  'script-src': "'self' 'unsafe-eval' https://cdn.firebase.com/ ",
+	  'default-src': " https://www.youtube.com/ ", // Use 'none' if empty
+	  'script-src': "'self' 'unsafe-eval' https://www.youtube.com/ https://s.ytimg.com/ ",
 	  'font-src': "'self' fonts.gstatic.com",
 	  'connect-src': "'self' http://localhost:3000 http://104.131.117.229:3000 https://104.131.117.229:444 ",
 	  'img-src': "'self' data:",

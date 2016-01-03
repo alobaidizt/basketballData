@@ -10,7 +10,9 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server",
-    "test": "ember test"
+    "test": "ember test",
+    "download-backup": "scp ziyad@104.131.117.229:/home/ziyad/basketballData/dump/webApp.tar.gz $HOME/Downloads/insight-sports-db-backup.tar.gz",
+    "create-backup": "tar -zcvf /home/ziyad/basketballData/dump/webApp.tar.gz /home/ziyad/basketballData/dump/webApp"
   },
   "repository": "",
   "engines": {

@@ -9,7 +9,7 @@ module.exports.addRecord = function(req, res) {
       structuredOutput.push(record["structuredOutput[" + i + "][]"]);
     }
     var history = new History({
-      timestamp:         record.timestamp,
+      timestamp:         parseInt(record.timestamp),
       beforeEnhancement: record.beforeEnhancement,
       afterEnhancement:  record.afterEnhancement,
       structuredOutput:  structuredOutput

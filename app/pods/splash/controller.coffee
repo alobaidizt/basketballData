@@ -114,7 +114,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
     for word,i in f2
       if @isAction(word)
         @set('tsPointer', i)
-        timestamp = moment().format()
+        timestamp = @getVideoCurrentTime()
         @get('timestamps').pushObject([word,timestamp])
 
   _addNotification: (word) ->
@@ -232,6 +232,8 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
     else
       ID = url
 
+  getVideoCurrentTime: ->
+    window.emberYouTubePlayer.getCurrentTime()
 
   actions:
     startListening: ->

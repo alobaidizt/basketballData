@@ -189,7 +189,7 @@ Filters = Ember.Mixin.create
         finalResults[_frIndex] = @getContext(f2r, @get('lastID'),currentIndex, type, action)
         finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timeStamp)
         if actionTS?
-          timeInSec = moment(actionTS).diff(@startTime, "seconds") - 2
+          timeInSec = actionTS - 2
           @get('linksArray')[finalResults_i] = @get('videoUrl') + "#t=" + timeInSec + "s"
           console.log "Item #{finalResults_i + 1} ", @get('videoUrl') + timeInSec + "s"
           @set 'detailedTime', @get('videoUrl') + timeInSec + "s"

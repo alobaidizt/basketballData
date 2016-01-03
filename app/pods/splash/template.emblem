@@ -13,21 +13,21 @@
   .container
     ember-youtube ytid=yt_id autoplay=false width="100%" height="550vh"
     .row
-      .col.s7
-        if showTable
-          table.centered.hoverable
-            thead.teal-text.text-accent-2
+      if showTable
+        table.centered.hoverable.table-max-height
+          thead.teal-text.text-accent-2
+            tr
+              th Link
+              th Item #
+              th TimeStamp
+          tbody.teal-text.text-accent-3.data-table
+            each structuredData as |structuredDatum|
               tr
-                th Link
-                th Item #
-                th TimeStamp
-            tbody.teal-text.text-accent-3.data-table
-              each structuredData as |structuredDatum|
-                tr
-                  td.action-link onClick={action "grabLink" structuredDatum} Link
-                  each structuredDatum as |item|
-                    td = item
+                td.action-link onClick={action "grabLink" structuredDatum} Link
+                each structuredDatum as |item|
+                  td = item
     .row
+      #report-summary
 
   .c-notification__container
     each notifications as |notification|

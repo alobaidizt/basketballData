@@ -11,9 +11,7 @@ Filters = Ember.Mixin.create
     #f4r = @getText(f3r)
     #console.log 'players Data: ', @get('playersData')
     #console.log 'playerIDs: ', @get('playerIDs')
-    vall = @get('structuredData').pushObjects(f3r)
-    @set('structuredData', vall.toArray())
-    @set('structuredDataaa', vall.toArray())
+    @get('structuredData').pushObjects(f3r)
     @setProperties
       resultString: f1r
       showResult:   true
@@ -54,7 +52,6 @@ Filters = Ember.Mixin.create
 
     # The text after enhancment
     @set('afterEnhancement', f1r)
-    console.log f1r
     
     parsedResults = f1r.split(" ")
 
@@ -116,10 +113,10 @@ Filters = Ember.Mixin.create
           @_addNotification('pass')
       if parsedResult.toString().includes('shoot')
         parsedResults.splice(i,1,'attempt') # find a way to put this before shoot
-        output.push(parsedResult)
+        output.push(parsedResult,'attempt')
         if purpose == 'filter'
-          @_addNotification('attempt')
           @_addNotification('shoot')
+          @_addNotification('attempt')
       if parsedResult.toString().includes('score')
         output.push(parsedResult)
         if purpose == 'filter'
@@ -128,10 +125,14 @@ Filters = Ember.Mixin.create
         output.push(parsedResult)
         if purpose == 'filter'
           @_addNotification('turnover-on')
-      if parsedResult.toString().includes('turnover-for')
+      else if parsedResult.toString().includes('turnover-for')
         output.push(parsedResult)
         if purpose == 'filter'
           @_addNotification('turnover-for')
+      else if parsedResult.toString().includes('turnover')
+        output.push(parsedResult)
+        if purpose == 'filter'
+          @_addNotification('turnover')
       if parsedResult.toString().includes('free-throw')
         output.push(parsedResult)
         if purpose == 'filter'
@@ -171,14 +172,12 @@ Filters = Ember.Mixin.create
     finalResults    = new Array()
     currentIndex    = @get('currentIndex')
     finalResults_i  = @get('finalResults_i')
-    console.log finalResults_i
     _frIndex = 0
 
-    while currentIndex < (f2r.length - 1)
+    while currentIndex <= (f2r.length - 1)
       currentElement = @getNextElement(f2r, currentIndex)
       if @isID(currentElement)
         @set('lastID', currentElement)
-        @set('lastID_i', currentIndex)
         currentIndex++
         currentElement = @getNextElement(f2r, currentIndex)
       if @isAction(currentElement)
@@ -187,7 +186,7 @@ Filters = Ember.Mixin.create
         type = @getActionParamsType(currentElement)
         actionTS = @getActionTS(currentElement)
         timeStamp = if actionTS? then actionTS else "-"
-        finalResults[_frIndex] = @getContext(f2r, @get('lastID_i'),currentIndex, type, action)
+        finalResults[_frIndex] = @getContext(f2r, @get('lastID'),currentIndex, type, action)
         finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timeStamp)
         if actionTS?
           timeInSec = moment(actionTS).diff(@startTime, "seconds") - 2

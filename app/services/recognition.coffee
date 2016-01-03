@@ -45,7 +45,7 @@ RecognitionService = Ember.Service.extend
     recognition = new webkitSpeechRecognition()
 
     for prop,val of config
-      recognition.prop = val
+      recognition[prop] = val
     return recognition
 
 

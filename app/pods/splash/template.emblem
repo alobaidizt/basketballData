@@ -18,16 +18,16 @@
           table.centered.hoverable
             thead.teal-text.text-accent-2
               tr
-                /*th Link*/
+                th Link
                 th Item #
                 th TimeStamp
             tbody.teal-text.text-accent-3.data-table
-            each structuredDatum in structuredData
-              tr
-                /*td.action-link onClick={action "grabLink" structuredDatum} Link*/
-                each item in structuredDatum
-                  td = item
-  .row
+              each structuredData as |structuredDatum|
+                tr
+                  td.action-link onClick={action "grabLink" structuredDatum} Link
+                  each structuredDatum as |item|
+                    td = item
+    .row
 
   .c-notification__container
     each notifications as |notification|

@@ -17,6 +17,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
   keywords:         []
   replacements:     []
   linksArray:       []
+  timestamps:     []
   _recognition:     undefined
   currentIndex:	    undefined
   lastID:           undefined
@@ -73,7 +74,6 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
     @setProperties
       bbActions:      bbActions
       stitches:       stitches
-      timestamps:     []
       finalResults_i: 0 # used in filter 3
       videoUrl:       "https://www.youtube.com/watch?v=OY3lSTb_DM0"
 
@@ -115,7 +115,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
       if @isAction(word)
         @set('tsPointer', i)
         timestamp = moment().format()
-        @get('timestamps').push([word,timestamp])
+        @get('timestamps').pushObject([word,timestamp])
 
   _addNotification: (word) ->
     @notifications.addNotification
@@ -150,7 +150,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
         return timestamp
 
   getActionParamsType: (element) ->
-    beforeType = ['make','attempt','miss','grab','shoot','attempt','score','take','lose','layup','rebound']
+    beforeType = ['make','attempt','miss','grab','shoot','attempt','score','take','lose','layup','rebound','turnover']
     afterType = ['turnover-on','turnover-for','foul-on','foul-by','no-basket-for','steal-for','layup-for','rebound-for']
     bothType = ['pass','inbound','bounce']
     if beforeType.indexOf(element) > -1
@@ -160,13 +160,12 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
     else if bothType.indexOf(element) > -1
       "both"
 
-  getContext: (arr,player_index, current_i,type, action) ->
+  getContext: (arr,lastPlayer, current_i,type, action) ->
     context = []
     contextComplete = false
     if type == "before"
-      playerID = arr[player_index]
-      context.push(playerID)
-      @addActionToPlayer(playerID, action)
+      context.push(lastPlayer)
+      @addActionToPlayer(lastPlayer, action)
       while (!contextComplete)
         context.push(arr[current_i++])
         if typeof (arr[current_i]) == 'undefined'
@@ -187,16 +186,15 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
           playerID = arr[current_i]
           context.push(playerID)
           @addActionToPlayer(playerID, action)
-          @set('lastID_i', current_i)
+          @set('lastID', playerID)
           currentIndex = current_i
           contextComplete = true
         else if (@isAction(arr[current_i]))
           currentIndex = current_i
           contextComplete = true
     else if (type == "both")
-      playerID = arr[player_index]
-      context.push(playerID)
-      @addActionToPlayer(playerID, action)
+      context.push(lastPlayer)
+      @addActionToPlayer(lastPlayer, action)
       while (!contextComplete)
         context.push(arr[current_i++])
         if (typeof (arr[current_i]) == 'undefined')
@@ -204,8 +202,9 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
           contextComplete = true
           break
         if (@isID(arr[current_i]))
-          context.push(arr[current_i])
-          @set('lastID_i', current_i)
+          playerID = arr[current_i]
+          context.push(playerID)
+          @set('lastID', playerID)
           currentIndex = current_i
           contextComplete = true
     return context
@@ -236,13 +235,11 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
 
   actions:
     startListening: ->
-      console.log @get('structuredData')
       recognition = @get('_recognition')
       status = @get('isListening')
       @toggleProperty('isListening')
 
       if !status
-        console.log window.emberYouTubePlayer.getCurrentTime()
         window.emberYouTubePlayer.playVideo()
         recognition.start()
         now = moment()

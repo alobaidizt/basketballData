@@ -74,42 +74,54 @@ Filters = Ember.Mixin.create
       else if parsedResult.toString().includes('rebound-for')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('rebound-for')
       if parsedResult.toString().includes('inbound')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('inbound')
       if parsedResult.toString().includes('bounce')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('bounce')
       if parsedResult.toString().includes('make')
-        output.push(parsedResult)
         if purpose == 'filter'
+          if Em.isEqual(@get('lastAction'), 'pass')
+            output.push('assist')
+            @_addNotification('assist')
           @_addNotification('make')
+        output.push(parsedResult)
       if parsedResult.toString().includes('assist')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('assist')
       if parsedResult.toString().includes('take')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('take')
       if parsedResult.toString().includes('miss')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('miss')
       if parsedResult.toString().includes('grab')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('grab')
       if parsedResult.toString().includes('lose')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('lose')
       if parsedResult.toString().includes('pass')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('pass')
       if parsedResult.toString().includes('shoot')
         parsedResults.splice(i,1,'attempt') # find a way to put this before shoot
@@ -118,40 +130,53 @@ Filters = Ember.Mixin.create
           @_addNotification('shoot')
           @_addNotification('attempt')
       if parsedResult.toString().includes('score')
-        output.push(parsedResult)
         if purpose == 'filter'
+          if Em.isEqual(@get('lastAction'), 'pass')
+            output.push('assist')
+            @_addNotification('assist')
           @_addNotification('score')
+        output.push(parsedResult)
       if parsedResult.toString().includes('turnover-on')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('turnover-on')
       else if parsedResult.toString().includes('turnover-for')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('turnover-for')
       else if parsedResult.toString().includes('turnover')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('turnover')
       if parsedResult.toString().includes('free-throw')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('free-throw')
       if parsedResult.toString().includes('no-basket-for')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('no-basket-for')
       if parsedResult.toString().includes('foul-by')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('foul-by')
       if parsedResult.toString().includes('layup')
-        output.push(parsedResult)
         if purpose == 'filter'
+          if Em.isEqual(@get('lastAction'), 'pass')
+            output.push('assist')
+            @_addNotification('assist')
           @_addNotification('layup')
+        output.push(parsedResult)
       if parsedResult.toString().includes('foul-on')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('foul-on')
       if parsedResult.toString().includes('ball-to')
         output.push(parsedResult)
@@ -160,6 +185,7 @@ Filters = Ember.Mixin.create
       if parsedResult.toString().includes('steal-for')
         output.push(parsedResult)
         if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
           @_addNotification('steal-for')
       if @isNumber(parsedResult.toString())
         output.push(parsedResult)
@@ -187,6 +213,7 @@ Filters = Ember.Mixin.create
         actionTS = @getActionTS(currentElement)
         timeStamp = if actionTS? then actionTS else "-"
         finalResults[_frIndex] = @getContext(f2r, @get('lastID'),currentIndex, type, action)
+        @_addNotification(finalResults[_frIndex])
         finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timeStamp)
         if actionTS?
           timeInSec = actionTS - 2

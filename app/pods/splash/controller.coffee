@@ -169,7 +169,8 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
         @addActionToPlayer(@get('assistingPlayer'), action)
       else
         context.push(lastPlayer)
-        @addActionToPlayer(lastPlayer, action)
+        @set('currentSubject', lastPlayer)
+        @addActionToPlayer(lastPlayer, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
       while (!contextComplete)
         context.push(arr[current_i++])
         if typeof (arr[current_i]) == 'undefined'
@@ -189,7 +190,8 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
         if (@isID(arr[current_i]))
           playerID = arr[current_i]
           context.push(playerID)
-          @addActionToPlayer(playerID, action)
+          @set('currentSubject', playerID)
+          @addActionToPlayer(playerID, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
           @set('lastID', playerID)
           currentIndex = current_i
           contextComplete = true
@@ -198,8 +200,9 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
           contextComplete = true
     else if (type == "both")
       context.push(lastPlayer)
+      @set('currentSubject', lastPlayer)
       @set('assistingPlayer', lastPlayer) if Em.isEqual(action,'pass')
-      @addActionToPlayer(lastPlayer, action)
+      @addActionToPlayer(lastPlayer, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
       while (!contextComplete)
         context.push(arr[current_i++])
         if (typeof (arr[current_i]) == 'undefined')
@@ -218,6 +221,10 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
     for id,i in @get('playerIDs')
       if Em.isEqual(id,playerID)
         @get('playersData')[i].push(action)
+
+  possibleDuplicateAction: (currentSubject, action) ->
+    return true if Em.isEqual(@get('previousSubject'), currentSubject) && Em.isEqual(action, @get('previousAction'))
+    false
 
   replaceAll: (find, replace, str) ->
     return str.replace(new RegExp(find, 'g'), replace)

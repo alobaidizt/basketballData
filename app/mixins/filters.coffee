@@ -186,9 +186,20 @@ Filters = Ember.Mixin.create
         type = @getActionParamsType(currentElement)
         actionTS = @getActionTS(currentElement)
         timeStamp = if actionTS? then actionTS else "-"
-        finalResults[_frIndex] = @getContext(f2r, @get('lastID'),currentIndex, type, action)
-        @_addNotification(finalResults[_frIndex])
-        finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timeStamp)
+        context = @getContext(f2r, @get('lastID'),currentIndex, type, action)
+        @set('notificationMessage',context)
+        finalResults[_frIndex] = context
+        if @possibleDuplicateAction(@get('currentSubject'), action)
+          finalResults.splice(_frIndex,1) # remove last entry
+          @_addNotification('Ignored a duplicate action')
+          _frIndex--
+        else
+          @_addNotification(@get('notificationMessage'))
+          finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timeStamp)
+        @setProperties
+          previousAction:   action
+          previousSubject:  @get('currentSubject')
+
         if actionTS?
           timeInSec = actionTS - 2
           @get('linksArray')[finalResults_i] = @get('videoUrl') + "#t=" + timeInSec + "s"

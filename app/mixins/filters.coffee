@@ -70,89 +70,89 @@ Filters = Ember.Mixin.create
       if parsedResult.toString().includes('rebound')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('rebound')
+          @set('lastAction', parsedResult.toString())
       else if parsedResult.toString().includes('rebound-for')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('rebound-for')
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('inbound')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('inbound')
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('bounce')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('bounce')
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('make')
-        output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('make')
+          if Em.isEqual(@get('lastAction'), 'pass')
+            output.push('assist')
+        output.push(parsedResult)
       if parsedResult.toString().includes('assist')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('assist')
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('take')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('take')
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('miss')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('miss')
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('grab')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('grab')
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('lose')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('lose')
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('pass')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('pass')
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('shoot')
         parsedResults.splice(i,1,'attempt') # find a way to put this before shoot
         output.push(parsedResult,'attempt')
-        if purpose == 'filter'
-          @_addNotification('shoot')
-          @_addNotification('attempt')
       if parsedResult.toString().includes('score')
-        output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('score')
+          if Em.isEqual(@get('lastAction'), 'pass')
+            output.push('assist')
+        output.push(parsedResult)
       if parsedResult.toString().includes('turnover-on')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('turnover-on')
+          @set('lastAction', parsedResult.toString())
       else if parsedResult.toString().includes('turnover-for')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('turnover-for')
+          @set('lastAction', parsedResult.toString())
       else if parsedResult.toString().includes('turnover')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('turnover')
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('free-throw')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('free-throw')
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('no-basket-for')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('no-basket-for')
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('foul-by')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('foul-by')
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('layup')
-        output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('layup')
+          if Em.isEqual(@get('lastAction'), 'pass')
+            output.push('assist')
+        output.push(parsedResult)
       if parsedResult.toString().includes('foul-on')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('foul-on')
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('ball-to')
         output.push(parsedResult)
       if parsedResult.toString().includes('ball-from')
@@ -160,7 +160,7 @@ Filters = Ember.Mixin.create
       if parsedResult.toString().includes('steal-for')
         output.push(parsedResult)
         if purpose == 'filter'
-          @_addNotification('steal-for')
+          @set('lastAction', parsedResult.toString())
       if @isNumber(parsedResult.toString())
         output.push(parsedResult)
     return output
@@ -186,8 +186,20 @@ Filters = Ember.Mixin.create
         type = @getActionParamsType(currentElement)
         actionTS = @getActionTS(currentElement)
         timeStamp = if actionTS? then actionTS else "-"
-        finalResults[_frIndex] = @getContext(f2r, @get('lastID'),currentIndex, type, action)
-        finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timeStamp)
+        context = @getContext(f2r, @get('lastID'),currentIndex, type, action)
+        @set('notificationMessage',context)
+        finalResults[_frIndex] = context
+        if @possibleDuplicateAction(@get('currentSubject'), action)
+          finalResults.splice(_frIndex,1) # remove last entry
+          @_addNotification('Ignored a duplicate action')
+          _frIndex--
+        else
+          @_addNotification(@get('notificationMessage'))
+          finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timeStamp)
+        @setProperties
+          previousAction:   action
+          previousSubject:  @get('currentSubject')
+
         if actionTS?
           timeInSec = actionTS - 2
           @get('linksArray')[finalResults_i] = @get('videoUrl') + "#t=" + timeInSec + "s"

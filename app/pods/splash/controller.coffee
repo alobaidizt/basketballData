@@ -17,11 +17,12 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
   keywords:         []
   replacements:     []
   linksArray:       []
-  timestamps:     []
+  timestamps:       []
   _recognition:     undefined
   currentIndex:	    undefined
   lastID:           undefined
   lastID_i:   	    undefined
+  lastAction:       undefined
   currentElement:   undefined
   structuredData:   []
   startTime:        undefined
@@ -54,7 +55,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
     @set('_recognition', rec)
 
     # TODO: add bbActions to the DB
-    bbActions = ['make','miss','grab','pass','lose','shoot','attempt','score','turnover-on','turnover-for','turnover','take','foul-by','foul-on','no-basket-for','steal-for','inbound','bounce','layup']
+    bbActions = ['make','miss','grab','pass','lose','shoot','attempt','score','turnover-on','turnover-for','turnover','take','foul-by','foul-on','no-basket-for','steal-for','inbound','bounce','layup','rebound','assist']
     
     # TODO: remove this
     @get('api').getAllKeywords().then ({keywords}) =>
@@ -150,7 +151,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
         return timestamp
 
   getActionParamsType: (element) ->
-    beforeType = ['make','attempt','miss','grab','shoot','attempt','score','take','lose','layup','rebound','turnover']
+    beforeType = ['make','attempt','miss','grab','shoot','attempt','score','take','lose','layup','rebound','turnover','assist']
     afterType = ['turnover-on','turnover-for','foul-on','foul-by','no-basket-for','steal-for','layup-for','rebound-for']
     bothType = ['pass','inbound','bounce']
     if beforeType.indexOf(element) > -1
@@ -164,8 +165,12 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
     context = []
     contextComplete = false
     if type == "before"
-      context.push(lastPlayer)
-      @addActionToPlayer(lastPlayer, action)
+      if Em.isEqual(action,'assist') && Em.isEqual(@get('lastAction'),'pass')
+        @addActionToPlayer(@get('assistingPlayer'), action)
+      else
+        context.push(lastPlayer)
+        @set('currentSubject', lastPlayer)
+        @addActionToPlayer(lastPlayer, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
       while (!contextComplete)
         context.push(arr[current_i++])
         if typeof (arr[current_i]) == 'undefined'
@@ -185,7 +190,8 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
         if (@isID(arr[current_i]))
           playerID = arr[current_i]
           context.push(playerID)
-          @addActionToPlayer(playerID, action)
+          @set('currentSubject', playerID)
+          @addActionToPlayer(playerID, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
           @set('lastID', playerID)
           currentIndex = current_i
           contextComplete = true
@@ -194,7 +200,9 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
           contextComplete = true
     else if (type == "both")
       context.push(lastPlayer)
-      @addActionToPlayer(lastPlayer, action)
+      @set('currentSubject', lastPlayer)
+      @set('assistingPlayer', lastPlayer) if Em.isEqual(action,'pass')
+      @addActionToPlayer(lastPlayer, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
       while (!contextComplete)
         context.push(arr[current_i++])
         if (typeof (arr[current_i]) == 'undefined')
@@ -213,6 +221,10 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
     for id,i in @get('playerIDs')
       if Em.isEqual(id,playerID)
         @get('playersData')[i].push(action)
+
+  possibleDuplicateAction: (currentSubject, action) ->
+    return true if Em.isEqual(@get('previousSubject'), currentSubject) && Em.isEqual(action, @get('previousAction'))
+    false
 
   replaceAll: (find, replace, str) ->
     return str.replace(new RegExp(find, 'g'), replace)

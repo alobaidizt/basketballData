@@ -75,6 +75,10 @@ Filters = Ember.Mixin.create
         output.push(parsedResult)
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
+      else if parsedResult.toString().includes('rebound-by')
+        output.push(parsedResult)
+        if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('inbound')
         output.push(parsedResult)
         if purpose == 'filter'
@@ -150,6 +154,10 @@ Filters = Ember.Mixin.create
             output.push('assist')
         output.push(parsedResult)
       if parsedResult.toString().includes('foul-on')
+        output.push(parsedResult)
+        if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
+      if parsedResult.toString().includes('foul')
         output.push(parsedResult)
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())

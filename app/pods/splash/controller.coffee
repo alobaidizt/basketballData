@@ -14,7 +14,6 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
   detectedActions:  []
   playerIDs:        []
   playersData:      []
-  keywords:         []
   replacements:     []
   linksArray:       []
   timestamps:       []
@@ -31,6 +30,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
   videoUrl:         undefined
   finalResults_i:   undefined
   ytPlayer:         {}
+  keywords:         []
 
   showTable:        true
 
@@ -55,21 +55,29 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
     @set('_recognition', rec)
 
     # TODO: add bbActions to the DB
-    bbActions = ['make','miss','grab','pass','lose','shoot','attempt','score','turnover-on','turnover-for','turnover','take','foul-by','foul-on','no-basket-for','steal-for','inbound','bounce','layup','rebound','assist']
+    bbActions = ['make','miss','grab','pass','lose','shoot','attempt','score','turnover-on','turnover-for','turnover','take','foul-by','foul-on','foul','no-basket-for','steal-for','inbound','bounce','layup','rebound','rebound-by','rebound-for','assist']
+
+    others = ['rebound-for','rebound-by','turnover-on','turnover-for','no-basket-for','foul-by','foul-on','ball-to','ball-from','steal-for']
     
     # TODO: remove this
-    @get('api').getAllKeywords().then ({keywords}) =>
-      keywords.forEach (keyword) =>
-        @get('keywords').pushObject(keyword.name)
-        @get('replacements').pushObject([keyword.name,keyword.masks])
+    @get('api').getAllKeywords()
+      .then ({keywords}) =>
+        keywords.forEach (keyword,i) =>
+          @get('keywords').pushObject(keyword.name)
+          @get('replacements').pushObject([keyword.name,keyword.masks])
+      .then =>
+        grammerVocab = @get('keywords').concat(others)
+        
+        # Adding Speech Grammar
+        # This is not done, do more research
+        for word in grammerVocab
+          @get('_recognition').grammars.addFromString(word)
 
-    # Adding Speech Grammar
-    for word in @get('keywords')
-      @get('_recognition').grammars.addFromString(word)
+    console.log @get('_recognition')
 
     # Stiching
     # TODO: add stitches to the DB
-    stitches = [['number ','number-'],[' red','-red'],[' blue','-blue'],['turnover on','turnover-on'],['turnover for','turnover-for'],['foul by','foul-by'],['foul on','foul-on'],['no basket for','no-basket-for'],['ball to','ball-to'],['ball from','ball-from'],['steal for','steal-for'],['layup for','layup-for'],['rebound for','rebound-for']]
+    stitches = [['number ','number-'],[' red','-red'],[' blue','-blue'],['turnover on','turnover-on'],['turnover for','turnover-for'],['foul by','foul-by'],['foul on','foul-on'],['no basket for','no-basket-for'],['ball to','ball-to'],['ball from','ball-from'],['steal for','steal-for'],['layup for','layup-for'],['rebound for','rebound-for'],['rebound by','rebound-by']]
 
 
     @setProperties
@@ -151,8 +159,8 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
         return timestamp
 
   getActionParamsType: (element) ->
-    beforeType = ['make','attempt','miss','grab','shoot','attempt','score','take','lose','layup','rebound','turnover','assist']
-    afterType = ['turnover-on','turnover-for','foul-on','foul-by','no-basket-for','steal-for','layup-for','rebound-for']
+    beforeType = ['make','attempt','miss','grab','shoot','attempt','score','take','lose','layup','rebound','turnover','assist','foul']
+    afterType = ['turnover-on','turnover-for','foul-on','foul-by','no-basket-for','steal-for','layup-for','rebound-for','rebound-by']
     bothType = ['pass','inbound','bounce']
     if beforeType.indexOf(element) > -1
       return "before"
@@ -223,6 +231,9 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
         @get('playersData')[i].push(action)
 
   possibleDuplicateAction: (currentSubject, action) ->
+    if Em.isEqual(action,'make')
+      return false
+
     return true if Em.isEqual(@get('previousSubject'), currentSubject) && Em.isEqual(action, @get('previousAction'))
     false
 

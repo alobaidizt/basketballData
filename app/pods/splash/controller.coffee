@@ -47,11 +47,13 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
     @_super()
 
     config =
-      maxAlternatives: 4
-      continuous: true
-      interimResults: true
+      maxAlternatives:   4
+      continuous:        true
+      interimResults:    true
+      lang:              'en-US'
 
     rec = @get('recognition').createRecognizer(config)
+    @get('recognition').bindEvent(rec,'onresult',Em.run.bind(this, @_onResult))
     @set('_recognition', rec)
 
     # TODO: add bbActions to the DB
@@ -70,8 +72,8 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
         
         # Adding Speech Grammar
         # This is not done, do more research
-        for word in grammerVocab
-          @get('_recognition').grammars.addFromString(word)
+        #for word in grammerVocab
+          #@get('_recognition').grammars.addFromString(word)
 
     console.log @get('_recognition')
 
@@ -86,32 +88,37 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
       finalResults_i: 0 # used in filter 3
       videoUrl:       "https://www.youtube.com/watch?v=OY3lSTb_DM0"
 
-    @get('_recognition').onresult = ((event) =>
-      interimText   = ''
-      resultArray   = new Array() # local scope
-      resultIndex   = event.resultIndex
-      @setProperties
-        output:       []
-        outputTS:     []
 
-      while resultIndex < event.results.length
-        if event.results[resultIndex].isFinal
-          @set 'tsPointer', null # used in recordTS method
-          for result,i in event.results[resultIndex]
-            resultArray[i] = result.transcript
-        else
-          interimText += event.results[resultIndex][0].transcript
-        resultIndex++
+  _onResult: (event) ->
+    interimText   = ''
+    resultArray   = new Array() # local scope
+    resultIndex   = event.resultIndex
+    @setProperties
+      output:       []
+      outputTS:     []
 
-      @recordTS(interimText)  if Ember.isPresent(interimText)  # Record Timestamps using interim string
+    while resultIndex < event.results.length
+      if event.results[resultIndex].isFinal
+        @set('isIdle', true)
+        setTimeout((() =>
+          console.log 'is idle: ', @get('isIdle')
+          if @get('isIdle')
+            @get('_recognition').stop()
+            @get('_recognition').start()
+        ) , 2000)
+        @set 'tsPointer', null # used in recordTS method
+        for result,i in event.results[resultIndex]
+          resultArray[i] = result.transcript
+      else
+        @set('isIdle', false)
+        interimText += event.results[resultIndex][0].transcript
+        console.log interimText
+      resultIndex++
 
-      
-      @filter(resultArray)    if Ember.isPresent(resultArray)
-    )
-    @get('_recognition').onstart = ->
-    @get('_recognition').onstop  = ->
-    @get('_recognition').onend   = =>
-      @get('_recognition').start() if Em.isEqual(@get('isListening'), true)
+    @recordTS(interimText)  if Ember.isPresent(interimText)  # Record Timestamps using interim string
+
+    
+    @filter(resultArray)    if Ember.isPresent(resultArray)
 
   recordTS: (text) ->
     @secondFilter(text,'timestamp')
@@ -126,12 +133,12 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
         timestamp = @getVideoCurrentTime()
         @get('timestamps').pushObject([word,timestamp])
 
-  _addNotification: (word) ->
+  _addNotification: (word, duration = 750) ->
     @notifications.addNotification
       message: "#{word}"
       type: 'info'
       autoClear: true
-      clearDuration: 750
+      clearDuration: duration
 
   getNextElement: (elements, i) ->
     elements[i]
@@ -260,13 +267,16 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
 
   actions:
     startListening: ->
+      if Em.isEmpty(@get('sessionId'))
+        @_addNotification("Must enter a session name first", 3000)
+        return false
       recognition = @get('_recognition')
       status = @get('isListening')
       @toggleProperty('isListening')
 
       if !status
         window.emberYouTubePlayer.playVideo()
-        recognition.start()
+        @get('_recognition').start()
         now = moment()
         @set 'startTime', now
       else

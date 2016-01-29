@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var ConfigSchema = new Schema({  
     actionCaptureDelay: String,
-    bbDetectableActions: Array,
+    detectableActions: Array,
     stitchesHash: Array
 });
 

@@ -6,8 +6,12 @@
       a.btn-floating.btn-med.waves-effect.waves-light.red class=isListening:green:red click="startListening"
         i.material-icons = videoIconClass
       a.btn.btn-med.waves-effect.waves-light.red click="goToCalibrate" Control
-    .mid.col.s5
-      = input value=videoUrl class="white-text"
+    .input-field.col.s4
+      = input id="videoUrl" type="text" class="validate white-text" value=videoUrl
+      label for="videoUrl" Video URL
+    .input-field.col.s3
+      = input id="sessionId" type="text" class="validate white-text" value=sessionId
+      label for="sessionId" session Name
     .right
       a.waves-effect.waves-light.btn.grey-text.text-darken-1.transparent href="https://www.linkedin.com/pub/ziyad-al-obaidi/70/598/540" target="_blank" Developer
   .container

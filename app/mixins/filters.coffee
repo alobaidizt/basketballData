@@ -18,6 +18,7 @@ Filters = Ember.Mixin.create
     @set 'timestamps', []
 
     record =
+      sessionId:          @get('sessionId')
       timestamp:          moment().unix()
       beforeEnhancement:  f1r
       afterEnhancement:   @get('afterEnhancement')

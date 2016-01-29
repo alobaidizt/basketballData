@@ -27,11 +27,18 @@ router.route('/histories')
     .get(function(req,res) { histories.getHistoryRecords(req,res); });
 
 /* Config routes */
+router.route('/config')  
+    .delete(function(req, res) { configs.deleteConfigs(req, res); });
 router.route('/config/delay')  
-    .post(function(req,res) { configs.updateDelay(req,res); });
+    .get(function(req,res) { configs.getDelay(req,res); })
+    .put(function(req,res) { configs.updateDelay(req,res); });
 router.route('/config/stitch')  
-    .post(function(req,res) { configs.updateStitches(req,res); });
+    .get(function(req,res) { configs.getStitches(req,res); })
+    .put(function(req,res) { configs.updateStitches(req,res); })
+    .delete(function(req, res) { configs.deleteStitches(req, res); });
 router.route('/config/action')  
-    .post(function(req,res) { configs.updateActions(req,res); });
+    .get(function(req,res) { configs.getActions(req,res); })
+    .put(function(req,res) { configs.updateActions(req,res); })
+    .delete(function(req, res) { configs.deleteActions(req, res); });
 
 module.exports = router;  

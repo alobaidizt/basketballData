@@ -26,6 +26,10 @@ router.route('/histories')
     .post(function(req,res) { histories.addRecord(req,res); })
     .get(function(req,res) { histories.getHistoryRecords(req,res); });
 
+router.route('/histories/:session_id')  
+    .get(function(req, res) { histories.getHistoryBySession(req, res, req.params.session_id); })
+    .delete(function(req, res) { histories.deleteSessionHistory(req, res, req.params.session_id); });
+
 /* Config routes */
 router.route('/config')  
     .delete(function(req, res) { configs.deleteConfigs(req, res); });

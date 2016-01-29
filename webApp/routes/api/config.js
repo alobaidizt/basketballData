@@ -30,14 +30,33 @@ module.exports.updateStitches = function(req, res) {
 };
 
 module.exports.updateActions = function(req, res) {  
-    var action = req.body.action;
+  var action = req.body.action;
 
+  Config.find(function(err, config) {
+    var isFound = false;
+    if (err) {
+        res.send(err);
+    }
+    var actions = config.detectableActions;
+    for(var i = 0; i < actions.length; i++) {
+      if (actions[i] === action) {
+        isFound = true;
+      }
+    }
+
+    if (isFound || (action === "")) {
+      res.json(404, {info: "word already exist"});
+      req.abort();
+    } else {
     Config.update(
         {}, 
         {
           $addToSet: {
-          bbDetectableActions: action
+          detectableActions: action
           }
-        }
+        },
+        { upsert: true }
     );
+    }
+  });
 };

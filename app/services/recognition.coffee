@@ -51,14 +51,15 @@ RecognitionService = Ember.Service.extend
     recognition.onaudioend = ( ->
       console.log('audio ended'))
 
-    recognition.onend = ( =>
+    recognition.onend = () =>
       console.log('recognition ended')
-      @get('_recognition').start() if Em.isEqual(@get('isListening'), true))
+      console.log @get('isListening')
+      recognition.start() if Em.isEqual(@get('isListening'), true)
 
     recognition.onerror = ((event) ->
       console.log('recognition errored')
       console.log 'error: ', event.error
-      console.log 'event object: ', event.error)
+      console.log 'event object: ', event)
 
     recognition.onspeechstart = (() ->
       console.log('speech started'))
@@ -74,7 +75,6 @@ RecognitionService = Ember.Service.extend
 
   createRecognizer: (config) ->
     recognition = new webkitSpeechRecognition()
-    window.privateVar = this
     console.log('recognition about to start')
 
     for prop,val of config

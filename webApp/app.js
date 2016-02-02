@@ -18,6 +18,7 @@ var credentials = {key: privateKey, cert: certificate};
 var app = express();
 http.createServer(app).listen(3000);
 https.createServer(credentials, app).listen(444);
+console.log('starting to run');
 
 var routes = require('./routes/index');  
 var api = require('./routes/api'); 

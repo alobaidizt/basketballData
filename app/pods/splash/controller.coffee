@@ -9,7 +9,6 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
   recognition:      Ember.inject.service()
 
   showScript:	      false
-  isListening:      false
   showResult:       false
   detectedActions:  []
   playerIDs:        []
@@ -33,6 +32,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
   keywords:         []
 
   showTable:        true
+  isListening:      Ember.computed.alias('recognition.isListening')
 
   yt_id:     Ember.computed 'videoUrl', ->
     @youTubeGetID(@get('videoUrl'))
@@ -116,8 +116,6 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
       resultIndex++
 
     @recordTS(interimText)  if Ember.isPresent(interimText)  # Record Timestamps using interim string
-
-    
     @filter(resultArray)    if Ember.isPresent(resultArray)
 
   recordTS: (text) ->

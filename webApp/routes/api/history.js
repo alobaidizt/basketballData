@@ -31,3 +31,22 @@ module.exports.getHistoryRecords = function(req, res) {
         res.json({historyRecords: historyRecords});
     });
 };
+
+module.exports.getHistoryBySession = function(req, res, id) {  
+    console.log(id);
+    History.find({sessionId: id}, function(err, historyRecords) {
+        if (err) {
+            res.send(err);
+        }
+        res.json({sessionHistory: historyRecords});
+    });
+};
+
+module.exports.deleteSessionHistory = function(req, res, id) {  
+    Keyword.remove({"sessionId": id}, function(err) {
+        if (err) {
+            res.send(err);
+        }
+        res.sendStatus(200);
+    });
+};

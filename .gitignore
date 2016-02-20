@@ -11,6 +11,8 @@
 .swn
 .swm
 .swl
+*.cert
+*.key
 
 # compiled output
 /dist
@@ -20,6 +22,9 @@
 # dependencies
 node_modules
 /bower_components
+
+# logs
+logs/
 
 # misc
 /.sass-cache

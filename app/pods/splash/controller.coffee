@@ -57,7 +57,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
     @set('_recognition', rec)
 
     # TODO: add bbActions to the DB
-    bbActions = ['make','miss','grab','pass','lose','shoot','attempt','score','turnover-on','turnover-for','turnover','take','foul-by','foul-on','foul','no-basket-for','steal-for','inbound','bounce','layup','rebound','rebound-by','rebound-for','assist']
+    bbActions = ['make','miss','grab','pass','lose','shoot','attempt','score','turnover-on','turnover-for','turnover','take','foul-by','foul-on','foul','no-basket-for','steal-for','inbound','bounce','layup','rebound','rebound-by','rebound-for','assist', 'steal', 'steal-by']
 
     others = ['rebound-for','rebound-by','turnover-on','turnover-for','no-basket-for','foul-by','foul-on','ball-to','ball-from','steal-for']
     
@@ -79,7 +79,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
 
     # Stiching
     # TODO: add stitches to the DB
-    stitches = [['number ','number-'],[' red','-red'],[' blue','-blue'],['turnover on','turnover-on'],['turnover for','turnover-for'],['foul by','foul-by'],['foul on','foul-on'],['no basket for','no-basket-for'],['ball to','ball-to'],['ball from','ball-from'],['steal for','steal-for'],['layup for','layup-for'],['rebound for','rebound-for'],['rebound by','rebound-by']]
+    stitches = [['number ','number-'],[' red','-red'],[' blue','-blue'],['turnover on','turnover-on'],['turnover for','turnover-for'],['foul by','foul-by'],['foul on','foul-on'],['no basket for','no-basket-for'],['ball to','ball-to'],['ball from','ball-from'],['steal for','steal-for'],['layup for','layup-for'],['rebound for','rebound-for'],['rebound by','rebound-by'],['steal by','steal-by']]
 
 
     @setProperties
@@ -164,8 +164,8 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
         return timestamp
 
   getActionParamsType: (element) ->
-    beforeType = ['make','attempt','miss','grab','shoot','attempt','score','take','lose','layup','rebound','turnover','assist','foul']
-    afterType = ['turnover-on','turnover-for','foul-on','foul-by','no-basket-for','steal-for','layup-for','rebound-for','rebound-by']
+    beforeType = ['make','attempt','miss','grab','shoot','attempt','score','take','lose','layup','rebound','turnover','assist','foul', 'steal']
+    afterType = ['turnover-on','turnover-for','foul-on','foul-by','no-basket-for','steal-for','layup-for','rebound-for','rebound-by', 'steal-for', 'steal-by']
     bothType = ['pass','inbound','bounce']
     if beforeType.indexOf(element) > -1
       return "before"

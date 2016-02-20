@@ -31,16 +31,16 @@ router.route('/histories/:session_id')
     .delete(function(req, res) { histories.deleteSessionHistory(req, res, req.params.session_id); });
 
 /* Config routes */
-router.route('/config')  
+router.route('/configs')  
     .delete(function(req, res) { configs.deleteConfigs(req, res); });
-router.route('/config/delay')  
+router.route('/configs/delay')  
     .get(function(req,res) { configs.getDelay(req,res); })
     .put(function(req,res) { configs.updateDelay(req,res); });
-router.route('/config/stitch')  
+router.route('/configs/stitch')  
     .get(function(req,res) { configs.getStitches(req,res); })
     .put(function(req,res) { configs.updateStitches(req,res); })
     .delete(function(req, res) { configs.deleteStitches(req, res); });
-router.route('/config/action')  
+router.route('/configs/action')  
     .get(function(req,res) { configs.getActions(req,res); })
     .put(function(req,res) { configs.updateActions(req,res); })
     .delete(function(req, res) { configs.deleteActions(req, res); });

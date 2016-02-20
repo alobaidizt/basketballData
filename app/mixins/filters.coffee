@@ -48,8 +48,10 @@ Filters = Ember.Mixin.create
           f1r = @replaceAll(mask,replacement[0],f1r)
 
     for stitch in @get('stitches')
-      if (f1r.indexOf(stitch[0]) > -1)
-        f1r = @replaceAll(stitch[0],stitch[1],f1r)
+      key = Object.keys(stitch)[0]
+      value = stitch[key]
+      if (f1r.indexOf(key) > -1)
+        f1r = @replaceAll(key,value,f1r)
 
     # The text after enhancment
     @set('afterEnhancement', f1r)

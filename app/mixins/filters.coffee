@@ -152,10 +152,8 @@ Filters = Ember.Mixin.create
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('layup')
-        if purpose == 'filter'
-          if Em.isEqual(@get('lastAction'), 'pass')
-            output.push('assist')
-        output.push(parsedResult)
+        parsedResults.splice(i,1,'2pt-attempt') # find a way to put this before shoot
+        output.push(parsedResult,'2pt-attempt')
       if parsedResult.toString().includes('foul-on')
         output.push(parsedResult)
         if purpose == 'filter'

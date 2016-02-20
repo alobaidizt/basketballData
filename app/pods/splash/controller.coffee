@@ -134,7 +134,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
         return timestamp
 
   getActionParamsType: (element) ->
-    beforeType = ['make','attempt','miss','grab','shoot','attempt','score','take','lose','layup','rebound','turnover','assist','foul', 'steal']
+    beforeType = ['make','attempt','2pt-attempt','miss','grab','shoot','attempt','score','take','lose','layup','rebound','turnover','assist','foul', 'steal']
     afterType = ['turnover-on','turnover-for','foul-on','foul-by','no-basket-for','steal-for','layup-for','rebound-for','rebound-by', 'steal-for', 'steal-by']
     bothType = ['pass','inbound','bounce']
     if beforeType.indexOf(element) > -1

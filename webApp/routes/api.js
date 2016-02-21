@@ -13,12 +13,12 @@ router.route('/keywords')
 /* Single keyword routes */
 router.route('/keywords/:keyword_id')
     .get(function(req, res) { keywords.getSingleKeyword(req, res, req.params.keyword_id); })
-    .put(function(req, res) { keywords.updateKeyword(req, res, req.params.keyword_id); })
+    .post(function(req, res) { keywords.updateKeyword(req, res, req.params.keyword_id); })
     .delete(function(req, res) { keywords.deleteKeyword(req, res, req.params.keyword_id); });
 
 router.route('/keywords/name/:keyword_name')
     .get(function(req, res) { keywords.getKeywordByName(req, res, req.params.keyword_name); })
-    .put(function(req, res) { keywords.updateKeywordByName(req, res, req.params.keyword_name); })
+    .post(function(req, res) { keywords.updateKeywordByName(req, res, req.params.keyword_name); })
     .delete(function(req, res) { keywords.deleteKeywordByName(req, res, req.params.keyword_name); });
 
 /* History routes */

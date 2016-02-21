@@ -84,7 +84,7 @@ module.exports.updateKeywordByName = function(req, res, name) {
         }
       if (isFound || (mask === "")) {
         res.json(404, {info: "word already exist"});
-        req.abort();
+        // req.abort();
       } else {
         Keyword.update({ name: name }, {$push: { masks: mask}},{ upsert: true }, function(err, numAffected, raw) {
           if (err) {

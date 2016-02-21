@@ -3,15 +3,13 @@
 RecognitionService = Ember.Service.extend
   isListening:      false
   currentKeyword:   undefined
+  recognition:      undefined
   api:              Ember.inject.service()
 
   setupCalibration: (properties = {}) ->
     recognition = new webkitSpeechRecognition()
     for key, val of properties
       recognition[key] = val
-
-    @set 'recognition', recognition
-    window.privateVar = this
 
     recognition.onresult = (event) =>
       result =  event.results[0][0].transcript
@@ -33,9 +31,11 @@ RecognitionService = Ember.Service.extend
           autoClear: true
           clearDuration: 1200
 
-    @_initEventHandlers(recognition)
+    @set 'recognition', recognition
+    @_initEventHandlers()
 
-  _initEventHandlers: (recognition) ->
+  _initEventHandlers: () ->
+    recognition = @get 'recognition'
     recognition.onstart = ( ->
       console.log('recognition started'))
 
@@ -75,14 +75,16 @@ RecognitionService = Ember.Service.extend
 
   createRecognizer: (config) ->
     recognition = new webkitSpeechRecognition()
+    @set 'recognition', recognition
+
     console.log('recognition about to start')
 
     for prop,val of config
-      recognition[prop] = val
-    @_initEventHandlers(recognition)
-    return recognition
+      @get('recognition')[prop] = val
+    @_initEventHandlers()
+    return @get('recognition')
 
-  bindEvent: (recognition, event, func) ->
-    recognition[event] = func
+  bindEvent: (event, func) ->
+    @get('recognition')[event] = func
 
 `export default RecognitionService`

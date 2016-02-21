@@ -40,4 +40,18 @@ ApiService = Ember.Service.extend
         structuredOutputSize: size
     })
 
+  getDetectableActions: ->
+    # returns a promise
+    $.ajax({
+      type: "GET",
+      url: "https://104.131.117.229:444/api/config/action",
+    })
+
+  getStitches: ->
+    # returns a promise
+    $.ajax({
+      type: "GET",
+      url: "https://104.131.117.229:444/api/config/stitch",
+    })
+
 `export default ApiService`

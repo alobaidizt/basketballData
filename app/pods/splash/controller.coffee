@@ -16,7 +16,6 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
   replacements:     []
   linksArray:       []
   timestamps:       []
-  _recognition:     undefined
   currentIndex:	    undefined
   lastID:           undefined
   lastID_i:   	    undefined
@@ -30,9 +29,12 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
   finalResults_i:   undefined
   ytPlayer:         {}
   keywords:         []
+  finalResults_i: 0 # used in filter 3
+  videoUrl:       "https://www.youtube.com/watch?v=OY3lSTb_DM0"
 
   showTable:        true
   isListening:      Ember.computed.alias('recognition.isListening')
+  rec:              Ember.computed.alias('recognition.recognition')
 
   yt_id:     Ember.computed 'videoUrl', ->
     @youTubeGetID(@get('videoUrl'))
@@ -52,42 +54,10 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
       interimResults:    true
       lang:              'en-US'
 
-    rec = @get('recognition').createRecognizer(config)
-    @get('recognition').bindEvent(rec,'onresult',Em.run.bind(this, @_onResult))
-    @set('_recognition', rec)
+    @get('recognition').createRecognizer(config)
+    @get('recognition').bindEvent('onresult',Em.run.bind(this, @_onResult))
 
-    # TODO: add bbActions to the DB
-    bbActions = ['make','miss','grab','pass','lose','shoot','attempt','score','turnover-on','turnover-for','turnover','take','foul-by','foul-on','foul','no-basket-for','steal-for','inbound','bounce','layup','rebound','rebound-by','rebound-for','assist', 'steal', 'steal-by']
-
-    others = ['rebound-for','rebound-by','turnover-on','turnover-for','no-basket-for','foul-by','foul-on','ball-to','ball-from','steal-for']
-    
-    # TODO: remove this
-    @get('api').getAllKeywords()
-      .then ({keywords}) =>
-        keywords.forEach (keyword,i) =>
-          @get('keywords').pushObject(keyword.name)
-          @get('replacements').pushObject([keyword.name,keyword.masks])
-      .then =>
-        grammerVocab = @get('keywords').concat(others)
-        
-        # Adding Speech Grammar
-        # This is not done, do more research
-        #for word in grammerVocab
-          #@get('_recognition').grammars.addFromString(word)
-
-    console.log @get('_recognition')
-
-    # Stiching
-    # TODO: add stitches to the DB
-    stitches = [['number ','number-'],[' red','-red'],[' blue','-blue'],['turnover on','turnover-on'],['turnover for','turnover-for'],['foul by','foul-by'],['foul on','foul-on'],['no basket for','no-basket-for'],['ball to','ball-to'],['ball from','ball-from'],['steal for','steal-for'],['layup for','layup-for'],['rebound for','rebound-for'],['rebound by','rebound-by'],['steal by','steal-by']]
-
-
-    @setProperties
-      bbActions:      bbActions
-      stitches:       stitches
-      finalResults_i: 0 # used in filter 3
-      videoUrl:       "https://www.youtube.com/watch?v=OY3lSTb_DM0"
-
+    @getData()
 
   _onResult: (event) ->
     interimText   = ''
@@ -103,8 +73,8 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
         setTimeout((() =>
           console.log 'is idle: ', @get('isIdle')
           if @get('isIdle')
-            @get('_recognition').stop()
-            @get('_recognition').start()
+            @get('rec').stop()
+            @get('rec').start()
         ) , 2000)
         @set 'tsPointer', null # used in recordTS method
         for result,i in event.results[resultIndex]
@@ -142,7 +112,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
     elements[i]
 
   isAction: (element) ->
-    if @get('bbActions').indexOf(element) > -1
+    if @get('detectableActions').indexOf(element) > -1
       true
     else
       false
@@ -164,7 +134,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
         return timestamp
 
   getActionParamsType: (element) ->
-    beforeType = ['make','attempt','miss','grab','shoot','attempt','score','take','lose','layup','rebound','turnover','assist','foul', 'steal']
+    beforeType = ['make','attempt','2pt-attempt','miss','grab','shoot','attempt','score','take','lose','layup','rebound','turnover','assist','foul', 'steal']
     afterType = ['turnover-on','turnover-for','foul-on','foul-by','no-basket-for','steal-for','layup-for','rebound-for','rebound-by', 'steal-for', 'steal-by']
     bothType = ['pass','inbound','bounce']
     if beforeType.indexOf(element) > -1
@@ -263,18 +233,30 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
   getVideoCurrentTime: ->
     window.emberYouTubePlayer.getCurrentTime()
 
+  getData: ->
+    @get('api').getDetectableActions().then ({actions}) =>
+      @set 'detectableActions', actions
+    @get('api').getStitches().then ({stitches}) =>
+      @set 'stitches', stitches
+    
+    @get('api').getAllKeywords()
+      .then ({keywords}) =>
+        keywords.forEach (keyword,i) =>
+          @get('keywords').pushObject(keyword.name)
+          @get('replacements').pushObject([keyword.name,keyword.masks])
+
   actions:
     startListening: ->
       if Em.isEmpty(@get('sessionId'))
         @_addNotification("Must enter a session name first", 3000)
         return false
-      recognition = @get('_recognition')
+      recognition = @get('rec')
       status = @get('isListening')
       @toggleProperty('isListening')
 
       if !status
         window.emberYouTubePlayer.playVideo()
-        @get('_recognition').start()
+        @get('rec').start()
         now = moment()
         @set 'startTime', now
       else
@@ -319,5 +301,4 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
 
 
       window.open(@get('linksArray')[index])
-
 `export default SplashController`

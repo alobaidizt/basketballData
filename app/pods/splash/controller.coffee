@@ -241,9 +241,8 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
     
     @get('api').getAllKeywords()
       .then ({keywords}) =>
-        keywords.forEach (keyword,i) =>
-          @get('keywords').pushObject(keyword.name)
-          @get('replacements').pushObject([keyword.name,keyword.masks])
+        @set('keywords', keywords.map (word) -> word.name)
+        @set('replacements', keywords.map (word) -> new Array(word.name, word.masks))
 
   actions:
     startListening: ->

@@ -8,16 +8,22 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose   = require('mongoose');  
-mongoose.connect('mongodb://localhost:27017/webApp'); // Adjust this line if you are not locally hosting MongoDB  
+mongoose.connect('mongodb://localhost/webApp');
+
+var app = express();
+
+if (app.get('env') === 'development') {
+ console.log('development');
+} else {
 
 var privateKey  = fs.readFileSync('server.key', 'utf8');
 var certificate = fs.readFileSync('server.cert', 'utf8');
 
 var credentials = {key: privateKey, cert: certificate};
 
-var app = express();
+https.createServer(credentials, app).listen(443);
+}
 http.createServer(app).listen(3000);
-https.createServer(credentials, app).listen(444);
 console.log('starting to run');
 
 var routes = require('./routes/index');  

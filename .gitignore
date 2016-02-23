@@ -34,3 +34,4 @@ logs/
 npm-debug.log
 testem.log
 /dump
+*web-service-connection.js

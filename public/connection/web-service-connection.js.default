@@ -1,0 +1,11 @@
+// development
+
+window.webService = {
+  servicePrefix:  'http://localhost:3000',
+};
+
+// live
+
+//window.webService = {
+//  servicePrefix:  'https://104.131.117.229:444', 
+//};

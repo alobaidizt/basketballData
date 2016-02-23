@@ -1,26 +1,27 @@
 `import Ember from 'ember'`
 
 ApiService = Ember.Service.extend
+  host: window.webService.servicePrefix
 
   getAllKeywords: ->
     # returns a promise
     $.ajax({
       type: "GET",
-      url: "https://104.131.117.229:444/api/keywords/",
+      url: @get('host') + "/api/keywords/",
     })
 
   getKeywordByName: (name) ->
     # returns a promise
     $.ajax({
       type: "GET",
-      url: "https://104.131.117.229:444/api/keywords/name/#{name}",
+      url: @get('host') + "/api/keywords/name/#{name}",
     })
 
   updateKeywordByName: (name, mask) ->
     # returns a promise
     $.ajax({
-      type: "PUT",
-      url: "https://104.131.117.229:444/api/keywords/name/#{name}",
+      type: "POST",
+      url: @get('host') + "/api/keywords/name/#{name}",
       data:
         mask: mask
     })
@@ -30,7 +31,7 @@ ApiService = Ember.Service.extend
     size = record.structuredOutput?.length
     $.ajax({
       type: "POST",
-      url: "https://104.131.117.229:444/api/histories",
+      url: @get('host') + "/api/histories",
       data:
         sessionId:            record.sessionId
         timestamp:            record.timestamp
@@ -44,14 +45,14 @@ ApiService = Ember.Service.extend
     # returns a promise
     $.ajax({
       type: "GET",
-      url: "https://104.131.117.229:444/api/config/action",
+      url: @get('host') + "/api/config/action",
     })
 
   getStitches: ->
     # returns a promise
     $.ajax({
       type: "GET",
-      url: "https://104.131.117.229:444/api/config/stitch",
+      url: @get('host') + "/api/config/stitch",
     })
 
 `export default ApiService`

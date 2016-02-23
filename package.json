@@ -48,7 +48,12 @@
     "ember-paper": "0.2.11",
     "ember-youtube": "oskarrough/ember-youtube#0ea24be77e807f64e1c62ec67d9f7e06c74860a1",
     "express": "4.13.4",
-    "mongoose": "4.4.4"
+    "mongoose": "4.4.4",
+    "loader.js": "^4.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "ember-load-initializers": "^0.5.1",
+    "loader": "^2.0.0",
+    "moment": "^2.11.2"
+  }
 }

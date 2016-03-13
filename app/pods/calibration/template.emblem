@@ -33,6 +33,18 @@
         a.btn.btn-med.waves-effect.waves-light.blue click="addData"
           | Add
 
+  form.col.s12
+    .row
+      .input-field.col.s5
+        input#stitch-in.white-text type="text" value=stitchIn
+        label for="stitch-in" Stitch-In
+      .input-field.col.s5
+        input#stitch-out.white-text type="text" value=stitchOut
+        label for="stitch-out" Stitch-Out
+      .col.s2
+        a.btn.btn-med.waves-effect.waves-light.blue click="addStitch"
+          | Add
+
 .divider
 
 .row

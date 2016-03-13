@@ -26,6 +26,17 @@ ApiService = Ember.Service.extend
         mask: mask
     })
 
+  addStitch: (stitchIn, stitchOut) ->
+    stitch = {}
+    stitch[stitchIn] = stitchOut
+
+    # returns a promise
+    $.ajax({
+      type: "POST",
+      url: @get('host') + "/api/config/stitch",
+      data: stitch
+    })
+
   addHistoryRecord: (record) ->
     # returns a promise
     size = record.structuredOutput?.length

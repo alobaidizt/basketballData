@@ -21,6 +21,10 @@ router.route('/keywords/name/:keyword_name')
     .post(function(req, res) { keywords.updateKeywordByName(req, res, req.params.keyword_name); })
     .delete(function(req, res) { keywords.deleteKeywordByName(req, res, req.params.keyword_name); });
 
+router.route('/keywords/name/:keyword_name/:mask')
+    //.post(function(req, res) { keywords.updateKeywordByName(req, res, req.params.keyword_name); })
+    .delete(function(req, res) { keywords.deleteMask(req, res, req.params.keyword_name, req.params.mask); });
+
 /* History routes */
 router.route('/histories')
     .post(function(req,res) { histories.addRecord(req,res); })
@@ -35,14 +39,14 @@ router.route('/config')
     .delete(function(req, res) { config.deleteConfigs(req, res); });
 router.route('/config/delay')
     .get(function(req,res) { config.getDelay(req,res); })
-    .put(function(req,res) { config.updateDelay(req,res); });
+    .post(function(req,res) { config.updateDelay(req,res); });
 router.route('/config/stitch')
     .get(function(req,res) { config.getStitches(req,res); })
-    .put(function(req,res) { config.updateStitches(req,res); })
+    .post(function(req,res) { config.updateStitches(req,res); })
     .delete(function(req, res) { config.deleteStitches(req, res); });
 router.route('/config/action')
     .get(function(req,res) { config.getActions(req,res); })
-    .put(function(req,res) { config.updateActions(req,res); })
+    .post(function(req,res) { config.updateActions(req,res); })
     .delete(function(req, res) { config.deleteActions(req, res); });
 
 module.exports = router;  

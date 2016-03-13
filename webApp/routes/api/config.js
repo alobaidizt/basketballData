@@ -49,7 +49,7 @@ module.exports.getStitches = function(req, res) {
 };
 
 module.exports.updateStitches = function(req, res) {  
-    var stitch = req.body.stitch;
+  var stitch = req.body;
 
   Config.find(function(err, config) {
     var isFound = false;

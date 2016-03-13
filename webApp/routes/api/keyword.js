@@ -104,3 +104,12 @@ module.exports.deleteKeywordByName = function(req, res, name) {
         res.sendStatus(200);
     });
 };
+
+module.exports.deleteMask = function(req, res, name, mask) {  
+    Keyword.findOneAndUpdate({ name: name }, { $pull: {masks: mask}}, { returnNewDocument: true }, function(err) {
+        if (err) {
+            res.send(err);
+        }
+        res.sendStatus(200);
+    });
+};

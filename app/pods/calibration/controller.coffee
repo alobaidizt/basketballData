@@ -21,6 +21,14 @@ CalibrationController = Ember.Controller.extend
       $('#name').val('')
       $('#mask').val('')
 
+  addStitch: ->
+    stitchIn    = $('#stitch-in').val().toLowerCase()
+    stitchOut   = $('#stitch-out').val().toLowerCase()
+
+    @get('api').addStitch(stitchIn, stitchOut).then ->
+      $('#stitch-in').val('')
+      $('#stitch-out').val('')
+
   calibrate: ->
     @get('api').getAllKeywords()
       .then (data) =>
@@ -32,7 +40,8 @@ CalibrationController = Ember.Controller.extend
       @get('recognition').set('currentKeyword', word)
       @get('recognition').recognition.start()
 
-    addData: -> @addData()
+    addData:   -> @addData()
+    addStitch: -> @addStitch()
     calibrate: -> @calibrate()
 
 `export default CalibrationController`

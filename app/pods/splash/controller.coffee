@@ -16,21 +16,19 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
   replacements:     []
   linksArray:       []
   timestamps:       []
-  currentIndex:	    undefined
   lastID:           undefined
   lastID_i:   	    undefined
   lastAction:       undefined
   currentElement:   undefined
-  structuredData:   []
+  structuredData:   new Array()
   startTime:        undefined
   endTime:          undefined
   tsPointer:        null       # Timestamp pointer
-  videoUrl:         undefined
-  finalResults_i:   undefined
   ytPlayer:         {}
   keywords:         []
   finalResults_i: 0 # used in filter 3
   videoUrl:       "https://www.youtube.com/watch?v=OY3lSTb_DM0"
+  context: undefined
 
   showTable:        true
   isListening:      Ember.computed.alias('recognition.isListening')
@@ -144,7 +142,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
     else if bothType.indexOf(element) > -1
       "both"
 
-  getContext: (arr,lastPlayer, current_i,type, action) ->
+  setContext: (arr,lastPlayer, current_i,type, action) ->
     context = []
     contextComplete = false
     if type == "before"
@@ -198,7 +196,10 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
           @set('lastID', playerID)
           currentIndex = current_i
           contextComplete = true
-    return context
+        else if (@isAction(arr[current_i]))
+          currentIndex = current_i
+          contextComplete = true
+    @set('context', context)
 
   addActionToPlayer: (playerID, action) ->
     for id,i in @get('playerIDs')

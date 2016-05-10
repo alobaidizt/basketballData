@@ -27,7 +27,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
   ytPlayer:         {}
   keywords:         []
   finalResults_i: 0 # used in filter 3
-  videoUrl:       "https://www.youtube.com/watch?v=OY3lSTb_DM0"
+  videoUrl:       "https://www.youtube.com/watch?v=xMknfpleSho"
   context: undefined
 
   showTable:        true

@@ -1,0 +1,14 @@
+.row
+.row
+.container
+  .table-container
+    = models-table [
+      data=model
+      columns=columns
+      customClasses=customClasses
+      multipleColumnsSorting=false
+      showTableFooter=false
+      showColumnsDropdown=false
+      useFilteringByColumns=false
+      showGlobalFilter=false
+    ]

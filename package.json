@@ -37,21 +37,24 @@
     "ember-cli-notifications": "3.2.0",
     "ember-cli-qunit": "1.2.4",
     "ember-cli-release": "1.0.0-beta.1",
-    "ember-cli-stylus": "1.0.5",
     "ember-cli-sri": "2.1.0",
+    "ember-cli-stylus": "1.0.5",
     "ember-cli-uglify": "1.2.0",
     "ember-component-css": "0.1.6",
     "ember-data": "2.2.1",
     "ember-disable-proxy-controllers": "1.0.1",
     "ember-export-application-global": "1.0.5",
+    "ember-models-table": "1.6.0",
     "ember-moment": "6.0.0",
     "ember-paper": "0.2.11",
+    "ember-websockets": "3.0.0",
     "ember-youtube": "oskarrough/ember-youtube#0ea24be77e807f64e1c62ec67d9f7e06c74860a1",
     "express": "4.13.4",
-    "mongoose": "4.4.4",
-    "loader.js": "^4.0.0"
+    "loader.js": "^4.0.0",
+    "mongoose": "4.4.4"
   },
   "dependencies": {
+    "ember-cli": "^2.3.0",
     "ember-load-initializers": "^0.5.1",
     "loader": "^2.0.0",
     "moment": "^2.11.2"

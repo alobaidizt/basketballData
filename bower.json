@@ -18,7 +18,12 @@
     "moment": "2.10.6",
     "moment-timezone": "0.4.1",
     "moment-duration-format": "1.3.0",
-    "matchMedia": "~0.2.0"
+    "matchMedia": "~0.2.0",
+    "antiscroll": "git://github.com/Addepar/antiscroll#e0d1538cf4f3fd61c5bedd6168df86d651f125da",
+    "jquery-mousewheel": "~3.1.4",
+    "jquery-ui": "~1.11.4",
+    "uri.js": "^1.17.1",
+    "socket.io-client": "^1.4.5"
   },
   "resolutions": {
     "jquery": "2.1.4"

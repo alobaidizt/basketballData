@@ -3,6 +3,7 @@ var History = require('../../models/history');
 var map = require('arr-map');
 
 module.exports.addRecord = function(req, res) {  
+  
     var structuredOutput = [];
     var record = req.body;
     for (var i = 0; i < record.structuredOutputSize; i++) {

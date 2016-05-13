@@ -1,6 +1,7 @@
 `import Ember from "ember"`
 
 Filters = Ember.Mixin.create
+
   filter: (results) ->
     @set('detectedActions', [])
 
@@ -30,6 +31,9 @@ Filters = Ember.Mixin.create
 
     @get('api').addHistoryRecord(record).then ->
       console.log('recorded')
+
+    @get('api').addStat(record)
+      console.log('stat added')
 
   firstFilter: (results) ->
     # Returns the the best result from the returned results array from the voiceRecognition 

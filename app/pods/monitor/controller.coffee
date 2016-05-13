@@ -7,15 +7,13 @@ MonitorController = Ember.Controller.extend WebsocketMixin,
   customClasses: customClasses
   session:       'test1'
 
-  api:           Ember.inject.service()
-  
   init: ->
     @_super(arguments...)
-    @websocketHandler()
+    @updateData(@get('session'))
 
-  websocketHandler: (event) ->
+  updateData: (sessionName) ->
     params =
-      session: @get('session')
+      session: sessionName
 
     @store.query('stat', params).then (stats) =>
       @set('model', stats)

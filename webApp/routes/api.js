@@ -4,6 +4,7 @@ var router = express.Router();
 var keywords  = require('./api/keyword');
 var histories = require('./api/history');
 var config = require('./api/config');
+var stats = require('./api/stat');
 
 /* Keywords routes */
 router.route('/keywords')
@@ -48,5 +49,10 @@ router.route('/config/action')
     .get(function(req,res) { config.getActions(req,res); })
     .post(function(req,res) { config.updateActions(req,res); })
     .delete(function(req, res) { config.deleteActions(req, res); });
+
+/* Stat routes */
+router.route('/stats')
+    .post(function(req, res) { stats.postStats(req, res); })
+    .get(function(req, res) { stats.getStats(req, res); });
 
 module.exports = router;  

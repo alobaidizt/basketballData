@@ -66,4 +66,17 @@ ApiService = Ember.Service.extend
       url: @get('host') + "/api/config/stitch",
     })
 
+  addStat: (record) ->
+    # returns a promise
+    size = record.structuredOutput?.length
+    $.ajax({
+      type: "POST",
+      url: @get('host') + "/api/stats",
+      data:
+        outputArray: record.structuredOutput,
+        outputArraySize: size,
+        videoUri: record.videoUri,
+        session: record.sessionId
+    })
+
 `export default ApiService`

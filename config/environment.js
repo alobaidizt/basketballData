@@ -26,9 +26,9 @@ module.exports = function(environment) {
 	  'default-src': " https://www.youtube.com/ ", // Use 'none' if empty
 	  'script-src': "'self' 'unsafe-eval' https://www.youtube.com/ https://s.ytimg.com/ ",
 	  'font-src': "'self' fonts.gstatic.com",
-	  'connect-src': "'self' http://localhost:3000 http://104.131.117.229:3000 https://104.131.117.229:444 ",
+	  'connect-src': "'self' http://localhost:3000 http://104.131.117.229:3000 https://104.131.117.229:444 ws://localhost:7000 localhost:7000 ",
 	  'img-src': "'self' data:",
-	  'style-src': "'self' https://fonts.googleapis.com ",
+	  'style-src': "'self' https://fonts.googleapis.com https://fonts.googleapis.com ",
 	  'media-src': "'self'"
     },
     'ember-cli-notifications': {

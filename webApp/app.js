@@ -7,6 +7,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var ioServer = require('socket.io');
 var mongoose   = require('mongoose');  
 mongoose.connect('mongodb://localhost/webApp');
 
@@ -25,6 +26,13 @@ https.createServer(credentials, app).listen(443);
 }
 http.createServer(app).listen(3000);
 console.log('starting to run');
+
+// websocket-io
+var io = new ioServer(7000, {serverClient: false});
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+});
 
 var routes = require('./routes/index');  
 var api = require('./routes/api'); 
@@ -94,5 +102,5 @@ app.use(function(err, req, res, next) {
   });
 });
 
-
+exports.io = io;
 module.exports = app;

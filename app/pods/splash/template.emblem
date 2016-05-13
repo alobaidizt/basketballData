@@ -31,6 +31,8 @@
                 each structuredDatum as |item|
                   td = item
     .row
+      button.btn.btn-info.center click="addDummyData" Send A Stat
+    .row
       #report-summary
 
   .c-notification__container

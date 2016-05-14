@@ -14,15 +14,21 @@ ActionsCellComponent = Ember.Component.extend HelpersMixin,
       controls:       0
       cc_load_policy: 0
       fs:             0
+      start:          0
+      end:            10
 
   actions:
     clicked: (model, actionTime) ->
-      time  = parseInt(actionTime)
-      vidId = model.get('videoPath')
+      time = parseInt(actionTime)
+      ytid = model.get('videoPath')
 
-      @set('videoId', @youTubeGetID(vidId))
+      @setProperties
+        'playerVars.start': time
+        'playerVars.end':   time + 5
+        'videoId':          @youTubeGetID(ytid)
+
       @emberYoutube.player.loadVideoById
-        videoId:          vidId
+        videoId:          @get('videoId')
         startSeconds:     time
         endSeconds:       time + 5
         suggestedQuality: 'large'

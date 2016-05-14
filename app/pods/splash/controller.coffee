@@ -2,8 +2,9 @@
 `import moment from 'moment'`
 `import LogicMixin from 'insight-sports/mixins/logic'`
 `import FiltersMixin from 'insight-sports/mixins/filters'`
+`import HelpersMixin from 'insight-sports/mixins/helpers'`
 
-SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
+SplashController = Ember.Controller.extend LogicMixin, FiltersMixin, HelpersMixin,
 
   api:              Ember.inject.service()
   recognition:      Ember.inject.service()
@@ -220,17 +221,6 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
     return !isNaN(parseFloat(n)) && isFinite(n)
 
 
-  youTubeGetID: (url) ->
-    # @author: takien
-    # @url: http://takien.com
-    ID = ''
-    url = url.replace(/(>|<)/gi,'').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/)
-    if (url[2] != undefined)
-      ID = url[2].split(/[^0-9a-z_\-]/i)
-      ID = ID[0]
-    else
-      ID = url
-
   getVideoCurrentTime: ->
     window.emberYouTubePlayer.getCurrentTime()
 
@@ -307,7 +297,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin,
             "Item 1",
             "7.399932",
             "foul",
-            "number-10"]
+            "number-11"]
 
       record =
         videoUri:          @get('videoUrl')

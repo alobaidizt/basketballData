@@ -8,36 +8,36 @@ columns = [
     propertyName: "sessionName"
     title:        "Session"
   ,
-    propertyName: "twoPointAttempt"
+    propertyName: "twoPointAttempt.count"
     title:        "2 Pt. A"
   ,
-    propertyName: "twoPointMade"
+    propertyName: "twoPointMade.count"
     title:        "2 Pt. M"
   ,
-    propertyName: "threePointAttempt"
+    propertyName: "threePointAttempt.count"
     title:        "3 Pt. A"
   ,
-    propertyName: "threePointMade"
+    propertyName: "threePointMade.count"
     title:        "3 Pt. M"
   ,
-    propertyName: "freeThrowAttempt"
+    propertyName: "freeThrowAttempt.count"
     title:        "FT A"
   ,
-    propertyName: "freeThrowMade"
+    propertyName: "freeThrowMade.count"
     title:        "FT M"
-    propertyName: "assist"
+    propertyName: "assist.count"
     title:        "Assist"
   ,
-    propertyName: "foul"
+    propertyName: "foul.count"
     title:        "Foul"
   ,
-    propertyName: "rebound"
+    propertyName: "rebound.count"
     title:        "Rebound"
   ,
-    propertyName: "turnover"
+    propertyName: "turnover.count"
     title:        "T/O"
   ,
-    propertyName: "steal"
+    propertyName: "steal.count"
     title:        "Steal"
     template:     "cell"
 ]

@@ -32,7 +32,7 @@ Filters = Ember.Mixin.create
     @get('api').addHistoryRecord(record).then ->
       console.log('recorded')
 
-    @get('api').addStat(record)
+    @get('api').addStat(record).then ->
       console.log('stat added')
 
   firstFilter: (results) ->

@@ -1,7 +1,7 @@
-var mongoose  = require('mongoose');  
-var Stat      = require('../../models/stat');
-var map       = require('arr-map');
-var app = require('../../app');
+var mongoose = require('mongoose');
+var Stat     = require('../../models/stat');
+var map      = require('arr-map');
+var app      = require('../../app');
 
 module.exports.getStats = function(req, res) {  
     var session = req.query.session;
@@ -16,7 +16,7 @@ module.exports.getStats = function(req, res) {
 module.exports.postStats = function(req, res) {  
     var io = app.io;
 
-    var videoUrl = req.body.videoUri;
+    var videoUri = req.body.videoUri;
     var session = req.body.session;
 
     for (var i = 0; i < req.body.outputArraySize; i++) {
@@ -25,17 +25,20 @@ module.exports.postStats = function(req, res) {
       var action = eventDataArr[3];
       var subject = eventDataArr[4];
 
-      var actionHash = {};
-      actionHash[action] = 1;
+      var incrementHash = {};
+      var pushLinkHash = {};
+      incrementHash[`${action}.count`] = 1;
+      pushLinkHash[`${action}.uriLinks`] = `${videoUri}#t=${actionStamp}`;
 
       var queryHash = {};
       queryHash["sessionName"] = session;
       queryHash["playerNumber"] = subject;
 
-      console.log(actionHash);
+      console.log(incrementHash);
+      console.log(pushLinkHash);
       console.log(queryHash);
 
-      Stat.update(queryHash, {$inc: actionHash}, { multi: true }, function(err, stats) {
+      Stat.update(queryHash, {$inc: incrementHash, $push: pushLinkHash}, { multi: true, upsert: true }, function(err, stats) {
           if (err) {
               res.send(err);
           }

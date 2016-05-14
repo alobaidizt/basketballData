@@ -1,20 +1,21 @@
 `import DS from 'ember-data'`
+`import MF from 'model-fragments'`
 
 Stat =  DS.Model.extend
   sessionName:        DS.attr('string')
   videoPath:          DS.attr('string')
   playerNumber:       DS.attr('string')
   playerTeam:         DS.attr('string')
-  twoPointAttempt:    DS.attr('number')
-  twoPointMade:       DS.attr('number')
-  threePointAttempt:  DS.attr('number')
-  threePointMade:     DS.attr('number')
-  freeThrowAttempt:   DS.attr('number')
-  freeThrowMade:      DS.attr('number')
-  assist:             DS.attr('number')
-  foul:               DS.attr('number')
-  rebound:            DS.attr('number')
-  turnover:           DS.attr('number')
-  steal:              DS.attr('number')
+  twoPointAttempt:    MF.fragment('action')
+  twoPointMade:       MF.fragment('action')
+  threePointAttempt:  MF.fragment('action')
+  threePointMade:     MF.fragment('action')
+  freeThrowAttempt:   MF.fragment('action')
+  freeThrowMade:      MF.fragment('action')
+  assist:             MF.fragment('action')
+  foul:               MF.fragment('action')
+  rebound:            MF.fragment('action')
+  turnover:           MF.fragment('action')
+  steal:              MF.fragment('action')
 
 `export default Stat`

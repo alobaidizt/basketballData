@@ -1,2 +1,1 @@
-a target="_blank" href="#{record.videoPath}#t=#{record.stealTime}"
-  | {{record.stealValue}}
+actions-cell model=record

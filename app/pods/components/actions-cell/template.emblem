@@ -1,0 +1,15 @@
+.actions-cell
+  label#help-me {{model.steal.count}}
+  pop-over for="help-me" on="click" flow="dropdown"
+    .actions-popup
+      h4.center Steals
+      .row
+        .col.s2
+          ul
+            each model.steal.uriLinks as |nsts|
+              li
+                label onClick={action "clicked" model nsts}
+                  | Steal @ {{nsts}}
+
+        .col.s10
+          ember-youtube playerVars=playerVars width="100%" height="200vh" delegate=this delegate-as="emberYoutube"

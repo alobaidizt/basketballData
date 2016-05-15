@@ -42,6 +42,6 @@ ActionsCellComponent = Ember.Component.extend HelpersMixin,
         videoId:          @get('videoId')
         startSeconds:     time
         endSeconds:       time + 5
-        suggestedQuality: 'large'
+        suggestedQuality: 'medium'
 
 `export default ActionsCellComponent`

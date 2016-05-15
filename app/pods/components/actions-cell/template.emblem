@@ -1,15 +1,18 @@
-.actions-cell
-  label#help-me {{model.steal.count}}
-  pop-over for="help-me" on="click" flow="dropdown"
+.actions-cell.center
+  label id=type {{count}}
+  pop-over for=type on="click" flow="dropdown"
     .actions-popup
-      h4.center Steals
+      h4.center = type
       .row
-        .col.s2
-          ul
-            each model.steal.uriLinks as |nsts|
-              li
-                label onClick={action "clicked" model nsts}
-                  | Steal @ {{nsts}}
+        if hasStamps
+          .col.s2
+            ul
+              each stamps as |stamp|
+                li
+                  label onClick={action "clicked" model stamp}
+                    | {{type}} @ {{stamp}}
 
-        .col.s10
-          ember-youtube ytid=videoId playerVars=playerVars startSeconds=playerVars.start endSeconds=playerVars.end width="100%" height="200vh" delegate=this delegate-as="emberYoutube"
+          .col.s10
+            ember-youtube ytid=videoId playerVars=playerVars startSeconds=playerVars.start endSeconds=playerVars.end width="100%" height="200vh" delegate=this delegate-as="emberYoutube"
+        else
+          p.center No {{type}}s Found for Player {{model.playerNumber}}

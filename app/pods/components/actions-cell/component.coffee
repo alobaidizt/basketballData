@@ -17,6 +17,17 @@ ActionsCellComponent = Ember.Component.extend HelpersMixin,
       start:          0
       end:            10
 
+  hasStamps: Ember.computed.gt('count', 0)
+
+  count: Ember.computed 'model.@each.count', 'type', ->
+    type = @get('type')
+    @get("model.#{type}.count")
+
+  stamps: Ember.computed 'model.@each.uriLinks', 'type', ->
+    type = @get('type')
+    @get("model.#{type}.uriLinks")
+
+
   actions:
     clicked: (model, actionTime) ->
       time = parseInt(actionTime)

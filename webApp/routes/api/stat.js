@@ -28,7 +28,7 @@ module.exports.postStats = function(req, res) {
       var incrementHash = {};
       var pushLinkHash = {};
       incrementHash[`${action}.count`] = 1;
-      pushLinkHash[`${action}.uriLinks`] = `${videoUri}#t=${actionStamp}`;
+      pushLinkHash[`${action}.uriLinks`] = `${actionStamp}`;
 
       var queryHash = {};
       queryHash["sessionName"] = session;

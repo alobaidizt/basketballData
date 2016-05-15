@@ -295,7 +295,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin, HelpersMixi
     addDummyData: ->
       item1 = ["https://www.youtube.com/watch?v=OY3lSTb_DM0#t=5s",
             "Item 1",
-            "7.399932",
+            7.399932,
             "foul",
             "number-11"]
 

@@ -19,14 +19,13 @@ ActionsCellComponent = Ember.Component.extend HelpersMixin,
 
   hasStamps: Ember.computed.gt('count', 0)
 
-  count: Ember.computed 'model.@each.count', 'type', ->
-    type = @get('type')
-    @get("model.#{type}.count")
+  count: Ember.computed "model.{assist,foul,steal,rebound,turnover,twoPointAttempt,twoPointMade,threePointAttempt,threePointMade,freeThrowAttempt,freeThrowMade}.count", 'type', ->
+      type = @get('type')
+      @get("model.#{type}.count")
 
-  stamps: Ember.computed 'model.@each.uriLinks', 'type', ->
+  stamps: Ember.computed 'model.{assist,foul,steal,rebound,turnover,twoPointAttempt,twoPointMade,threePointAttempt,threePointMade,freeThrowAttempt,freeThrowMade}.uriLinks', 'type', ->
     type = @get('type')
     @get("model.#{type}.uriLinks")
-
 
   actions:
     clicked: (model, actionTime) ->

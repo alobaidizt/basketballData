@@ -1,5 +1,5 @@
 .actions-cell.center
-  label.count id=type {{count}}
+  label.count id=type = count
   pop-over for=type on="click" flow="dropdown"
     .actions-popup
       h4.center = type
@@ -10,8 +10,8 @@
             ul.list-container
               each stamps as |stamp|
                 li
-                  a.waves-effect.waves-light.btn onClick={action "clicked" model stamp}
-                    | {{type}} @ {{stamp}}
+                  a.waves-effect.waves-light.btn  onClick={action "clicked" model stamp}
+                    | {{type}} @ {{round stamp 0}} s
 
           .col.s9.right
             .playback-container

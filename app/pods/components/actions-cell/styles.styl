@@ -1,6 +1,6 @@
 .actions-popup
   min-width:  600px
-  min-height: 260px
+  height: 280px
   color: #8a6d3b
 
   hr
@@ -8,14 +8,27 @@
     border-width: 1px
     width: 90%
 
+  .list-container
+    margin-top: 10px
+    padding-left: 10px
+    overflow-y: scroll
+    overflow-x: hidden
+    width: 160px
+    height: 180px
 
-  .playback-container, .list-container
+    ::-webkit-scrollbar
+      display: none
+
+    .btn
+      margin-bottom: 5px
+
+  .playback-container
     padding: 10px
 
-  .yt-container
-    border-radius: 25px
-    overflow: hidden
-    position: relative
+    .yt-container
+      border-radius: 25px
+      overflow: hidden
+      position: relative
 
 .count
   cursor: pointer

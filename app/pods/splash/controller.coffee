@@ -297,7 +297,7 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin, HelpersMixi
             "Item 1",
             7.399932,
             "foul",
-            "number-11"]
+            "number-12"]
 
       record =
         videoUri:          @get('videoUrl')

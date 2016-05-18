@@ -12,4 +12,12 @@ HelpersMixin = Ember.Mixin.create
     else
       ID = url
 
+  addNotification: (word, duration = 750) ->
+    @notifications.addNotification
+      message: "#{word}"
+      type: 'info'
+      autoClear: true
+      clearDuration: duration
+
+
 `export default HelpersMixin`

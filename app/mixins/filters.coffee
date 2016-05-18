@@ -264,10 +264,10 @@ Filters = Ember.Mixin.create
         finalResults[_frIndex] = @get('context')
         if @possibleDuplicateAction(@get('currentSubject'), action)
           finalResults.splice(_frIndex,1) # remove last entry
-          @_addNotification('Ignored a duplicate action')
+          @addNotification('Ignored a duplicate action')
           _frIndex--
         else
-          @_addNotification(@get('notificationMessage'))
+          @addNotification(@get('notificationMessage'))
           finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timeStamp)
           if actionTS?
             timeInSec = parseInt(actionTS) - 2

@@ -1,28 +1,23 @@
 var mongoose = require('mongoose');  
 var Schema = mongoose.Schema;
-var ObjectId = Schema.Types.ObjectId;
-
-var ActionSchema = new Schema({  
-  count:        { type: Number, default: 0 },
-  stamps:       []
-});
+var Mixed = Schema.Types.Mixed;
 
 var StatSchema = new Schema({  
   sessionName:        String,
   videoPath:          String,
   playerNumber:       String,
   playerTeam:         String,
-  twoPointAttempt:    ActionSchema,
-  twoPointMade:       ActionSchema,
-  threePointAttempt:  ActionSchema,
-  threePointMade:     ActionSchema,
-  freeThrowAttempt:   ActionSchema,
-  freeThrowMade:      ActionSchema,
-  assist:             ActionSchema,
-  foul:               ActionSchema,
-  rebound:            ActionSchema,
-  turnover:           ActionSchema,
-  steal:              ActionSchema
-});
+  twoPointAttempt:    { type: Mixed, default: { count: 0, stamps: [] } },
+  twoPointMade:       { type: Mixed, default: { count: 0, stamps: [] } },
+  threePointAttempt:  { type: Mixed, default: { count: 0, stamps: [] } },
+  threePointMade:     { type: Mixed, default: { count: 0, stamps: [] } },
+  freeThrowAttempt:   { type: Mixed, default: { count: 0, stamps: [] } },
+  freeThrowMade:      { type: Mixed, default: { count: 0, stamps: [] } },
+  assist:             { type: Mixed, default: { count: 0, stamps: [] } },
+  foul:               { type: Mixed, default: { count: 0, stamps: [] } },
+  rebound:            { type: Mixed, default: { count: 0, stamps: [] } },
+  turnover:           { type: Mixed, default: { count: 0, stamps: [] } },
+  steal:              { type: Mixed, default: { count: 0, stamps: [] } }
+}, {collection: 'stats', minimize: false, strict: false});
 
 module.exports = mongoose.model('Stat', StatSchema);  

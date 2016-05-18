@@ -28,7 +28,7 @@ module.exports.postStats = function(req, res) {
       var incrementHash = {};
       var pushLinkHash = {};
       incrementHash[`${action}.count`] = 1;
-      pushLinkHash[`${action}.uriLinks`] = `${actionStamp}`;
+      pushLinkHash[`${action}.stamps`] = actionStamp;
 
       var queryHash = {};
       queryHash["sessionName"] = session;
@@ -38,7 +38,7 @@ module.exports.postStats = function(req, res) {
       console.log(pushLinkHash);
       console.log(queryHash);
 
-      Stat.update(queryHash, {$inc: incrementHash, $push: pushLinkHash}, { multi: true, upsert: true }, function(err, stats) {
+      Stat.update(queryHash, {$inc: incrementHash, $push: pushLinkHash}, { upsert: true }, function(err, stats) {
           if (err) {
               res.send(err);
           }

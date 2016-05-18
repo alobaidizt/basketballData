@@ -13,21 +13,10 @@
     .right
       a.waves-effect.waves-light.btn.grey-text.text-darken-1.transparent href="https://www.linkedin.com/pub/ziyad-al-obaidi/70/598/540" target="_blank" Developer
   .container
-    ember-youtube ytid=yt_id autoplay=false width="100%" height="550vh"
+    ember-youtube ytid=yt_id autoplay=false width="100%" height="550vh" delegate=this delegate-as="emberYoutube"
     .row
       if showTable
-        table.centered.hoverable.table-max-height
-          thead.teal-text.text-accent-2
-            tr
-              th Link
-              th Item #
-              th TimeStamp
-          tbody.teal-text.text-accent-3.data-table
-            each structuredData as |structuredDatum|
-              tr
-                td.action-link onClick={action "grabLink" structuredDatum} Link
-                each structuredDatum as |item|
-                  td = item
+        live-testing-table structuredData=structuredData linksArray=linksArray
     .row
       button.btn.btn-info.center click="addDummyData" Send A Stat
     .row

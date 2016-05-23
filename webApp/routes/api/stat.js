@@ -15,36 +15,31 @@ module.exports.getStats = function(req, res) {
 
 module.exports.postStats = function(req, res) {  
     var io = app.io;
+    var query = req.body;
+    var videoRef = query['stat[videoRef]'];
+    var session = query['stat[sessionId]'];
+    var localContext = query['stat[localContext]'];
+    var action = query['stat[action]'];
+    var actionType = query['stat[actionType]'];
+    var subject = query['stat[subject]'];
+    var timestamp = parseInt(query['stat[timestamp]']);
 
-    var videoUri = req.body.videoUri;
-    var session = req.body.session;
+    var incrementHash = {};
+    var pushLinkHash = {};
+    incrementHash[`${action}.count`] = 1;
+    pushLinkHash[`${action}.stamps`] = timestamp;
 
-    for (var i = 0; i < req.body.outputArraySize; i++) {
-      var eventDataArr = req.body["outputArray[" + i + "][]"];
-      var actionStamp = eventDataArr[2];
-      var action = eventDataArr[3];
-      var subject = eventDataArr[4];
+    var queryHash = {};
+    queryHash["sessionName"] = session;
+    queryHash["videoPath"] = videoRef;
+    queryHash["playerNumber"] = subject;
 
-      var incrementHash = {};
-      var pushLinkHash = {};
-      incrementHash[`${action}.count`] = 1;
-      pushLinkHash[`${action}.stamps`] = actionStamp;
-
-      var queryHash = {};
-      queryHash["sessionName"] = session;
-      queryHash["playerNumber"] = subject;
-
-      console.log(incrementHash);
-      console.log(pushLinkHash);
-      console.log(queryHash);
-
-      Stat.update(queryHash, {$inc: incrementHash, $push: pushLinkHash}, { upsert: true }, function(err, stats) {
-          if (err) {
-              res.send(err);
-          }
-          res.json({stats: stats});
-      });
-    }
+    Stat.update(queryHash, {$inc: incrementHash, $push: pushLinkHash}, { upsert: true }, function(err, stats) {
+        if (err) {
+            res.send(err);
+        }
+        res.json({stats: stats});
+    });
 
     io.emit('update', {session: session});
 };

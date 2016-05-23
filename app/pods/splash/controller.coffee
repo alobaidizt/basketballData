@@ -86,21 +86,17 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin, HelpersMixi
       @transitionToRoute('calibration')
 
     addDummyData: ->
-      item1 = ["https://www.youtube.com/watch?v=OY3lSTb_DM0#t=5s",
-            "Item 1",
-            7.399932,
-            "foul",
-            "number-12"]
+      num = @getRandomIntInclusive(5,15)
+      stat =
+        videoRef:     @get('videoUrl')
+        sessionId:    @get('sessionId')
+        timestamp:    parseInt(null ? @get('delay')) - @get('delay')
+        actionType:   "after"
+        action:       "steal"
+        subject:      "number-#{num}"
+        localContext: ['test']
 
-      record =
-        videoUri:          @get('videoUrl')
-        sessionId:         @get('sessionId')
-        timestamp:         moment().unix()
-        beforeEnhancement: "this is nt goud tcst"
-        afterEnhancement:  "this is not good test"
-        structuredOutput:  [item1]
-
-      @get('api').addStat(record).then ->
+      @get('api').addStat({stat: stat}).then ->
         console.log('add a stat')
 
 `export default SplashController`

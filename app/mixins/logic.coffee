@@ -297,5 +297,4 @@ LogicMixin = Ember.Mixin.create
           console.log fouledPlayer
         console.log "Foul on " + fouledPlayer + " at " + timestamp
 
-
 `export default LogicMixin`

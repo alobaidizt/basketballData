@@ -18,4 +18,10 @@ MonitorController = Ember.Controller.extend WebsocketMixin,
     @store.query('stat', params).then (stats) =>
       @set('model', stats)
 
+  actions:
+    lookupSession: ->
+      session   = $('#session-name').val()
+      @set 'session', session
+      @updateData(session)
+
 `export default MonitorController`

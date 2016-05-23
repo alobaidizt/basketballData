@@ -1,4 +1,10 @@
 .row
+  .input-field.offset-s5.col.s2
+    input#session-name.white-text type="text" value=session
+    label for="session-name" Session Name
+  .col.s2
+    a.btn.btn-med.waves-effect.waves-light.blue click="lookupSession"
+      | Look-up
 .row
 .container
   .table-container
@@ -11,4 +17,5 @@
       showColumnsDropdown=false
       useFilteringByColumns=false
       showGlobalFilter=false
+      columnsAreUpdateable=true
     ]

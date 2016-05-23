@@ -12,6 +12,7 @@ module.exports = function(defaults) {
   app.import('bower_components/materialize/dist/js/materialize.js');
   app.import('bower_components/jquery/dist/jquery.js');
   app.import('bower_components/socket.io-client/socket.io.js');
+  app.import('bower_components/animate.css/animate.min.css');
 
   return app.toTree();
 };

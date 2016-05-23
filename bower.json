@@ -25,7 +25,8 @@
     "jquery-ui": "~1.11.4",
     "uri.js": "^1.17.1",
     "socket.io-client": "^1.4.5",
-    "dom-ruler": "0.1.13"
+    "dom-ruler": "0.1.13",
+    "animate.css": "^3.5.1"
   },
   "resolutions": {
     "jquery": "2.1.4"

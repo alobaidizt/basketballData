@@ -19,13 +19,44 @@ ActionsCellComponent = Ember.Component.extend HelpersMixin,
 
   hasStamps: Ember.computed.gt('count', 0)
 
-  count: Ember.computed "model.{assist,foul,steal,rebound,turnover,twoPointAttempt,twoPointMade,threePointAttempt,threePointMade,freeThrowAttempt,freeThrowMade}.count", 'type', ->
-      type = @get('type')
-      @get("model.#{type}.count")
+  colorClass: Ember.computed 'count', ->
+    if @get('count') == 0
+      "bad"
 
-  stamps: Ember.computed 'model.{assist,foul,steal,rebound,turnover,twoPointAttempt,twoPointMade,threePointAttempt,threePointMade,freeThrowAttempt,freeThrowMade}.uriLinks', 'type', ->
+
+  count: Ember.computed "model.{assist,foul,steal,rebound,turnover,twoPointAttempt,twoPointMade,threePointAttempt,threePointMade,freeThrowAttempt,freeThrowMade}.count", 'type', ->
     type = @get('type')
-    @get("model.#{type}.uriLinks")
+    id = @get('model.id')
+    count = @get("model.#{type}.count")
+    lastCount = @get("last#{type}")
+    if lastCount? and lastCount != count
+      Ember.run.scheduleOnce('afterRender', this, '_animate', id, type)
+    @set("last#{type}", count)
+    count
+
+  stamps: Ember.computed 'model.{assist,foul,steal,rebound,turnover,twoPointAttempt,twoPointMade,threePointAttempt,threePointMade,freeThrowAttempt,freeThrowMade}.stamps', 'type', ->
+    type = @get('type')
+    @get("model.#{type}.stamps")
+
+  init: ->
+    @_super(arguments...)
+
+    $.fn.extend
+        animateCss: (animationName) ->
+          animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend'
+          $(this).addClass('animated ' + animationName).one(animationEnd, () ->
+            $(this).removeClass('animated ' + animationName)
+          )
+
+  didReceiveAttrs: ({oldAttrs, newAttrs}) ->
+    @_super()
+    type = @get('type')
+    id = @get('model.id')
+    if oldAttrs?.model.value.get("#{type}.count") != newAttrs.model.value.get("#{type}.count")
+      Ember.run.scheduleOnce('afterRender', this, '_animate', id, type)
+
+  _animate: (id, type) ->
+      $("##{id}-#{type}").animateCss('bounce')
 
   actions:
     clicked: (model, actionTime) ->

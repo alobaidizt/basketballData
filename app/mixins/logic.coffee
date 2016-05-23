@@ -21,6 +21,9 @@ LogicMixin = Ember.Mixin.create
       @set 'detectableActions', actions
     @get('api').getStitches().then ({stitches}) =>
       @set 'stitches', stitches
+
+    @get('api').getDelay().then ({delay}) =>
+      @set 'delay', delay
     
     @get('api').getAllKeywords()
       .then ({keywords}) =>
@@ -104,14 +107,20 @@ LogicMixin = Ember.Mixin.create
     else if bothType.indexOf(element) > -1
       "both"
 
-  setContext: (arr,lastPlayer, current_i,type, action) ->
+  setContext: (arr,lastPlayer, current_i,type, action, actionTS) ->
     context = []
+    @statObj = {}
+    @statObj.videoRef = @get('videoUrl')
+    @statObj.sessionId = @get('sessionId')
+    @statObj.actionType = type
+    @statObj.timestamp = parseInt(actionTS ? @get('delay')) - @get('delay')
     contextComplete = false
     if type == "before"
       if Em.isEqual(action,'assist') && Em.isEqual(@get('lastAction'),'pass')
         @addActionToPlayer(@get('assistingPlayer'), action)
       else
         context.push(lastPlayer)
+        @statObj.subject = lastPlayer
         @set('currentSubject', lastPlayer)
         @addActionToPlayer(lastPlayer, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
       while (!contextComplete)
@@ -133,6 +142,7 @@ LogicMixin = Ember.Mixin.create
         if (@isID(arr[current_i]))
           playerID = arr[current_i]
           context.push(playerID)
+          @statObj.subject = playerID
           @set('currentSubject', playerID)
           @addActionToPlayer(playerID, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
           @set('lastID', playerID)
@@ -143,6 +153,7 @@ LogicMixin = Ember.Mixin.create
           contextComplete = true
     else if (type == "both")
       context.push(lastPlayer)
+      @statObj.subject = lastPlayer
       @set('currentSubject', lastPlayer)
       @set('assistingPlayer', lastPlayer) if Em.isEqual(action,'pass')
       @addActionToPlayer(lastPlayer, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
@@ -163,6 +174,74 @@ LogicMixin = Ember.Mixin.create
           contextComplete = true
     @set('context', context)
 
+    @statObj.localContext = context
+    @statObj.localContext.join(',')
+    
+    @_setActionForStat ['2pt-attempt'],  'twoPointAttempt', context
+    @_setActionForStat ['layup','two-points'],  'twoPointAttempt', context
+    @_setActionForStat ['shoot','two-points'],  'twoPointAttempt', context
+    @_setActionForStat ['miss','two-points'],  'twoPointAttempt', context
+    @_setActionForStat ['lose','two-points'],  'twoPointAttempt', context
+    @_setActionForStat ['try','two-points'],  'twoPointAttempt', context
+    @_setActionForStat ['attempt','two-points'],  'twoPointAttempt', context
+    @_setActionForStat ['make','two-points'],  'twoPointMade', context
+    @_setActionForStat ['score','two-points'],  'twoPointMade', context
+    @_setActionForStat ['layup','three-points'],  'threePointAttempt', context
+    @_setActionForStat ['shoot','three-points'],  'threePointAttempt', context
+    @_setActionForStat ['miss','three-points'],  'threePointAttempt', context
+    @_setActionForStat ['lose','three-points'],  'threePointAttempt', context
+    @_setActionForStat ['try','three-points'],  'threePointAttempt', context
+    @_setActionForStat ['attempt','three-points'],  'threePointAttempt', context
+    @_setActionForStat ['make','three-points'],  'threePointMade', context
+    @_setActionForStat ['score','three-points'],  'threePointMade', context
+    @_setActionForStat ['layup','free-throw'],  'freeThrowAttempt', context
+    @_setActionForStat ['shoot','free-throw'],  'freeThrowAttempt', context
+    @_setActionForStat ['miss','free-throw'],  'freeThrowAttempt', context
+    @_setActionForStat ['lose','free-throw'],  'freeThrowAttempt', context
+    @_setActionForStat ['try','free-throw'],  'freeThrowAttempt', context
+    @_setActionForStat ['attempt','free-throw'],  'freeThrowAttempt', context
+    @_setActionForStat ['layup','1st'],  'freeThrowAttempt', context
+    @_setActionForStat ['shoot','1sr'],  'freeThrowAttempt', context
+    @_setActionForStat ['miss','1st'],  'freeThrowAttempt', context
+    @_setActionForStat ['lose','1st'],  'freeThrowAttempt', context
+    @_setActionForStat ['try','1st'],  'freeThrowAttempt', context
+    @_setActionForStat ['attempt','1st'],  'freeThrowAttempt', context
+    @_setActionForStat ['make','2nd'],  'freeThrowMade', context
+    @_setActionForStat ['layup','2nd'],  'freeThrowAttempt', context
+    @_setActionForStat ['shoot','2nd'],  'freeThrowAttempt', context
+    @_setActionForStat ['miss','2nd'],  'freeThrowAttempt', context
+    @_setActionForStat ['lose','2nd'],  'freeThrowAttempt', context
+    @_setActionForStat ['try','2nd'],  'freeThrowAttempt', context
+    @_setActionForStat ['attempt','2nd'],  'freeThrowAttempt', context
+    @_setActionForStat ['make','free-throw'],  'freeThrowMade', context
+    @_setActionForStat ['score','free-throw'],  'freeThrowMade', context
+    @_setActionForStat ['make','1st'],  'freeThrowMade', context
+    @_setActionForStat ['score','1st'],  'freeThrowMade', context
+    @_setActionForStat ['make','2nd'],  'freeThrowMade', context
+    @_setActionForStat ['score','2nd'],  'freeThrowMade', context
+    @_setActionForStat ['turnover-on'],  'turnover', context
+    @_setActionForStat ['turnover-for'], 'turnover', context
+    @_setActionForStat ['turnover'], 'turnover', context
+    @_setActionForStat ['foul-on'],      'foul', context
+    @_setActionForStat ['foul-by'],      'foul', context
+    @_setActionForStat ['foul'],      'foul', context
+    @_setActionForStat ['steal-for'],    'steal', context
+    @_setActionForStat ['steal-by'],     'steal', context
+    @_setActionForStat ['steal'],     'steal', context
+    @_setActionForStat ['layup-for'],    'twoPointAttempt', context
+    @_setActionForStat ['layup-for'],    'twoPointMade', context
+    @_setActionForStat ['rebound-for'],  'rebound', context
+    @_setActionForStat ['rebound'],  'rebound', context
+    @_setActionForStat ['assist'],  'assist', context
+    @_setActionForStat ['pass'],  'pass', context
+
+  _setActionForStat: (keywordArr, action, arr) ->
+    pattern = keywordArr
+      .map (word) -> "(?=.*#{word})"
+      .join('')
+    if RegExp(pattern, 'gi').test(@statObj.localContext)
+      @statObj.action = action
+
   addActionToPlayer: (playerID, action) ->
     for id,i in @get('playerIDs')
       if Em.isEqual(id,playerID)
@@ -180,15 +259,6 @@ LogicMixin = Ember.Mixin.create
 
   isNumber: (n) ->
     return !isNaN(parseFloat(n)) && isFinite(n)
-
-
-
-
-
-
-
-
-
 
   getText: (structData) ->
     for arr in structData

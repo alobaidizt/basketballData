@@ -8,9 +8,11 @@ Filters = Ember.Mixin.create
     f1r = @firstFilter(results)
     f2r = @secondFilter(f1r,'filter')
     f3r = @thirdFilter(f2r)
+
     #f4r = @getText(f3r)
     #console.log 'players Data: ', @get('playersData')
     #console.log 'playerIDs: ', @get('playerIDs')
+
     @get('structuredData').pushObjects(f3r)
     @setProperties
       resultString: f1r
@@ -32,12 +34,11 @@ Filters = Ember.Mixin.create
     @get('api').addHistoryRecord(record).then ->
       console.log('recorded')
 
-    @get('api').addStat(record).then ->
-      console.log('stat added')
 
   firstFilter: (results) ->
     # Returns the the best result from the returned results array from the voiceRecognition 
     # service
+
     scores = new Array()
     for result,i in results
       for keyword in @get('keywords')
@@ -50,52 +51,16 @@ Filters = Ember.Mixin.create
     return results[matchedIndex]?.toLowerCase()
 
   secondFilter: (f1r, purpose) ->
-    # TODO: refactor this portion
-    keepFiltering_4 = true
-    while keepFiltering_4
-      fourDigNum = f1r.match(/\d{4}/)?.toString()
-      if fourDigNum?
-        if fourDigNum.substring(0,2) == fourDigNum.substring(2)
-          f1r = f1r.replace(fourDigNum, fourDigNum.substring(2))
-          keepFiltering_4 = true
-        else
-          keepFiltering_4 = false
-          break
-      else
-        keepFiltering_4 = false
-        break
-    keepFiltering_3 = true
-    while keepFiltering_3
-      threeDigNum = f1r.match(/\d{3}/)?.toString()
-      if threeDigNum?
-        if threeDigNum.substring(0,1) == "2"
-          f1r = f1r.replace(threeDigNum, threeDigNum.substring(1))
-          keepFiltering_3  = true
-        else
-          keepFiltering_3 = false
-          break
-      else
-        keepFiltering_3 = false
-        break
+    filteredContent = @_enhanceFourDigNumbers(f1r)
+    filteredContent = @_enhanceThreeDigNumbers(filteredContent)
+    filteredContent = @_enhanceSentenceBeginnings(filteredContent)
+    filteredContent = @_enhanceContentWithReplacementsFromDB(filteredContent)
+    filteredContent = @_enhanceContentWithStitchesFromDB(filteredContent)
 
-    if f1r.match(/^\s*(\d.*)/)?
-      f1r = "number ".concat(f1r)
-
-    for replacement in @get('replacements')
-      for mask in replacement[1]
-        if (f1r.indexOf(mask) > -1) or (mask.indexOf("\\") > -1)
-          f1r = @replaceAll(mask,replacement[0],f1r)
-
-    for stitch in @get('stitches')
-      key = Object.keys(stitch)[0]
-      value = stitch[key]
-      if (f1r.indexOf(key) > -1)
-        f1r = @replaceAll(key,value,f1r)
-
-    # The text after enhancment
-    @set('afterEnhancement', f1r)
+    # Content after enhancment
+    @set('afterEnhancement', filteredContent)
     
-    parsedResults = f1r.split(" ")
+    parsedResults = filteredContent.split(" ")
 
     if purpose == 'filter'
       output = @get('output')
@@ -259,7 +224,11 @@ Filters = Ember.Mixin.create
         type = @getActionParamsType(currentElement)
         actionTS = @getActionTS(currentElement)
         timeStamp = if actionTS? then actionTS else "-"
-        @setContext(f2r, @get('lastID'),currentIndex, type, action)
+        @setContext(f2r, @get('lastID'),currentIndex, type, action,actionTS)
+
+        @get('api').addStat({stat: @statObj}).then ->
+          console.log('stat added')
+
         @set('notificationMessage',@get('context'))
         finalResults[_frIndex] = @get('context')
         if @possibleDuplicateAction(@get('currentSubject'), action)
@@ -282,5 +251,58 @@ Filters = Ember.Mixin.create
       currentIndex++
       @set('structuredOutput', finalResults)
     return finalResults.map (row) -> row.slice(1)
+
+  _enhanceFourDigNumbers: (content) ->
+    # TODO: refactor this portion
+    keepFiltering_4 = true
+    while keepFiltering_4
+      fourDigNum = content.match(/\d{4}/)?.toString()
+      if fourDigNum?
+        if fourDigNum.substring(0,2) == fourDigNum.substring(2)
+          content = content.replace(fourDigNum, fourDigNum.substring(2))
+          keepFiltering_4 = true
+        else
+          keepFiltering_4 = false
+          break
+      else
+        keepFiltering_4 = false
+        break
+    content
+
+  _enhanceThreeDigNumbers: (content) ->
+    keepFiltering_3 = true
+    while keepFiltering_3
+      threeDigNum = content.match(/\d{3}/)?.toString()
+      if threeDigNum?
+        if threeDigNum.substring(0,1) == "2"
+          content = content.replace(threeDigNum, threeDigNum.substring(1))
+          keepFiltering_3  = true
+        else
+          keepFiltering_3 = false
+          break
+      else
+        keepFiltering_3 = false
+        break
+    content
+
+  _enhanceSentenceBeginnings: (content) ->
+    if content.match(/^\s*(\d.*)/)?
+      return content = "number ".concat(content)
+    content
+
+  _enhanceContentWithReplacementsFromDB: (content) ->
+    for replacement in @get('replacements')
+      for mask in replacement[1]
+        if (content.indexOf(mask) > -1) or (mask.indexOf("\\") > -1)
+          content = @replaceAll(mask,replacement[0], content)
+    content
+
+  _enhanceContentWithStitchesFromDB: (content) ->
+    for stitch in @get('stitches')
+      key = Object.keys(stitch)[0]
+      value = stitch[key]
+      if (content.indexOf(key) > -1)
+        content = @replaceAll(key,value, content)
+    content
 
 `export default Filters`

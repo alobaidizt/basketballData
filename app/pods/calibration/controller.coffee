@@ -21,6 +21,13 @@ CalibrationController = Ember.Controller.extend
       $('#name').val('')
       $('#mask').val('')
 
+  setDelay: ->
+    # in seconds
+    delay    = parseInt($('#link-delay').val())
+
+    @get('api').setDelay(delay).then ->
+      $('#link-delay').val('')
+
   addStitch: ->
     stitchIn    = $('#stitch-in').val().toLowerCase()
     stitchOut   = $('#stitch-out').val().toLowerCase()
@@ -42,6 +49,7 @@ CalibrationController = Ember.Controller.extend
 
     addData:   -> @addData()
     addStitch: -> @addStitch()
+    setDelay: -> @setDelay()
     calibrate: -> @calibrate()
 
 `export default CalibrationController`

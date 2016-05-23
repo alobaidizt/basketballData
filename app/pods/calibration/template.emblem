@@ -55,6 +55,9 @@
       .input-field.col.s2
         input#link-delay.white-text type="text" value=linkDelay
         label for="link-delay" Video Link Delay
+      .col.s2
+        a.btn.btn-med.waves-effect.waves-light.blue click="setDelay"
+          | Set
 
 .c-notification__container
   each notifications as |notification|

@@ -56,14 +56,30 @@ ApiService = Ember.Service.extend
     # returns a promise
     $.ajax({
       type: "GET",
-      url: @get('host') + "/api/config/action",
+      url: @get('host') + "/api/config/action"
     })
 
   getStitches: ->
     # returns a promise
     $.ajax({
       type: "GET",
-      url: @get('host') + "/api/config/stitch",
+      url: @get('host') + "/api/config/stitch"
+    })
+
+  setDelay: (delay) ->
+    # returns a promise
+    $.ajax({
+      type: "POST",
+      url: @get('host') + "/api/config/delay",
+      data:
+        { delay: delay }
+    })
+
+  getDelay: ->
+    # returns a promise
+    $.ajax({
+      type: "GET",
+      url: @get('host') + "/api/config/delay",
     })
 
   addStat: (record) ->
@@ -72,11 +88,7 @@ ApiService = Ember.Service.extend
     $.ajax({
       type: "POST",
       url: @get('host') + "/api/stats",
-      data:
-        outputArray: record.structuredOutput,
-        outputArraySize: size,
-        videoUri: record.videoUri,
-        session: record.sessionId
+      data: record
     })
 
 `export default ApiService`

@@ -3,6 +3,6 @@
 
 Action = MF.Fragment.extend
   count:    DS.attr('number')
-  uriLinks: MF.array('string')
+  stamps:   MF.array('string')
 
 `export default Action`

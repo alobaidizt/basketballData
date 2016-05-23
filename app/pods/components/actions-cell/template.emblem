@@ -1,6 +1,11 @@
 .actions-cell.center
-  label.count id=type = count
-  pop-over for=type on="click" flow="dropdown"
+  label.count class=colorClass id={concat model.id '-' type}
+    | {{count}}
+  pop-over [
+    for=(concat model.id '-' type)
+    on="click"
+    flow="dropdown"
+    ]
     .actions-popup
       h4.center = type
       hr

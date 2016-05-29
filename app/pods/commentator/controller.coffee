@@ -4,7 +4,7 @@
 `import FiltersMixin from 'insight-sports/mixins/filters'`
 `import HelpersMixin from 'insight-sports/mixins/helpers'`
 
-SplashController = Ember.Controller.extend LogicMixin, FiltersMixin, HelpersMixin,
+CommentatorController = Ember.Controller.extend LogicMixin, FiltersMixin, HelpersMixin,
 
   api:              Ember.inject.service()
   recognition:      Ember.inject.service()
@@ -99,4 +99,10 @@ SplashController = Ember.Controller.extend LogicMixin, FiltersMixin, HelpersMixi
       @get('api').addStat({stat: stat}).then ->
         console.log('add a stat')
 
-`export default SplashController`
+    testData: ->
+      sentence = "number 12 pass to number 3, number-3 attempt a three-points shot and makes a three-points shot in number-23 steal the ball"
+      @set('outputTS', [10])
+      @set('output', [])
+      @filter([sentence])
+
+`export default CommentatorController`

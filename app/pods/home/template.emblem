@@ -1,0 +1,25 @@
+.home
+  .center.vertical-center
+    .row
+      h1.gold Now Sportz 
+      h3.greenish We're working hard on a game changer... Stay tuned
+    .row
+    .row
+    .row
+      h5.gold Sign-up to recieve the exciting updates over the next few weeks
+    .row.center
+      if showGratitude
+        i.large.material-icons.gold thumb_up
+        h2.gold Thank You!
+      else
+        form#email-form.col-s12
+          .row
+            .input-field.email-us
+              i.material-icons.prefix email
+              = input class="validate gold" id="email" value=email type="email" required=true autocomplete="on"
+              label.validate.gold for="email" data-error="Doesn't look right!" data-success="Looks good!"  Email
+            
+          .row.email-us
+            button.btn.btn-med.waves-effect.waves-light.gold type="button" onclick={action "saveEmail"}
+                | Interested
+

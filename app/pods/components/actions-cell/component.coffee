@@ -23,6 +23,8 @@ ActionsCellComponent = Ember.Component.extend HelpersMixin,
     if @get('count') == 0
       "bad"
 
+  actionCellClass: Ember.computed 'model.id', 'type', ->
+    "#{@get('model.id')}-#{@get('type')}"
 
   count: Ember.computed "model.{assist,foul,steal,rebound,turnover,twoPointAttempt,twoPointMade,threePointAttempt,threePointMade,freeThrowAttempt,freeThrowMade}.count", 'type', ->
     type = @get('type')
@@ -65,13 +67,22 @@ ActionsCellComponent = Ember.Component.extend HelpersMixin,
 
       @setProperties
         'playerVars.start': time
-        'playerVars.end':   time + 5
+        'playerVars.end':   time + 10
         'videoId':          @youTubeGetID(ytid)
 
       @emberYoutube.player.loadVideoById
         videoId:          @get('videoId')
         startSeconds:     time
-        endSeconds:       time + 5
+        endSeconds:       time + 10
         suggestedQuality: 'medium'
+    openModal: ->
+      modalID = "##{@get('actionCellClass')}"
+      $(modalID).openModal()
+
+    close: ->
+      @emberYoutube?.player.stopVideo()
+
+      modalID = "##{@get('actionCellClass')}"
+      $(modalID).closeModal()
 
 `export default ActionsCellComponent`

@@ -34,7 +34,7 @@ module.exports.postStats = function(req, res) {
     queryHash["videoPath"] = videoRef;
     queryHash["playerNumber"] = subject;
 
-    Stat.update(queryHash, {$inc: incrementHash, $push: pushLinkHash}, { upsert: true }, function(err, stats) {
+    Stat.update(queryHash, {$inc: incrementHash, $push: pushLinkHash}, { upsert: true, new: true}, function(err, stats) {
         if (err) {
             res.send(err);
         }

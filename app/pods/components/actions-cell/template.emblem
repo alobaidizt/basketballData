@@ -1,25 +1,18 @@
-.actions-cell.center
-  label.count class=colorClass id={concat model.id '-' type}
+.actions-cell.center.modal-trigger
+  label.count class={colorClass actionCellClass} data-target={concat '#' model.id '-' type} click="openModal"
     | {{count}}
-  pop-over [
-    for=(concat model.id '-' type)
-    on="click"
-    flow="dropdown"
-    ]
-    .actions-popup
-      h4.center = type
-      hr
-      .row
+  action-highlights-modal title=model.playerNumber modalId=(concat model.id '-' type) close=(action 'close')
+    .detailed-view
+      .row.some-class
         if hasStamps
-          .col.s2
-            ul.list-container
-              each stamps as |stamp|
-                li
-                  a.waves-effect.waves-light.btn  onClick={action "clicked" model stamp}
-                    | {{type}} @ {{round stamp 0}} s
+          ul.list-container.col.s3
+            each stamps as |stamp|
+              li
+                a.waves-effect.waves-light.btn  onClick={action "clicked" model stamp}
+                  | {{type}} @ {{round stamp 0}} s
 
-          .col.s9.right
-            .playback-container
-              ember-youtube class="yt-container" ytid=videoId playerVars=playerVars startSeconds=playerVars.start endSeconds=playerVars.end width="100%" height="180vh" delegate=this delegate-as="emberYoutube"
+        
+          .col.s9.right.playback-container
+            ember-youtube class="yt-container" ytid=videoId playerVars=playerVars startSeconds=playerVars.start endSeconds=playerVars.end width="100%" height="100%" delegate=this delegate-as="emberYoutube"
         else
           p.center No {{type}}s Found for Player {{model.playerNumber}}

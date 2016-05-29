@@ -1,12 +1,11 @@
 .row
   .input-field.offset-s5.col.s2
-    input#session-name.white-text type="text" value=session
+    input#session-name.gold type="text" value=session
     label for="session-name" Session Name
   .col.s2
-    a.btn.btn-med.waves-effect.waves-light.blue click="lookupSession"
+    a.btn.btn-med.waves-effect.waves-light.look-up click="lookupSession"
       | Look-up
 .row
-.container
   .table-container
     = models-table [
       data=model

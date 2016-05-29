@@ -5,6 +5,7 @@ var keywords  = require('./api/keyword');
 var histories = require('./api/history');
 var config = require('./api/config');
 var stats = require('./api/stat');
+var email = require('./api/email');
 
 /* Keywords routes */
 router.route('/keywords')
@@ -54,5 +55,9 @@ router.route('/config/action')
 router.route('/stats')
     .post(function(req, res) { stats.postStats(req, res); })
     .get(function(req, res) { stats.getStats(req, res); });
+
+/* Email routes */
+router.route('/emails')
+    .post(function(req, res) { email.postEmail(req, res); });
 
 module.exports = router;  

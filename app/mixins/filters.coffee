@@ -93,16 +93,18 @@ Filters = Ember.Mixin.create
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('inbound')
-        output.push(parsedResult)
+        output.push("pass")
         if purpose == 'filter'
-          @set('lastAction', parsedResult.toString())
+          @set('lastAction', "pass")
       if parsedResult.toString().includes('bounce')
-        output.push(parsedResult)
+        output.push("pass")
         if purpose == 'filter'
-          @set('lastAction', parsedResult.toString())
+          @set('lastAction', "pass")
       if parsedResult.toString().includes('make')
-        parsedResults.splice(i,0,'attempt')
-        skip = true
+        #console.log parsedResults
+        #parsedResults.splice(i,0,'attempt')
+        #console.log parsedResults
+        #skip = true
         output.push('attempt')
         if purpose == 'filter'
           if Em.isEqual(@get('lastAction'), 'pass')
@@ -112,41 +114,42 @@ Filters = Ember.Mixin.create
         output.push(parsedResult)
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
-      if parsedResult.toString().includes('miss')
-        output.push(parsedResult)
+      #if parsedResult.toString().includes('miss')
+        #output.push(parsedResult)
         #if purpose == 'filter'
           #@set('lastAction', parsedResult.toString())
-      if parsedResult.toString().includes('grab')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @set('lastAction', parsedResult.toString())
+      #if parsedResult.toString().includes('grab')
+        #output.push(parsedResult)
+        #if purpose == 'filter'
+          #@set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('lose')
-        parsedResults.splice(i,0,'turnover')
-        skip = true
+        #parsedResults.splice(i,0,'turnover')
+        #skip = true
         output.push('turnover')
-        output.push('lose')
+        #output.push('lose')
         if purpose == 'filter'
-          @set('lastAction', parsedResult.toString()) # review lastActions when assuming actions like 'turnover' and 'attempt'
+          @set('lastAction', 'turnover') # review lastActions when assuming actions like 'turnover' and 'attempt'
       if parsedResult.toString().includes('pass')
         output.push(parsedResult)
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
 
       if parsedResult.toString().includes('two-points')
-        parsedResults.splice(i,0,'attempt')
-        skip = true
-        output.push('attempt')
+        #parsedResults.splice(i,0,'attempt')
+        #skip = true
+        output.push('attempt') unless ['make','attempt'].includes(output[output.length - 1])
         output.push('two-points')
       if parsedResult.toString().includes('three-points')
         parsedResults.splice(i,0,'attempt')
         skip = true
-        output.push('attempt')
+        output.push('attempt') unless ['make','attempt'].includes(output[output.length - 1])
         output.push('three-points')
       if parsedResult.toString().includes('score')
+        output.push('attempt')
         if purpose == 'filter'
           if Em.isEqual(@get('lastAction'), 'pass')
             output.push('assist')
-        output.push(parsedResult)
+        output.push("make")
       if parsedResult.toString().includes('turnover-on')
         output.push(parsedResult)
         if purpose == 'filter'
@@ -163,17 +166,17 @@ Filters = Ember.Mixin.create
         output.push(parsedResult)
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
-      if parsedResult.toString().includes('no-basket-for')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @set('lastAction', parsedResult.toString())
+      #if parsedResult.toString().includes('no-basket-for')
+        #output.push(parsedResult)
+        #if purpose == 'filter'
+          #@set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('foul-by')
         output.push(parsedResult)
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
-      if parsedResult.toString().includes('layup')
-        parsedResults.splice(i,0,'2pt-attempt')
-        output.push('2pt-attempt', parsedResult)
+      #if parsedResult.toString().includes('layup')
+        #parsedResults.splice(i,0,'2pt-attempt')
+        #output.push('2pt-attempt', parsedResult)
       if parsedResult.toString().includes('foul-on')
         output.push(parsedResult)
         if purpose == 'filter'
@@ -182,10 +185,10 @@ Filters = Ember.Mixin.create
         output.push(parsedResult)
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
-      if parsedResult.toString().includes('ball-to')
-        output.push(parsedResult)
-      if parsedResult.toString().includes('ball-from')
-        output.push(parsedResult)
+      #if parsedResult.toString().includes('ball-to')
+        #output.push(parsedResult)
+      #if parsedResult.toString().includes('ball-from')
+        #output.push(parsedResult)
       if parsedResult.toString().includes('steal')
         output.push(parsedResult)
         if purpose == 'filter'
@@ -223,12 +226,14 @@ Filters = Ember.Mixin.create
         @get('detectedActions').pushObject(action)
         type = @getActionParamsType(currentElement)
         actionTS = @getActionTS(currentElement)
-        timeStamp = if actionTS? then actionTS else "-"
-        @setContext(f2r, @get('lastID'),currentIndex, type, action,actionTS)
-
-        @get('api').addStat({stat: @statObj}).then ->
-          console.log('stat added')
-
+        timeStamp =
+          if actionTS?
+            actionTS
+          else if (action == 'assist')
+            @get('lastPassTS')
+          else
+            "-"
+        @setContext(f2r, @get('lastID'),currentIndex, type, action, actionTS)
         @set('notificationMessage',@get('context'))
         finalResults[_frIndex] = @get('context')
         if @possibleDuplicateAction(@get('currentSubject'), action)
@@ -236,6 +241,10 @@ Filters = Ember.Mixin.create
           @addNotification('Ignored a duplicate action')
           _frIndex--
         else
+
+          @get('api').addStat({stat: @statObj}).then ->
+            console.log('stat added')
+
           @addNotification(@get('notificationMessage'))
           finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timeStamp)
           if actionTS?

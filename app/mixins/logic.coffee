@@ -41,7 +41,7 @@ LogicMixin = Ember.Mixin.create
       if event.results[resultIndex].isFinal
         @set('isIdle', true)
         setTimeout((() =>
-          console.log 'is idle: ', @get('isIdle')
+          #console.log 'is idle: ', @get('isIdle')
           if @get('isIdle')
             @get('rec').stop()
             @get('rec').start()
@@ -52,7 +52,7 @@ LogicMixin = Ember.Mixin.create
       else
         @set('isIdle', false)
         interimText += event.results[resultIndex][0].transcript
-        console.log interimText
+        #console.log interimText
       resultIndex++
 
     @recordTS(interimText)  if Ember.isPresent(interimText)  # Record Timestamps using interim string
@@ -93,6 +93,8 @@ LogicMixin = Ember.Mixin.create
     for actionHash,i in @get('timestamps')
       if element == actionHash[0]
         timestamp =  actionHash[1]
+        if element == "pass"
+          @set('lastPassTS', timestamp)
         @get('timestamps').splice(i,1)
         return timestamp
 
@@ -116,7 +118,9 @@ LogicMixin = Ember.Mixin.create
     @statObj.timestamp = parseInt(actionTS ? @get('delay')) - @get('delay')
     contextComplete = false
     if type == "before"
-      if Em.isEqual(action,'assist') && Em.isEqual(@get('lastAction'),'pass')
+      if Em.isEqual(action,'assist')
+        @statObj.subject = @get('assistingPlayer')
+        @statObj.timestamp = parseInt(@get('lastPassTS') ? @get('delay')) - @get('delay')
         @addActionToPlayer(@get('assistingPlayer'), action)
       else
         context.push(lastPlayer)
@@ -125,13 +129,16 @@ LogicMixin = Ember.Mixin.create
         @addActionToPlayer(lastPlayer, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
       while (!contextComplete)
         context.push(arr[current_i++])
+        if ((action == "make") && (arr[current_i - 1] == "attempt")) || ((action == "attempt") && (arr[current_i - 1] == "make")) || ((action == "make") && (arr[current_i - 1] == "attempt"))
+          context.pop()
         if typeof (arr[current_i]) == 'undefined'
           currentIndex = current_i - 1
           contextComplete = true
           break
         if @isAction(arr[current_i]) || @isID(arr[current_i])
           currentIndex = current_i
-          contextComplete = true
+          unless ((action == "make") && (arr[current_i] == "attempt")) || ((action == "attempt") && (arr[current_i] == "make"))
+            contextComplete = true
     else if type == "after"
       while (!contextComplete)
         context.push(arr[current_i++])

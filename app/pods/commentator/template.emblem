@@ -17,13 +17,17 @@
     .row
       if showTable
         live-testing-table structuredData=structuredData linksArray=linksArray
-    .row
-      button.btn.btn-info.center click="addDummyData" Send A Stat
+    /*.row */
+      /*button.btn.btn-info.center click="addDummyData" Send A Stat*/
+      /*button.btn.btn-med.waves-effect.waves-light click="testData"*/
+        /*| send test data*/
     .row
       #report-summary
 
   .c-notification__container
     each notifications as |notification|
       notification-message notification=notification
+
+
 
 == outlet

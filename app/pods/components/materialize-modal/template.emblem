@@ -1,0 +1,12 @@
+.modal.bottom-sheet id=modalId
+  .modal-header
+    a.close.x-corner onclick=attrs.close
+      i.medium.material-icons clear
+    h4 = title
+  .modal-content
+    = yield 
+
+  if showFooter
+    .modal-footer
+      a.modal-action.modal-close.waves-effect.waves-green.btn-flat href="#!" Done
+

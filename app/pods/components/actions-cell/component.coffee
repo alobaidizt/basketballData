@@ -20,7 +20,7 @@ ActionsCellComponent = Ember.Component.extend HelpersMixin,
   hasStamps: Ember.computed.gt('count', 0)
 
   colorClass: Ember.computed 'count', ->
-    if @get('count') == 0
+    if @get('count') == '-'
       "bad"
 
   actionCellClass: Ember.computed 'model.id', 'type', ->
@@ -30,6 +30,9 @@ ActionsCellComponent = Ember.Component.extend HelpersMixin,
     type = @get('type')
     id = @get('model.id')
     count = @get("model.#{type}.count")
+    if Em.isEqual(count, 0)
+      count = '-'
+    
     lastCount = @get("last#{type}")
     if lastCount? and lastCount != count
       Ember.run.scheduleOnce('afterRender', this, '_animate', id, type)

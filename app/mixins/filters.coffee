@@ -109,21 +109,12 @@ Filters = Ember.Mixin.create
         output.push("make")
       if parsedResult.toString().includes('try')
         output.push('attempt')
-        if purpose == 'filter'
-          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('shoot')
         output.push('attempt')
-        if purpose == 'filter'
-          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('layup')
         output.push('attempt')
-        if purpose == 'filter'
-          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('miss')
         output.push('attempt')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @set('lastAction', parsedResult.toString())
           
 
       if parsedResult.toString().includes('assist')

@@ -129,7 +129,7 @@ LogicMixin = Ember.Mixin.create
         @addActionToPlayer(lastPlayer, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
       while (!contextComplete)
         context.push(arr[current_i++])
-        if ((action == "make") && (arr[current_i - 1] == "attempt")) || ((action == "attempt") && (arr[current_i - 1] == "make")) || ((action == "make") && (arr[current_i - 1] == "attempt"))
+        if ((action == "make") && (arr[current_i - 1] == "attempt")) || ((action == "attempt") && (arr[current_i - 1] == "make")) || ((action == "attempt") && (arr[current_i - 1] == "assist"))
           context.pop()
         if typeof (arr[current_i]) == 'undefined'
           currentIndex = current_i - 1
@@ -137,7 +137,7 @@ LogicMixin = Ember.Mixin.create
           break
         if @isAction(arr[current_i]) || @isID(arr[current_i])
           currentIndex = current_i
-          unless ((action == "make") && (arr[current_i] == "attempt")) || ((action == "attempt") && (arr[current_i] == "make"))
+          unless ((action == "make") && (arr[current_i] == "attempt")) || ((action == "attempt") && (arr[current_i] == "make")) || ((action == "attempt") && (arr[current_i] == "assist"))
             contextComplete = true
     else if type == "after"
       while (!contextComplete)

@@ -9,20 +9,11 @@ Filters = Ember.Mixin.create
     f2r = @secondFilter(f1r,'filter')
     f3r = @thirdFilter(f2r)
 
-    #f4r = @getText(f3r)
-    #console.log 'players Data: ', @get('playersData')
-    #console.log 'playerIDs: ', @get('playerIDs')
-
     @get('structuredData').pushObjects(f3r)
     @setProperties
       resultString: f1r
       showResult:   true
     @set 'timestamps', []
-
-    #for piece in @get('structuredOutput')
-      #if !isNaN(piece)
-        #timeInSec = Number(piece[1]) + 2
-      #piece[1] = @get('videoUrl') + "#t=" +  timeInSec + "s"
 
     record =
       sessionId:          @get('sessionId')
@@ -80,6 +71,8 @@ Filters = Ember.Mixin.create
         output.push(parsedResult)
       if parsedResult.toString().includes('2nd')
         output.push(parsedResult)
+      if parsedResult.toString().includes('3rd')
+        output.push(parsedResult)
       if parsedResult.toString().includes('rebound')
         output.push(parsedResult)
         if purpose == 'filter'
@@ -100,56 +93,59 @@ Filters = Ember.Mixin.create
         output.push("pass")
         if purpose == 'filter'
           @set('lastAction', "pass")
+
+      # business logic for two-points, three-points, & free-throw (implement its own method)
       if parsedResult.toString().includes('make')
-        #console.log parsedResults
-        #parsedResults.splice(i,0,'attempt')
-        #console.log parsedResults
-        #skip = true
         output.push('attempt')
         if purpose == 'filter'
           if Em.isEqual(@get('lastAction'), 'pass')
             output.push('assist')
         output.push("make")
-      if parsedResult.toString().includes('assist')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @set('lastAction', parsedResult.toString())
-      #if parsedResult.toString().includes('miss')
-        #output.push(parsedResult)
-        #if purpose == 'filter'
-          #@set('lastAction', parsedResult.toString())
-      #if parsedResult.toString().includes('grab')
-        #output.push(parsedResult)
-        #if purpose == 'filter'
-          #@set('lastAction', parsedResult.toString())
-      if parsedResult.toString().includes('lose')
-        #parsedResults.splice(i,0,'turnover')
-        #skip = true
-        output.push('turnover')
-        #output.push('lose')
-        if purpose == 'filter'
-          @set('lastAction', 'turnover') # review lastActions when assuming actions like 'turnover' and 'attempt'
-      if parsedResult.toString().includes('pass')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @set('lastAction', parsedResult.toString())
-
-      if parsedResult.toString().includes('two-points')
-        #parsedResults.splice(i,0,'attempt')
-        #skip = true
-        output.push('attempt') unless ['make','attempt'].includes(output[output.length - 1])
-        output.push('two-points')
-      if parsedResult.toString().includes('three-points')
-        parsedResults.splice(i,0,'attempt')
-        skip = true
-        output.push('attempt') unless ['make','attempt'].includes(output[output.length - 1])
-        output.push('three-points')
       if parsedResult.toString().includes('score')
         output.push('attempt')
         if purpose == 'filter'
           if Em.isEqual(@get('lastAction'), 'pass')
             output.push('assist')
         output.push("make")
+      if parsedResult.toString().includes('try')
+        output.push('attempt')
+        if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
+      if parsedResult.toString().includes('shoot')
+        output.push('attempt')
+        if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
+      if parsedResult.toString().includes('layup')
+        output.push('attempt')
+        if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
+      if parsedResult.toString().includes('miss')
+        output.push('attempt')
+        output.push(parsedResult)
+        if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
+          
+
+      if parsedResult.toString().includes('assist')
+        output.push(parsedResult)
+        if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
+      if parsedResult.toString().includes('lose')
+        output.push('turnover')
+        if purpose == 'filter'
+          @set('lastAction', 'turnover') # review lastActions when assuming actions like 'turnover' and 'attempt'
+      if parsedResult.toString().includes('pass')
+        output.push(parsedResult)
+        if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
+      if parsedResult.toString().includes('two-points')
+        output.push('two-points')
+      if parsedResult.toString().includes('three-points')
+        output.push('three-points')
+      if parsedResult.toString().includes('free-throw')
+        output.push(parsedResult)
+        if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('turnover-on')
         output.push(parsedResult)
         if purpose == 'filter'
@@ -162,21 +158,10 @@ Filters = Ember.Mixin.create
         output.push(parsedResult)
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
-      if parsedResult.toString().includes('free-throw')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @set('lastAction', parsedResult.toString())
-      #if parsedResult.toString().includes('no-basket-for')
-        #output.push(parsedResult)
-        #if purpose == 'filter'
-          #@set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('foul-by')
         output.push(parsedResult)
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
-      #if parsedResult.toString().includes('layup')
-        #parsedResults.splice(i,0,'2pt-attempt')
-        #output.push('2pt-attempt', parsedResult)
       if parsedResult.toString().includes('foul-on')
         output.push(parsedResult)
         if purpose == 'filter'
@@ -185,10 +170,6 @@ Filters = Ember.Mixin.create
         output.push(parsedResult)
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
-      #if parsedResult.toString().includes('ball-to')
-        #output.push(parsedResult)
-      #if parsedResult.toString().includes('ball-from')
-        #output.push(parsedResult)
       if parsedResult.toString().includes('steal')
         output.push(parsedResult)
         if purpose == 'filter'

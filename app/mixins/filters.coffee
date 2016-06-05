@@ -107,6 +107,8 @@ Filters = Ember.Mixin.create
           if Em.isEqual(@get('lastAction'), 'pass')
             output.push('assist')
         output.push("make")
+      if parsedResult.toString().includes('attempt')
+        output.push('attempt')
       if parsedResult.toString().includes('try')
         output.push('attempt')
       if parsedResult.toString().includes('shoot')
@@ -190,10 +192,12 @@ Filters = Ember.Mixin.create
     while currentIndex <= (f2r.length - 1)
       currentElement = @getNextElement(f2r, currentIndex)
       if @isID(currentElement)
+        @checkForDuplicates = true
         @set('lastID', currentElement)
         currentIndex++
         currentElement = @getNextElement(f2r, currentIndex)
       if @isAction(currentElement)
+        @checkForDuplicates = false
         action = currentElement
         @get('detectedActions').pushObject(action)
         type = @getActionParamsType(currentElement)

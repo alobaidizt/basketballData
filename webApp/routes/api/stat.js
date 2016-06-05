@@ -24,6 +24,10 @@ module.exports.postStats = function(req, res) {
     var subject = query['stat[subject]'];
     var timestamp = parseInt(query['stat[timestamp]']);
 
+    if (isNaN(subject) || (subject.length > 2)) {
+      res.json({stats: {} })
+      return;
+    }
     var incrementHash = {};
     var pushLinkHash = {};
     incrementHash[`${action}.count`] = 1;

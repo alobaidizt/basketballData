@@ -22,6 +22,8 @@ ActionsCellComponent = Ember.Component.extend HelpersMixin,
   colorClass: Ember.computed 'count', ->
     if @get('count') == '-'
       "bad"
+    else
+      "teal-text text-accent-2"
 
   actionCellClass: Ember.computed 'model.id', 'type', ->
     "#{@get('model.id')}-#{@get('type')}"

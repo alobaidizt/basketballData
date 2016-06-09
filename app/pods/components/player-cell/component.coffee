@@ -24,7 +24,7 @@ PlayerCellComponent = Ember.Component.extend HelpersMixin,
 
   playerNumber: Ember.computed 'model.playerNumber', ->
     number = @get('model.playerNumber')
-    if number == "10000"
+    if number == "99999"
       'Total'
     else
       number = number + ""

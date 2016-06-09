@@ -3,6 +3,8 @@
 MaterializeModalComponent = Ember.Component.extend
   showFooter: false
 
+  isTotal: Ember.computed.equal('title', 'Total')
+
   init: ->
     @_super()
     $(document).ready =>

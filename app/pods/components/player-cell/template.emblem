@@ -2,7 +2,7 @@
   label.gold.player-number class={actionCellClass} data-target={concat '#' model.id '-player-' model.playerNumber} click="openModal"
     | {{playerNumber}}
 
-  action-highlights-modal title=model.playerNumber modalId=(concat model.id '-player-' model.playerNumber) close=(action 'close')
+  action-highlights-modal title=playerNumber modalId=(concat model.id '-player-' model.playerNumber) close=(action 'close')
     .detailed-view
       .row.some-class
         if hasActions

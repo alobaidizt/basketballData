@@ -18,14 +18,14 @@ module.exports.postStats = function(req, res) {
     var query = req.body;
     var videoRef = query['stat[videoRef]'];
     var session = query['stat[sessionId]'];
-    var localContext = query['stat[localContext]'];
+    //var localContext = query['stat[localContext]'];
     var action = query['stat[action]'];
-    var actionType = query['stat[actionType]'];
+    //var actionType = query['stat[actionType]'];
     var subject = query['stat[subject]'];
     var timestamp = parseInt(query['stat[timestamp]']);
 
-    if (isNaN(subject) || (subject.length > 2)) {
-      res.json({stats: {} })
+    if (isNaN(subject) || (subject.length > 2) || (action == null)) {
+      res.json({stats: {} });
       return;
     }
     var incrementHash = {};
@@ -37,6 +37,19 @@ module.exports.postStats = function(req, res) {
     queryHash["sessionName"] = session;
     queryHash["videoPath"] = videoRef;
     queryHash["playerNumber"] = subject;
+
+    Stat.update({"playerNumber": "99999", "sessionName": session}, { $set: {"playerNumber": "99999", "sessionName": session} }, { upsert: true, new: true, setDefaultsOnInsert: true}, function(err, stats) {
+      if (err) {
+        console.log(err);
+      }
+
+      Stat.update({"playerNumber": "99999", "sessionName": session}, {$inc: incrementHash, $push: pushLinkHash}, function(err, stat) {
+        if (err) {
+          console.log(err);
+        }
+      });
+    });
+
 
     Stat.update(queryHash, {$inc: incrementHash, $push: pushLinkHash}, { upsert: true, new: true}, function(err, stats) {
         if (err) {

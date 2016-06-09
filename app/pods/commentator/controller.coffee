@@ -21,6 +21,7 @@ CommentatorController = Ember.Controller.extend LogicMixin, FiltersMixin, Helper
   lastID_i:   	    undefined
   lastAction:       undefined
   currentElement:   undefined
+  interimText:      ''
   structuredData:   new Array()
   tsPointer:        null       # Timestamp pointer
   ytPlayer:         {}

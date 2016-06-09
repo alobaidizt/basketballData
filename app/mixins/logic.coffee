@@ -54,7 +54,7 @@ LogicMixin = Ember.Mixin.create
       else
         @set('isIdle', false)
         interimText += event.results[resultIndex][0].transcript
-        #console.log interimText
+        @set 'interimText', interimText ? ''
       resultIndex++
 
     @recordTS(interimText)  if Ember.isPresent(interimText)  # Record Timestamps using interim string

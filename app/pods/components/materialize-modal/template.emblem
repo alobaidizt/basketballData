@@ -2,7 +2,8 @@
   .modal-header
     a.close.x-corner onclick=attrs.close
       i.medium.material-icons clear
-    h4 = title
+    h4
+      | Player {{title}}
   .modal-content
     = yield 
 

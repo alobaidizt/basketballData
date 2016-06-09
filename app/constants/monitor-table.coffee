@@ -1,6 +1,7 @@
 columns = [
     propertyName: "playerNumber"
     title:        "Player #"
+    template:     "cells/player-details"
   ,
     propertyName: "playerTeam"
     title:        "Player Team"

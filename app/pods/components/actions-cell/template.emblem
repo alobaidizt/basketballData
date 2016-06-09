@@ -1,7 +1,7 @@
 .actions-cell.center.modal-trigger
   label.count class={colorClass actionCellClass} data-target={concat '#' model.id '-' type} click="openModal"
     | {{count}}
-  action-highlights-modal title=model.playerNumber modalId=(concat model.id '-' type) close=(action 'close')
+  action-highlights-modal title=playerNumber modalId=(concat model.id '-' type) close=(action 'close')
     .detailed-view
       .row.some-class
         if hasStamps

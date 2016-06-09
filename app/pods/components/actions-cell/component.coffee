@@ -28,6 +28,17 @@ ActionsCellComponent = Ember.Component.extend HelpersMixin,
   actionCellClass: Ember.computed 'model.id', 'type', ->
     "#{@get('model.id')}-#{@get('type')}"
 
+  playerNumber: Ember.computed 'model.playerNumber', ->
+    number = @get('model.playerNumber')
+    if number == "99999"
+      'Total'
+    else
+      number = number + ""
+      while (number.length < 2)
+        number = "0" + number
+     
+      number
+
   count: Ember.computed "model.{assist,foul,steal,rebound,turnover,twoPointAttempt,twoPointMade,threePointAttempt,threePointMade,freeThrowAttempt,freeThrowMade}.count", 'type', ->
     type = @get('type')
     id = @get('model.id')

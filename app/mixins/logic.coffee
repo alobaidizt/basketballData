@@ -126,7 +126,7 @@ LogicMixin = Ember.Mixin.create
         @addActionToPlayer(@get('assistingPlayer'), action)
       else
         context.push(lastPlayer)
-        @statObj.subject = parseInt(lastPlayer?.match(/\d+/))
+        @statObj.subject = parseInt(lastPlayer?.match(/\d+/)) unless @possibleDuplicateAction(@get('currentSubject'), action)
         @set('currentSubject', lastPlayer)
         @addActionToPlayer(lastPlayer, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
       while (!contextComplete)
@@ -156,7 +156,7 @@ LogicMixin = Ember.Mixin.create
           @checkForDuplicates = false
           playerID = arr[current_i]
           context.push(playerID)
-          @statObj.subject = parseInt(playerID?.match(/\d+/))
+          @statObj.subject = parseInt(playerID?.match(/\d+/)) unless @possibleDuplicateAction(@get('currentSubject'), action)
           @set('currentSubject', playerID)
           @addActionToPlayer(playerID, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
           @set('lastID', playerID)
@@ -168,7 +168,7 @@ LogicMixin = Ember.Mixin.create
           contextComplete = true
     else if (type == "both")
       context.push(lastPlayer)
-      @statObj.subject = parseInt(lastPlayer?.match(/\d+/))
+      @statObj.subject = parseInt(lastPlayer?.match(/\d+/)) unless @possibleDuplicateAction(@get('currentSubject'), action)
       @set('currentSubject', lastPlayer)
       @set('assistingPlayer', lastPlayer) if Em.isEqual(action,'pass')
       @addActionToPlayer(lastPlayer, action) unless @possibleDuplicateAction(@get('currentSubject'), action)

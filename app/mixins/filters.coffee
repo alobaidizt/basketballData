@@ -73,7 +73,7 @@ Filters = Ember.Mixin.create
         output.push(parsedResult)
       if parsedResult.toString().includes('3rd')
         output.push(parsedResult)
-      if parsedResult.toString().includes('rebound')
+      if parsedResult.toString().includes('rebound-by')
         output.push(parsedResult)
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
@@ -81,7 +81,7 @@ Filters = Ember.Mixin.create
         output.push(parsedResult)
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
-      else if parsedResult.toString().includes('rebound-by')
+      else if parsedResult.toString().includes('rebound')
         output.push(parsedResult)
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
@@ -114,13 +114,13 @@ Filters = Ember.Mixin.create
       if parsedResult.toString().includes('shoot')
         output.push('attempt')
       if parsedResult.toString().includes('layup')
-        output.push('attempt')
+        output.push('two-points')
       if parsedResult.toString().includes('miss')
         output.push('attempt')
           
 
       if parsedResult.toString().includes('assist')
-        output.push(parsedResult)
+        output.push(parsedResult.toString())
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('lose')
@@ -128,7 +128,7 @@ Filters = Ember.Mixin.create
         if purpose == 'filter'
           @set('lastAction', 'turnover') # review lastActions when assuming actions like 'turnover' and 'attempt'
       if parsedResult.toString().includes('pass')
-        output.push(parsedResult)
+        output.push(parsedResult.toString())
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('two-points')
@@ -136,43 +136,43 @@ Filters = Ember.Mixin.create
       if parsedResult.toString().includes('three-points')
         output.push('three-points')
       if parsedResult.toString().includes('free-throw')
-        output.push(parsedResult)
+        output.push(parsedResult.toString())
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('turnover-on')
-        output.push(parsedResult)
+        output.push(parsedResult.toString())
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
       else if parsedResult.toString().includes('turnover-for')
-        output.push(parsedResult)
+        output.push(parsedResult.toString())
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
       else if parsedResult.toString().includes('turnover')
-        output.push(parsedResult)
+        output.push(parsedResult.toString())
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('foul-by')
-        output.push(parsedResult)
+        output.push(parsedResult.toString())
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
-      if parsedResult.toString().includes('foul-on')
-        output.push(parsedResult)
+      else if parsedResult.toString().includes('foul-on')
+        output.push(parsedResult.toString())
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
-      if parsedResult.toString().includes('foul')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @set('lastAction', parsedResult.toString())
-      if parsedResult.toString().includes('steal')
-        output.push(parsedResult)
-        if purpose == 'filter'
-          @set('lastAction', parsedResult.toString())
-      if parsedResult.toString().includes('steal-for')
-        output.push(parsedResult)
+      else if parsedResult.toString().includes('foul')
+        output.push(parsedResult.toString())
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('steal-by')
-        output.push(parsedResult)
+        output.push(parsedResult).toString()
+        if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
+      else if parsedResult.toString().includes('steal-for')
+        output.push(parsedResult.toString())
+        if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
+      else if parsedResult.toString().includes('steal')
+        output.push(parsedResult.toString())
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
       if @isNumber(parsedResult.toString())

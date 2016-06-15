@@ -23,6 +23,12 @@ PlayerCellComponent = Ember.Component.extend HelpersMixin,
   actionCellClass: Ember.computed 'model.{id,playerNumber}', ->
     "#{@get('model.id')}-player-#{@get('model.playerNumber')}"
 
+  colorClass: Ember.computed 'model.playerNumber', 'count', ->
+    if Em.isEqual(@get('model.playerNumber'), '99999')
+      'green-text text-accent-3'
+    else
+      'gold'
+
   playerNumber: Ember.computed 'model.playerNumber', ->
     number = @get('model.playerNumber')
     if number == "99999"

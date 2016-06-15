@@ -20,7 +20,10 @@ ActionsCellComponent = Ember.Component.extend HelpersMixin,
 
   hasStamps: Ember.computed.gt('count', 0)
 
-  colorClass: Ember.computed 'count', ->
+  colorClass: Ember.computed 'model.playerNumber', 'count', ->
+    if Em.isEqual(@get('model.playerNumber'), '99999')
+      return 'green-text text-accent-3'
+
     if @get('count') == '-'
       "bad"
     else

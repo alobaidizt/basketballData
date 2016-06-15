@@ -36,10 +36,11 @@ module.exports.postStats = function(req, res) {
 
     var queryHash = {};
     queryHash["sessionName"] = session;
-    //queryHash["videoPath"] = videoRef;
+    queryHash["videoPath"] = videoRef;
     queryHash["playerNumber"] = subject;
     var findQueryHash = {}
     findQueryHash["sessionName"] = session;
+    findQueryHash["videoPath"] = videoRef;
     findQueryHash["playerNumber"] = subject;
     findQueryHash[`${action}.stamps`] = { $not: { $elemMatch: { $gte: timestampLowerBound, $lte: timestamp } } };
 

@@ -28,6 +28,13 @@ CalibrationController = Ember.Controller.extend
     @get('api').setDelay(delay).then ->
       $('#link-delay').val('')
 
+  setDuration: ->
+    # in seconds
+    duration = parseInt($('#clip-duration').val())
+
+    @get('api').setDuration(duration).then ->
+      $('#clip-duration').val('')
+
   addStitch: ->
     stitchIn    = $('#stitch-in').val().toLowerCase()
     stitchOut   = $('#stitch-out').val().toLowerCase()
@@ -50,6 +57,7 @@ CalibrationController = Ember.Controller.extend
     addData:   -> @addData()
     addStitch: -> @addStitch()
     setDelay: -> @setDelay()
+    setDuration: -> @setDuration()
     calibrate: -> @calibrate()
 
 `export default CalibrationController`

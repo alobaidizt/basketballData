@@ -48,16 +48,24 @@
 .divider
 
 .row
-  .col.s
+  .col.s12
     h5.blue-text Config
-  form.col.s12
-    .row
-      .input-field.col.s2
-        input#link-delay.white-text type="text" value=linkDelay
-        label for="link-delay" Video Link Delay
-      .col.s2
-        a.btn.btn-med.waves-effect.waves-light.blue click="setDelay"
-          | Set
+.row.col.s12
+  form.col.s6
+    .input-field.col.s6
+      input#link-delay.white-text type="text" value=linkDelay
+      label for="link-delay" Video Link Delay
+    .col.s6
+      a.btn.btn-med.waves-effect.waves-light.blue click="setDelay"
+        | Set Delay
+
+  form.col.s6
+    .input-field.col.s6
+      input#clip-duration.white-text type="text" value=clipDuration
+      label for="clip-duration" Video Clip Duration
+    .col.s6
+      a.btn.btn-med.waves-effect.waves-light.blue click="setDuration"
+        | Set Duration
 
 .c-notification__container
   each notifications as |notification|

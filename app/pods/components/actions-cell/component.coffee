@@ -2,6 +2,7 @@
 `import HelpersMixin from 'insight-sports/mixins/helpers'`
 
 ActionsCellComponent = Ember.Component.extend HelpersMixin,
+  api:                Ember.inject.service()
   videoId:            null
   playerVars:
       autoplay:       1
@@ -59,6 +60,9 @@ ActionsCellComponent = Ember.Component.extend HelpersMixin,
   init: ->
     @_super(arguments...)
 
+    @get('api').getDuration().then ({duration}) =>
+      @set 'duration', duration
+
     $.fn.extend
         animateCss: (animationName) ->
           animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend'
@@ -80,10 +84,11 @@ ActionsCellComponent = Ember.Component.extend HelpersMixin,
     clicked: (model, actionTime) ->
       time = parseInt(actionTime)
       ytid = model.get('videoPath')
+      duration = parseInt(@get('duration') ? 10)
 
       @setProperties
         'playerVars.start': time
-        'playerVars.end':   time + 10
+        'playerVars.end':   time + duration
         'videoId':          @youTubeGetID(ytid)
 
       @emberYoutube.player.loadVideoById

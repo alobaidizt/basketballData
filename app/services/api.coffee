@@ -82,6 +82,22 @@ ApiService = Ember.Service.extend
       url: @get('host') + "/api/config/delay",
     })
 
+  setDuration: (duration) ->
+    # returns a promise
+    $.ajax({
+      type: "POST",
+      url: @get('host') + "/api/config/duration",
+      data:
+        { duration: duration }
+    })
+
+  getDuration: ->
+    # returns a promise
+    $.ajax({
+      type: "GET",
+      url: @get('host') + "/api/config/duration",
+    })
+
   addStat: (record) ->
     # returns a promise
     size = record.structuredOutput?.length

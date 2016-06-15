@@ -43,29 +43,42 @@ module.exports.postStats = function(req, res) {
     findQueryHash["playerNumber"] = subject;
     findQueryHash[`${action}.stamps`] = { $not: { $elemMatch: { $gte: timestampLowerBound, $lte: timestamp } } };
 
-    Stat.update({"playerNumber": "99999", "sessionName": session}, { $set: {"playerNumber": "99999", "sessionName": session} }, { upsert: true, new: true, setDefaultsOnInsert: true}, function(err, stats) {
-      if (err) {
-        console.log(err);
-      }
+    Stat.update(queryHash, { $set: queryHash}, { new: true, upsert: true, setDefaultsOnInsert: true }, function(err, stats) {
+      console.log('before');
+      console.log(Date.now());
+      Stat.update(findQueryHash, {$inc: incrementHash, $push: pushLinkHash}, { new: true},
+        function(err, stats) {
+          if (err) {
+              res.send(err);
+          }
 
-      Stat.update({"playerNumber": "99999", "sessionName": session}, {$inc: incrementHash, $push: pushLinkHash}, function(err, stat) {
-        if (err) {
-          console.log(err);
-        }
+          console.log(stats.nModified);
+          if (stats.nModified > 0) {
+            Stat.update({"playerNumber": "99999", "sessionName": session}, { $set: {"playerNumber": "99999", "sessionName": session} }, { upsert: true, new: true, setDefaultsOnInsert: true}, function(err, stats) {
+              if (err) {
+                console.log(err);
+              }
+
+              Stat.update({"playerNumber": "99999", "sessionName": session}, {$inc: incrementHash, $push: pushLinkHash}, function(err, stat) {
+                if (err) {
+                  console.log(err);
+                }
+              });
+            });
+          }
+
+
+          console.log('after');
+          console.log(Date.now());
+          res.json({stats: stats});
       });
+
+      if (err) {
+          res.send(err);
+      }
+      //res.json({stats: stats});
     });
 
-    console.log('before');
-    console.log(Date.now());
-    Stat.findAndModify(findQueryHash, [], {$inc: incrementHash, $push: pushLinkHash}, { new: true },
-      function(err, stats) {
-        if (err) {
-            res.send(err);
-        }
-        console.log('after');
-        console.log(Date.now());
-        res.json({stats: stats});
-    });
 
 
     //console.log('before');

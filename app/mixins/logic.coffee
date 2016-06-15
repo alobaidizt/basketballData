@@ -121,12 +121,13 @@ LogicMixin = Ember.Mixin.create
     contextComplete = false
     if type == "before"
       if Em.isEqual(action,'assist')
-        @statObj.subject = parseInt(@get('assistingPlayer')?.match(/\d+/))
+
+        @statObj.subject = @formatPlayer(@get('assistingPlayer'))
         @statObj.timestamp = parseInt(@get('lastPassTS') ? @get('delay')) - @get('delay')
         @addActionToPlayer(@get('assistingPlayer'), action)
       else
         context.push(lastPlayer)
-        @statObj.subject = parseInt(lastPlayer?.match(/\d+/)) unless @possibleDuplicateAction(@get('currentSubject'), action)
+        @statObj.subject = @formatPlayer(lastPlayer) unless @possibleDuplicateAction(@get('currentSubject'), action)
         @set('currentSubject', lastPlayer)
         @addActionToPlayer(lastPlayer, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
       while (!contextComplete)
@@ -155,7 +156,7 @@ LogicMixin = Ember.Mixin.create
         if (@isID(arr[current_i]))
           playerID = arr[current_i]
           context.push(playerID)
-          @statObj.subject = parseInt(playerID?.match(/\d+/)) unless @possibleDuplicateAction(@get('currentSubject'), action)
+          @statObj.subject = @formatPlayer(playerID) unless @possibleDuplicateAction(@get('currentSubject'), action)
           @set('currentSubject', playerID)
           @addActionToPlayer(playerID, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
           @set('lastID', playerID)
@@ -168,7 +169,7 @@ LogicMixin = Ember.Mixin.create
           @set('checkForDuplicates', true)
     else if (type == "both")
       context.push(lastPlayer)
-      @statObj.subject = parseInt(lastPlayer?.match(/\d+/)) unless @possibleDuplicateAction(@get('currentSubject'), action)
+      @statObj.subject = @formatPlayer(lastPlayer) unless @possibleDuplicateAction(@get('currentSubject'), action)
       @set('currentSubject', lastPlayer)
       @set('assistingPlayer', lastPlayer) if Em.isEqual(action,'pass')
       @addActionToPlayer(lastPlayer, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
@@ -275,6 +276,13 @@ LogicMixin = Ember.Mixin.create
 
   isNumber: (n) ->
     return !isNaN(parseFloat(n)) && isFinite(n)
+
+  formatPlayer: (playerId) ->
+    number = parseInt(playerId?.match(/\d+/))
+    number = number + ""
+    while (number.length < 2)
+      number = "0" + number
+    number
 
   getText: (structData) ->
     for arr in structData

@@ -3,12 +3,6 @@ columns = [
     title:        "Player #"
     template:     "cells/player-details"
   ,
-    propertyName: "playerTeam"
-    title:        "Player Team"
-  ,
-    propertyName: "sessionName"
-    title:        "Session"
-  ,
     propertyName: "twoPointAttempt.count"
     title:        "2 Pt. A"
     template:     "cells/two-point-attempt"

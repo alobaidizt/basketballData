@@ -192,12 +192,11 @@ Filters = Ember.Mixin.create
     while currentIndex <= (f2r.length - 1)
       currentElement = @getNextElement(f2r, currentIndex)
       if @isID(currentElement)
-        @checkForDuplicates = true
         @set('lastID', currentElement)
         currentIndex++
         currentElement = @getNextElement(f2r, currentIndex)
+        @set('checkForDuplicates', false)
       if @isAction(currentElement)
-        @checkForDuplicates = false
         action = currentElement
         @get('detectedActions').pushObject(action)
         type = @getActionParamsType(currentElement)
@@ -209,6 +208,7 @@ Filters = Ember.Mixin.create
             @get('lastPassTS')
           else
             "-"
+        @set('checkForDuplicates', true)
         @setContext(f2r, @get('lastID'),currentIndex, type, action, actionTS)
         @set('notificationMessage',@get('context'))
         finalResults[_frIndex] = @get('context')
@@ -217,7 +217,6 @@ Filters = Ember.Mixin.create
           @addNotification('Ignored a duplicate action')
           _frIndex--
         else
-
           @get('api').addStat({stat: @statObj}).then ->
             console.log('stat added')
 
@@ -230,6 +229,7 @@ Filters = Ember.Mixin.create
         @setProperties
           previousAction:   action
           previousSubject:  @get('currentSubject')
+
 
         @incrementProperty('finalResults_i',1)
         _frIndex++

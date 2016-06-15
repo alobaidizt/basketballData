@@ -102,7 +102,7 @@ CommentatorController = Ember.Controller.extend LogicMixin, FiltersMixin, Helper
 
     testData: ->
       #assist in the middle test case = "number 12 pass to number 3, number-3 attempt a three-points shot and makes a three-points shot in number-23 steal the ball"
-      sentence = "number 1413 shoots first free throw and he misses it, number 12 attempts second free throw, and he makes it"
+      sentence = "number 12 pass to number 3, number-3 attempt a three-points shot and makes a three-points shot in number-23 steal the ball"
       @set('outputTS', [10])
       @set('output', [])
       @filter([sentence])

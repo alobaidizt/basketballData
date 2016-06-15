@@ -138,13 +138,13 @@ LogicMixin = Ember.Mixin.create
           contextComplete = true
           break
         if @isAction(arr[current_i]) || @isID(arr[current_i])
-          if @isID(arr[current_i])
-            @checkForDuplicates = true
-          else
-            @checkForDuplicates = false
           currentIndex = current_i
           unless ((action == "make") && (arr[current_i] == "attempt")) || ((action == "attempt") && (arr[current_i] == "make")) || ((action == "attempt") && (arr[current_i] == "assist"))
             contextComplete = true
+          if @isAction(arr[current_i])
+            @set('checkForDuplicates', true)
+          if @isID(arr[current_i])
+            @set('checkForDuplicates', false)
     else if type == "after"
       while (!contextComplete)
         context.push(arr[current_i++])
@@ -153,7 +153,6 @@ LogicMixin = Ember.Mixin.create
           contextComplete = true
           break
         if (@isID(arr[current_i]))
-          @checkForDuplicates = false
           playerID = arr[current_i]
           context.push(playerID)
           @statObj.subject = parseInt(playerID?.match(/\d+/)) unless @possibleDuplicateAction(@get('currentSubject'), action)
@@ -162,10 +161,11 @@ LogicMixin = Ember.Mixin.create
           @set('lastID', playerID)
           currentIndex = current_i
           contextComplete = true
+          @set('checkForDuplicates', false)
         else if (@isAction(arr[current_i]))
-          @checkForDuplicates = false
           currentIndex = current_i
           contextComplete = true
+          @set('checkForDuplicates', true)
     else if (type == "both")
       context.push(lastPlayer)
       @statObj.subject = parseInt(lastPlayer?.match(/\d+/)) unless @possibleDuplicateAction(@get('currentSubject'), action)
@@ -179,16 +179,16 @@ LogicMixin = Ember.Mixin.create
           contextComplete = true
           break
         if (@isID(arr[current_i]))
-          @checkForDuplicates = false
           playerID = arr[current_i]
           context.push(playerID)
           @set('lastID', playerID)
           currentIndex = current_i
           contextComplete = true
+          @set('checkForDuplicates', false)
         else if (@isAction(arr[current_i]))
-          @checkForDuplicates = false
           currentIndex = current_i
           contextComplete = true
+          @set('checkForDuplicates', true)
     @set('context', context)
 
     @statObj.localContext = context
@@ -249,13 +249,25 @@ LogicMixin = Ember.Mixin.create
         @get('playersData')[i].push(action)
 
   possibleDuplicateAction: (currentSubject, action) ->
-    unless @checkForDuplicates
+    unless @get('checkForDuplicates')
       return false
 
     if Em.isEqual(action,'make')
       return false
 
-    return true if Em.isEqual(@get('previousSubject'), currentSubject) && Em.isEqual(action, @get('previousAction'))
+    if !@get('previousAction')?
+      return false
+
+    longerAction = ''
+    shorterAction = ''
+    if action.length > @get('previousAction').length
+      longerAction = action
+      shorterAction = @get('previousAction')
+    else
+      shorterAction = action
+      longerAction = @get('previousAction')
+
+    return true if Em.isEqual(@get('previousSubject'), currentSubject) && longerAction.includes(shorterAction)
     false
 
   replaceAll: (find, replace, str) ->

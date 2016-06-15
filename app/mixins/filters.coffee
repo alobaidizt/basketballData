@@ -50,6 +50,7 @@ Filters = Ember.Mixin.create
 
     # Content after enhancment
     @set('afterEnhancement', filteredContent)
+    @set 'finalText', filteredContent ? ''
     
     parsedResults = filteredContent.split(" ")
 

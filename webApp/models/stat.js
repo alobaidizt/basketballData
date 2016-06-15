@@ -20,4 +20,8 @@ var StatSchema = new Schema({
   steal:              { type: Mixed, default: { count: 0, stamps: [] } }
 }, {collection: 'stats', minimize: false, strict: false});
 
+StatSchema.statics.findAndModify = function (query, sort, doc, options, callback) {
+  return this.collection.findAndModify(query, sort, doc, options, callback);
+};
+
 module.exports = mongoose.model('Stat', StatSchema);  

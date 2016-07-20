@@ -2,6 +2,8 @@
 
 LogicMixin = Ember.Mixin.create
 
+  checkForDuplicates: false
+
   init: ->
     @_super()
 
@@ -52,7 +54,7 @@ LogicMixin = Ember.Mixin.create
       else
         @set('isIdle', false)
         interimText += event.results[resultIndex][0].transcript
-        #console.log interimText
+        @set 'interimText', interimText ? ''
       resultIndex++
 
     @recordTS(interimText)  if Ember.isPresent(interimText)  # Record Timestamps using interim string
@@ -119,17 +121,18 @@ LogicMixin = Ember.Mixin.create
     contextComplete = false
     if type == "before"
       if Em.isEqual(action,'assist')
-        @statObj.subject = @get('assistingPlayer')
+
+        @statObj.subject = @formatPlayer(@get('assistingPlayer'))
         @statObj.timestamp = parseInt(@get('lastPassTS') ? @get('delay')) - @get('delay')
         @addActionToPlayer(@get('assistingPlayer'), action)
       else
         context.push(lastPlayer)
-        @statObj.subject = lastPlayer
+        @statObj.subject = @formatPlayer(lastPlayer) unless @possibleDuplicateAction(@get('currentSubject'), action)
         @set('currentSubject', lastPlayer)
         @addActionToPlayer(lastPlayer, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
       while (!contextComplete)
         context.push(arr[current_i++])
-        if ((action == "make") && (arr[current_i - 1] == "attempt")) || ((action == "attempt") && (arr[current_i - 1] == "make")) || ((action == "make") && (arr[current_i - 1] == "attempt"))
+        if ((action == "make") && (arr[current_i - 1] == "attempt")) || ((action == "attempt") && (arr[current_i - 1] == "make")) || ((action == "attempt") && (arr[current_i - 1] == "assist"))
           context.pop()
         if typeof (arr[current_i]) == 'undefined'
           currentIndex = current_i - 1
@@ -137,8 +140,12 @@ LogicMixin = Ember.Mixin.create
           break
         if @isAction(arr[current_i]) || @isID(arr[current_i])
           currentIndex = current_i
-          unless ((action == "make") && (arr[current_i] == "attempt")) || ((action == "attempt") && (arr[current_i] == "make"))
+          unless ((action == "make") && (arr[current_i] == "attempt")) || ((action == "attempt") && (arr[current_i] == "make")) || ((action == "attempt") && (arr[current_i] == "assist"))
             contextComplete = true
+          if @isAction(arr[current_i])
+            @set('checkForDuplicates', true)
+          if @isID(arr[current_i])
+            @set('checkForDuplicates', false)
     else if type == "after"
       while (!contextComplete)
         context.push(arr[current_i++])
@@ -149,18 +156,20 @@ LogicMixin = Ember.Mixin.create
         if (@isID(arr[current_i]))
           playerID = arr[current_i]
           context.push(playerID)
-          @statObj.subject = playerID
+          @statObj.subject = @formatPlayer(playerID) unless @possibleDuplicateAction(@get('currentSubject'), action)
           @set('currentSubject', playerID)
           @addActionToPlayer(playerID, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
           @set('lastID', playerID)
           currentIndex = current_i
           contextComplete = true
+          @set('checkForDuplicates', false)
         else if (@isAction(arr[current_i]))
           currentIndex = current_i
           contextComplete = true
+          @set('checkForDuplicates', true)
     else if (type == "both")
       context.push(lastPlayer)
-      @statObj.subject = lastPlayer
+      @statObj.subject = @formatPlayer(lastPlayer) unless @possibleDuplicateAction(@get('currentSubject'), action)
       @set('currentSubject', lastPlayer)
       @set('assistingPlayer', lastPlayer) if Em.isEqual(action,'pass')
       @addActionToPlayer(lastPlayer, action) unless @possibleDuplicateAction(@get('currentSubject'), action)
@@ -176,56 +185,33 @@ LogicMixin = Ember.Mixin.create
           @set('lastID', playerID)
           currentIndex = current_i
           contextComplete = true
+          @set('checkForDuplicates', false)
         else if (@isAction(arr[current_i]))
           currentIndex = current_i
           contextComplete = true
+          @set('checkForDuplicates', true)
     @set('context', context)
 
     @statObj.localContext = context
     @statObj.localContext.join(',')
+    @_actionSet = false
     
-    @_setActionForStat ['2pt-attempt'],  'twoPointAttempt', context
-    @_setActionForStat ['layup','two-points'],  'twoPointAttempt', context
-    @_setActionForStat ['shoot','two-points'],  'twoPointAttempt', context
-    @_setActionForStat ['miss','two-points'],  'twoPointAttempt', context
-    @_setActionForStat ['lose','two-points'],  'twoPointAttempt', context
-    @_setActionForStat ['try','two-points'],  'twoPointAttempt', context
+    @_setActionForStat ['assist'],  'assist', context
     @_setActionForStat ['attempt','two-points'],  'twoPointAttempt', context
     @_setActionForStat ['make','two-points'],  'twoPointMade', context
-    @_setActionForStat ['score','two-points'],  'twoPointMade', context
-    @_setActionForStat ['layup','three-points'],  'threePointAttempt', context
-    @_setActionForStat ['shoot','three-points'],  'threePointAttempt', context
-    @_setActionForStat ['miss','three-points'],  'threePointAttempt', context
-    @_setActionForStat ['lose','three-points'],  'threePointAttempt', context
-    @_setActionForStat ['try','three-points'],  'threePointAttempt', context
+    @_setActionForStat ['make'],  'twoPointMade', context
     @_setActionForStat ['attempt','three-points'],  'threePointAttempt', context
     @_setActionForStat ['make','three-points'],  'threePointMade', context
-    @_setActionForStat ['score','three-points'],  'threePointMade', context
-    @_setActionForStat ['layup','free-throw'],  'freeThrowAttempt', context
-    @_setActionForStat ['shoot','free-throw'],  'freeThrowAttempt', context
-    @_setActionForStat ['miss','free-throw'],  'freeThrowAttempt', context
-    @_setActionForStat ['lose','free-throw'],  'freeThrowAttempt', context
-    @_setActionForStat ['try','free-throw'],  'freeThrowAttempt', context
+    @_setActionForStat ['make'],  'threePointMade', context
     @_setActionForStat ['attempt','free-throw'],  'freeThrowAttempt', context
-    @_setActionForStat ['layup','1st'],  'freeThrowAttempt', context
-    @_setActionForStat ['shoot','1sr'],  'freeThrowAttempt', context
-    @_setActionForStat ['miss','1st'],  'freeThrowAttempt', context
-    @_setActionForStat ['lose','1st'],  'freeThrowAttempt', context
-    @_setActionForStat ['try','1st'],  'freeThrowAttempt', context
     @_setActionForStat ['attempt','1st'],  'freeThrowAttempt', context
-    @_setActionForStat ['make','2nd'],  'freeThrowMade', context
-    @_setActionForStat ['layup','2nd'],  'freeThrowAttempt', context
-    @_setActionForStat ['shoot','2nd'],  'freeThrowAttempt', context
-    @_setActionForStat ['miss','2nd'],  'freeThrowAttempt', context
-    @_setActionForStat ['lose','2nd'],  'freeThrowAttempt', context
-    @_setActionForStat ['try','2nd'],  'freeThrowAttempt', context
     @_setActionForStat ['attempt','2nd'],  'freeThrowAttempt', context
+    @_setActionForStat ['attempt','3rd'],  'freeThrowAttempt', context
     @_setActionForStat ['make','free-throw'],  'freeThrowMade', context
-    @_setActionForStat ['score','free-throw'],  'freeThrowMade', context
     @_setActionForStat ['make','1st'],  'freeThrowMade', context
-    @_setActionForStat ['score','1st'],  'freeThrowMade', context
     @_setActionForStat ['make','2nd'],  'freeThrowMade', context
-    @_setActionForStat ['score','2nd'],  'freeThrowMade', context
+    @_setActionForStat ['make','3rd'],  'freeThrowMade', context
+    @_setActionForStat ['make'],  'freeThrowMade', context
     @_setActionForStat ['turnover-on'],  'turnover', context
     @_setActionForStat ['turnover-for'], 'turnover', context
     @_setActionForStat ['turnover'], 'turnover', context
@@ -236,18 +222,27 @@ LogicMixin = Ember.Mixin.create
     @_setActionForStat ['steal-by'],     'steal', context
     @_setActionForStat ['steal'],     'steal', context
     @_setActionForStat ['layup-for'],    'twoPointAttempt', context
-    @_setActionForStat ['layup-for'],    'twoPointMade', context
     @_setActionForStat ['rebound-for'],  'rebound', context
     @_setActionForStat ['rebound'],  'rebound', context
-    @_setActionForStat ['assist'],  'assist', context
     @_setActionForStat ['pass'],  'pass', context
 
   _setActionForStat: (keywordArr, action, arr) ->
-    pattern = keywordArr
-      .map (word) -> "(?=.*#{word})"
-      .join('')
-    if RegExp(pattern, 'gi').test(@statObj.localContext)
-      @statObj.action = action
+    if @_actionSet
+      return
+    if keywordArr.length == 1 && keywordArr[0] == 'make'
+      if @lastStatAction?.includes(action.substring(0, action.length - 4)) && RegExp(/make/, 'i').test(@statObj.localContext)
+        @_actionSet = true
+        @statObj.action = action
+        @lastStatAction = action
+        return
+    else
+      pattern = keywordArr
+        .map (word) -> "(?=.*#{word})"
+        .join('')
+      if RegExp(pattern, 'gi').test(@statObj.localContext)
+        @_actionSet = true
+        @statObj.action = action
+        @lastStatAction = action
 
   addActionToPlayer: (playerID, action) ->
     for id,i in @get('playerIDs')
@@ -255,10 +250,25 @@ LogicMixin = Ember.Mixin.create
         @get('playersData')[i].push(action)
 
   possibleDuplicateAction: (currentSubject, action) ->
+    unless @get('checkForDuplicates')
+      return false
+
     if Em.isEqual(action,'make')
       return false
 
-    return true if Em.isEqual(@get('previousSubject'), currentSubject) && Em.isEqual(action, @get('previousAction'))
+    if !@get('previousAction')?
+      return false
+
+    longerAction = ''
+    shorterAction = ''
+    if action.length > @get('previousAction').length
+      longerAction = action
+      shorterAction = @get('previousAction')
+    else
+      shorterAction = action
+      longerAction = @get('previousAction')
+
+    return true if Em.isEqual(@get('previousSubject'), currentSubject) && longerAction.includes(shorterAction)
     false
 
   replaceAll: (find, replace, str) ->
@@ -266,6 +276,13 @@ LogicMixin = Ember.Mixin.create
 
   isNumber: (n) ->
     return !isNaN(parseFloat(n)) && isFinite(n)
+
+  formatPlayer: (playerId) ->
+    number = parseInt(playerId?.match(/\d+/))
+    number = number + ""
+    while (number.length < 2)
+      number = "0" + number
+    number
 
   getText: (structData) ->
     for arr in structData

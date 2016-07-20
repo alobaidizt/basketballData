@@ -42,6 +42,9 @@ router.route('/config')
 router.route('/config/delay')
     .get(function(req,res) { config.getDelay(req,res); })
     .post(function(req,res) { config.updateDelay(req,res); });
+router.route('/config/duration')
+    .get(function(req,res) { config.getDuration(req,res); })
+    .post(function(req,res) { config.updateDuration(req,res); });
 router.route('/config/stitch')
     .get(function(req,res) { config.getStitches(req,res); })
     .post(function(req,res) { config.updateStitches(req,res); })

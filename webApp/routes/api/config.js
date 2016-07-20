@@ -35,6 +35,39 @@ module.exports.updateDelay = function(req, res) {
     );
 };
 
+module.exports.getDuration = function(req, res) {  
+    Config.find(function(err, config) {
+        if (err) {
+            res.send(err);
+        }
+	if (config.length > 0) {
+          res.json({duration: config[0].clipDuration});
+	} else {
+	  res.json("error: no configs available");
+	}
+    });
+};
+
+module.exports.updateDuration = function(req, res) {  
+    var duration = req.body.duration;
+
+    Config.update(
+        {}, 
+        {
+          $set: {
+          clipDuration: duration
+          }
+        },
+        {upsert: true},
+	function(err, numAffected, raw) {
+          if (err) {
+              res.send(err);
+          }
+          res.json({numAffected: numAffected});
+    	}
+    );
+};
+
 module.exports.getStitches = function(req, res) {  
     Config.find(function(err, config) {
         if (err) {

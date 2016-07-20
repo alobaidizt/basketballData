@@ -27,11 +27,11 @@ node_modules
 logs/
 
 # misc
+/dump
 /.sass-cache
 /connect.lock
 /coverage/*
 /libpeerconnection.log
 npm-debug.log
 testem.log
-/dump
 *web-service-connection.js

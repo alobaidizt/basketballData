@@ -15,12 +15,16 @@
   .container
     ember-youtube ytid=yt_id autoplay=false width="100%" height="550vh" delegate=this delegate-as="emberYoutube"
     .row
+      label.red-text.text-accent-3.live-text.col.s12 = interimText
+    .row
+      label.lime-text.text-accent-3.live-text.col.s12 = finalText
+    .row
       if showTable
         live-testing-table structuredData=structuredData linksArray=linksArray
-    /*.row */
+    .row
       /*button.btn.btn-info.center click="addDummyData" Send A Stat*/
-      /*button.btn.btn-med.waves-effect.waves-light click="testData"*/
-        /*| send test data*/
+      button.btn.btn-med.waves-effect.waves-light click="testData"
+        | send test data
     .row
       #report-summary
 

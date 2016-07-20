@@ -11,6 +11,8 @@ CalibrationController = Ember.Controller.extend
   init: ->
     @_super()
     @get('recognition').setupCalibration()
+    @get('api').getDelay().then ({delay}) =>
+      @set 'delay', delay
 
   addData: ->
     params =
@@ -21,12 +23,21 @@ CalibrationController = Ember.Controller.extend
       $('#name').val('')
       $('#mask').val('')
 
-  setDelay: ->
+  setPreRoll: ->
     # in seconds
-    delay    = parseInt($('#link-delay').val())
+    preRoll    = parseInt($('#pre-roll').val())
 
-    @get('api').setDelay(delay).then ->
-      $('#link-delay').val('')
+    @get('api').setDelay(preRoll).then =>
+      $('#pre-roll').val('')
+      @get('api').getDelay().then ({delay}) =>
+        @set 'delay', delay
+
+  setDuration: ->
+    # in seconds
+    duration = parseInt($('#clip-duration').val())
+
+    @get('api').setDuration(duration).then ->
+      $('#clip-duration').val('')
 
   addStitch: ->
     stitchIn    = $('#stitch-in').val().toLowerCase()
@@ -49,7 +60,8 @@ CalibrationController = Ember.Controller.extend
 
     addData:   -> @addData()
     addStitch: -> @addStitch()
-    setDelay: -> @setDelay()
+    setPreRoll: -> @setPreRoll()
+    setDuration: -> @setDuration()
     calibrate: -> @calibrate()
 
 `export default CalibrationController`

@@ -7,7 +7,8 @@ module.exports = function(environment) {
     environment: environment,
     firebase: 'https://basketballData.firebaseio.com/',
     baseURL: '/',
-    locationType: 'auto',
+    hinting: false,
+    locationType: 'history',
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build

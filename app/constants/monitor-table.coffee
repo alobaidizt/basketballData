@@ -1,12 +1,7 @@
 columns = [
     propertyName: "playerNumber"
     title:        "Player #"
-  ,
-    propertyName: "playerTeam"
-    title:        "Player Team"
-  ,
-    propertyName: "sessionName"
-    title:        "Session"
+    template:     "cells/player-details"
   ,
     propertyName: "twoPointAttempt.count"
     title:        "2 Pt. A"

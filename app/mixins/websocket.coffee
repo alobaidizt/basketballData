@@ -7,7 +7,7 @@ WebsocketMixin = Ember.Mixin.create
     @willRender()
 
   willRender: ->
-    @socket = io('http://localhost:7000')
+    @socket = io('http://104.131.117.229:7000')
     @socket.on('update', (data) => @updateDataHandler(data))
 
   updateDataHandler: ({session}) ->

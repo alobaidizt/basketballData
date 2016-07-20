@@ -1,0 +1,4 @@
+a.col.s12.waves-effect.waves-light.btn  onClick=attrs.clicked
+  label.gold.col.s4 = time
+  label.gold.col.s4 = actionType
+  label.gold.col.s4 = player

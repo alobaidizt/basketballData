@@ -8,9 +8,12 @@
           ul.list-container.col.s3
             each stamps as |stamp|
               li
-                a.waves-effect.waves-light.btn  onClick={action "clicked" model stamp}
-                  | {{type}} @ {{round stamp 0}} s
-
+                modal-action-button [
+                  model=model
+                  type=type
+                  stamp=stamp
+                  clicked=(action "clicked" model stamp)
+                ]
         
           .col.s9.right.playback-container
             ember-youtube class="yt-container" ytid=videoId playerVars=playerVars startSeconds=playerVars.start endSeconds=playerVars.end width="100%" height="100%" delegate=this delegate-as="emberYoutube"

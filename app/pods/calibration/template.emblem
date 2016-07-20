@@ -53,11 +53,12 @@
 .row.col.s12
   form.col.s6
     .input-field.col.s6
-      input#link-delay.white-text type="text" value=linkDelay
-      label for="link-delay" Video Link Delay
+      input#pre-roll.white-text type="text" value=preroll
+      label for="pre-roll"
+        | current Pre-roll {{delay}}
     .col.s6
-      a.btn.btn-med.waves-effect.waves-light.blue click="setDelay"
-        | Set Delay
+      a.btn.btn-med.waves-effect.waves-light.blue click="setPreRoll"
+        | Set Pre-Roll
 
   form.col.s6
     .input-field.col.s6

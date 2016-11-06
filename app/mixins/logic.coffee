@@ -44,10 +44,8 @@ LogicMixin = Ember.Mixin.create
       if event.results[resultIndex].isFinal
         @set('isIdle', true)
         setTimeout((() =>
-          #console.log 'is idle: ', @get('isIdle')
           if @get('isIdle')
             @get('rec').stop()
-            @get('rec').start()
         ) , 2000)
         @set 'tsPointer', null # used in recordTS method
         for result,i in event.results[resultIndex]

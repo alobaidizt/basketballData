@@ -9,6 +9,12 @@ CommentatorController = Ember.Controller.extend LogicMixin, FiltersMixin, Helper
   api:              Ember.inject.service()
   recognition:      Ember.inject.service()
 
+  local: Em.computed 'localStream', ->
+    if @get('localStream') == 'on'
+      true
+    else
+      false
+
   showScript:	      false
   showResult:       false
   detectedActions:  []
@@ -29,6 +35,7 @@ CommentatorController = Ember.Controller.extend LogicMixin, FiltersMixin, Helper
   keywords:         []
   finalResults_i: 0 # used in filter 3
   videoUrl:       "https://www.youtube.com/watch?v=xMknfpleSho"
+  localUrl:       "http://127.0.0.1:1935/live/myStream/manifest.mpd"
   context: undefined
 
   showTable:        true
@@ -66,6 +73,17 @@ CommentatorController = Ember.Controller.extend LogicMixin, FiltersMixin, Helper
     startingNode.appendChild(table)
 
   actions:
+    # jwplayer actions
+    setupError: (msg) ->
+      console.log 'error', msg
+    play: (oldState) ->
+      console.log 'played', oldState
+    pause: (oldState) ->
+      console.log 'paused', oldState
+    complete: ->
+      console.log 'completed'
+    buffer: (buffer) ->
+      console.log 'buffering', buffer
     startListening: ->
       if Em.isEmpty(@get('sessionId'))
         @addNotification("Must enter a session name first", 3000)

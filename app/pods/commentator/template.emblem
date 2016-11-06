@@ -1,12 +1,21 @@
 .page-content
-  .row
+  .row.header-controls
     .col.s
       a.btn-floating.btn-med.waves-effect.waves-light.red class=isListening:green:red click="startListening"
         i.material-icons = videoIconClass
       a.btn.btn-med.waves-effect.waves-light.red click="goToCalibrate" Control
+    .col.s
+      = x-toggle [
+        value=localStream
+        onToggle=(mut localStream)
+      ]
     .input-field.col.s4
-      = input id="videoUrl" type="text" class="validate white-text" value=videoUrl
-      label for="videoUrl"
+      if local
+        = input id="videoUrl" type="text" class="validate white-text" value=localUrl
+        label for="videoUrl"
+      else
+        = input id="videoUrl" type="text" class="validate white-text" value=videoUrl
+        label for="videoUrl"
     .input-field.col.s3
       = input id="sessionId" type="text" class="validate white-text" value=sessionId
       label for="sessionId" session Name
@@ -14,7 +23,15 @@
     .right
       a.waves-effect.waves-light.btn.grey-text.text-darken-1.transparent href="https://www.linkedin.com/pub/ziyad-al-obaidi/70/598/540" target="_blank" Developer
   .container
-    = ember-youtube ytid=yt_id autoplay=false width="100%" height="550vh" delegate=this delegate-as="emberYoutube"
+    if local
+      = jw-player [
+        file=localUrl
+        width="100%"
+        height="460px"
+        image="https://fortunedotcom.files.wordpress.com/2016/05/tes-06-01-16-tesla-model-x-5.jpg"
+      ]
+    else
+      = ember-youtube ytid=yt_id autoplay=false width="100%" height="550vh" delegate=this delegate-as="emberYoutube"
     .row
       label.red-text.text-accent-3.live-text.col.s12 = interimText
     .row

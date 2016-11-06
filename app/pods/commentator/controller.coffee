@@ -37,6 +37,8 @@ CommentatorController = Ember.Controller.extend LogicMixin, FiltersMixin, Helper
   videoUrl:       "https://www.youtube.com/watch?v=xMknfpleSho"
   localUrl:       "http://127.0.0.1:1935/live/myStream/manifest.mpd"
   context: undefined
+  startTime: null
+  stopTime: null
 
   showTable:        true
   isListening:      Ember.computed.alias('recognition.isListening')
@@ -94,11 +96,13 @@ CommentatorController = Ember.Controller.extend LogicMixin, FiltersMixin, Helper
       @toggleProperty('isListening')
 
       if !status
-        @emberYoutube.player.playVideo()
+        @emberYoutube.player?.playVideo()
         recognition.start()
+        @set 'startTime', moment()
       else
-        @emberYoutube.player.pauseVideo()
+        @emberYoutube.player?.pauseVideo()
         recognition.stop()
+        @set 'stopTime', moment()
         @buildReportSummary()
 
 

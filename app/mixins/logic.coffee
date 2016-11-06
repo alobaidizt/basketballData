@@ -3,6 +3,7 @@
 LogicMixin = Ember.Mixin.create
 
   checkForDuplicates: false
+  getTimestampsFromVideo: false
 
   init: ->
     @_super()
@@ -26,7 +27,7 @@ LogicMixin = Ember.Mixin.create
 
     @get('api').getDelay().then ({delay}) =>
       @set 'delay', delay
-    
+
     @get('api').getAllKeywords()
       .then ({keywords}) =>
         @set('keywords', keywords.map (word) -> word.name)
@@ -70,7 +71,10 @@ LogicMixin = Ember.Mixin.create
     for word,i in f2
       if @isAction(word)
         @set('tsPointer', i)
-        timestamp = @emberYoutube.player.getCurrentTime()
+        if @get('getTimestampsFromVideo')
+          timestamp = @emberYoutube.player.getCurrentTime()
+        else
+          timestamp = moment().diff(@get('startTime')) / 1000
         @get('timestamps').pushObject([word,timestamp])
 
   getNextElement: (elements, i) ->
@@ -97,6 +101,7 @@ LogicMixin = Ember.Mixin.create
         timestamp =  actionHash[1]
         if element == "pass"
           @set('lastPassTS', timestamp)
+        console.log 'inside get action, timestamps:', @get('timestamps')
         @get('timestamps').splice(i,1)
         return timestamp
 
@@ -195,7 +200,7 @@ LogicMixin = Ember.Mixin.create
     @statObj.localContext = context
     @statObj.localContext.join(',')
     @_actionSet = false
-    
+
     @_setActionForStat ['assist'],  'assist', context
     @_setActionForStat ['attempt','two-points'],  'twoPointAttempt', context
     @_setActionForStat ['make','two-points'],  'twoPointMade', context

@@ -101,8 +101,7 @@ LogicMixin = Ember.Mixin.create
         timestamp =  actionHash[1]
         if element == "pass"
           @set('lastPassTS', timestamp)
-        console.log 'inside get action, timestamps:', @get('timestamps')
-        @get('timestamps').splice(i,1)
+        @get('timestamps').splice(i, 1)
         return timestamp
 
   getActionParamsType: (element) ->
@@ -116,19 +115,19 @@ LogicMixin = Ember.Mixin.create
     else if bothType.indexOf(element) > -1
       "both"
 
-  setContext: (arr,lastPlayer, current_i,type, action, actionTS) ->
+  setContext: (arr,lastPlayer, current_i,type, action, timestamp) ->
     context = []
     @statObj = {}
     @statObj.videoRef = @get('videoUrl')
     @statObj.sessionId = @get('sessionId')
     @statObj.actionType = type
-    @statObj.timestamp = parseInt(actionTS ? @get('delay')) - @get('delay')
+    @statObj.timestamp = timestamp
     contextComplete = false
     if type == "before"
       if Em.isEqual(action,'assist')
 
         @statObj.subject = @formatPlayer(@get('assistingPlayer'))
-        @statObj.timestamp = parseInt(@get('lastPassTS') ? @get('delay')) - @get('delay')
+        @statObj.timestamp = timestamp
         @addActionToPlayer(@get('assistingPlayer'), action)
       else
         context.push(lastPlayer)

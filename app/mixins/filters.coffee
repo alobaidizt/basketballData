@@ -27,7 +27,7 @@ Filters = Ember.Mixin.create
 
 
   firstFilter: (results) ->
-    # Returns the the best result from the returned results array from the voiceRecognition 
+    # Returns the the best result from the returned results array from the voiceRecognition
     # service
 
     scores = new Array()
@@ -51,7 +51,7 @@ Filters = Ember.Mixin.create
     # Content after enhancment
     @set('afterEnhancement', filteredContent)
     @set 'finalText', filteredContent ? ''
-    
+
     parsedResults = filteredContent.split(" ")
 
     if purpose == 'filter'
@@ -118,7 +118,7 @@ Filters = Ember.Mixin.create
         output.push('two-points')
       if parsedResult.toString().includes('miss')
         output.push('attempt')
-          
+
 
       if parsedResult.toString().includes('assist')
         output.push(parsedResult.toString())
@@ -201,16 +201,10 @@ Filters = Ember.Mixin.create
         action = currentElement
         @get('detectedActions').pushObject(action)
         type = @getActionParamsType(currentElement)
-        actionTS = @getActionTS(currentElement)
-        timeStamp =
-          if actionTS?
-            actionTS
-          else if (action == 'assist')
-            @get('lastPassTS')
-          else
-            "-"
+        timestamp = @getTimestampForAction(currentElement)
+
         @set('checkForDuplicates', true)
-        @setContext(f2r, @get('lastID'),currentIndex, type, action, actionTS)
+        @setContext(f2r, @get('lastID'),currentIndex, type, action, timestamp)
         @set('notificationMessage',@get('context'))
         finalResults[_frIndex] = @get('context')
         if @possibleDuplicateAction(@get('currentSubject'), action)
@@ -223,8 +217,8 @@ Filters = Ember.Mixin.create
 
           @addNotification(@get('notificationMessage'))
           finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timeStamp)
-          if actionTS?
-            timeInSec = parseInt(actionTS) - 2
+          if _.isNumber(timestamp)
+            timeInSec = parseInt(timeStamp) - 2
             @get('linksArray')[finalResults_i] = @get('videoUrl') + "#t=" + timeInSec + "s"
             finalResults[_frIndex].unshift(@get('linksArray')[finalResults_i])
         @setProperties
@@ -237,6 +231,27 @@ Filters = Ember.Mixin.create
       currentIndex++
       @set('structuredOutput', finalResults)
     return finalResults.map (row) -> row.slice(1)
+
+  getTimestampForAction: (word) ->
+    actionTimestamp = @getActionTS(word)
+    timestamp =
+      if actionTimestamp?
+        actionTimestamp
+      else if (word == 'assist')
+        @get('lastPassTS')
+      else
+        "-"
+
+    if not _.isNumber(timestamp)
+      return timestamp
+
+    delay = @get('delay')
+    if delay > timestamp
+      timestamp = 1
+    else
+      timestamp = timestamp - delay
+
+    timestamp
 
   _enhanceFourDigNumbers: (content) ->
     # TODO: refactor this portion

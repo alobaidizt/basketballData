@@ -5,14 +5,20 @@ module.exports = function(environment) {
     modulePrefix: 'insight-sports',
     podModulePrefix: 'insight-sports/pods',
     environment: environment,
-    firebase: 'https://basketballData.firebaseio.com/',
-    baseURL: '/',
+    rootURL: '/',
     hinting: false,
     locationType: 'history',
     EmberENV: {
+      FORCE_JQUERY: true,
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. 'with-controller': true
+      },
+      EXTEND_PROTOTYPES: {
+        Date: false,
+        String: true,
+        Function: false,
+        Array: true
       }
     },
 
@@ -21,7 +27,17 @@ module.exports = function(environment) {
       // when it is created
     },
     emblemOptions: {
+      quiet: true,
       blueprints: true
+    },
+    jwplayer: {
+      key: 'G1hfcAyttrVB2tlvNdz7NnR90s/vXVK8GIZl7w=='
+
+    },
+
+    'ember-cli-toggle': {
+      includedThemes: ['light', 'default', 'flip'],
+      defaultTheme: 'light'
     },
     contentSecurityPolicy: {
 	  'default-src': " https://www.youtube.com/ ", // Use 'none' if empty

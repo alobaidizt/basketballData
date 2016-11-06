@@ -1,14 +1,14 @@
-var express = require('express');
-var https = require('https');
-var http = require('http');
-var path = require('path');
-var fs = require('fs');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
+var express      = require('express');
+var https        = require('https');
+var http         = require('http');
+var path         = require('path');
+var fs           = require('fs');
+var favicon      = require('serve-favicon');
+var logger       = require('morgan');
 var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var ioServer = require('socket.io');
-var mongoose   = require('mongoose');  
+var bodyParser   = require('body-parser');
+var ioServer     = require('socket.io');
+var mongoose     = require('mongoose');
 mongoose.connect('mongodb://localhost/webApp');
 
 var app = express();
@@ -34,8 +34,8 @@ io.on('connection', function(socket){
   console.log('a user connected');
 });
 
-var routes = require('./routes/index');  
-var api = require('./routes/api'); 
+var routes = require('./routes/index');
+var api    = require('./routes/api');
 
 
 // view engine setup
@@ -43,7 +43,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 // setup headers
-var allowCrossDomain = function(req, res, next) {  
+var allowCrossDomain = function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, Content-Length, X-Requested-With');

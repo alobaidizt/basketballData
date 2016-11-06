@@ -3,6 +3,7 @@ CalibrationController = Ember.Controller.extend
 
   showCalibrationWords: false
   keywords:             undefined
+  notifications:        Ember.inject.service('notification-messages')
   recognition:          Ember.inject.service()
   api:                  Ember.inject.service()
 

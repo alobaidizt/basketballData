@@ -216,9 +216,9 @@ Filters = Ember.Mixin.create
             console.log('stat added')
 
           @addNotification(@get('notificationMessage'))
-          finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timeStamp)
+          finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timestamp)
           if _.isNumber(timestamp)
-            timeInSec = parseInt(timeStamp) - 2
+            timeInSec = parseInt(timestamp) - 2
             @get('linksArray')[finalResults_i] = @get('videoUrl') + "#t=" + timeInSec + "s"
             finalResults[_frIndex].unshift(@get('linksArray')[finalResults_i])
         @setProperties

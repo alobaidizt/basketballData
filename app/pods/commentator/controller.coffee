@@ -6,8 +6,9 @@
 
 CommentatorController = Ember.Controller.extend LogicMixin, FiltersMixin, HelpersMixin,
 
-  api:              Ember.inject.service()
-  recognition:      Ember.inject.service()
+  api:           Ember.inject.service()
+  recognition:   Ember.inject.service()
+  notifications: Ember.inject.service('notification-messages')
 
   local: Em.computed 'localStream', ->
     if @get('localStream') == 'on'

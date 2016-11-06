@@ -1,10 +1,12 @@
 `import Ember from 'ember'`
 
 RecognitionService = Ember.Service.extend
-  isListening:      false
-  currentKeyword:   undefined
-  recognition:      undefined
-  api:              Ember.inject.service()
+  isListening:    false
+  currentKeyword: undefined
+  recognition:    undefined
+
+  api:            Ember.inject.service()
+  notifications:  Ember.inject.service('notification-messages')
 
   setupCalibration: (properties = {}) ->
     recognition = new webkitSpeechRecognition()
@@ -16,18 +18,14 @@ RecognitionService = Ember.Service.extend
       currentKeyword = @get('currentKeyword')
 
       if Em.isPresent(currentKeyword) and !Em.isEqual(currentKeyword,result)
-        @notifications.addNotification
-          message: "Mismatch! Detected: #{result}."
-          type: 'warning'
+        @get('notifications').warning "Mismatch! Detected: #{result}.",
           autoClear: true
           clearDuration: 1200
 
         @get('api').updateKeywordByName(currentKeyword, result).then =>
           @set('currentKeyword', null)
       else
-        @notifications.addNotification
-          message: 'Match!'
-          type: 'success'
+        @get('notifications').success 'Match!',
           autoClear: true
           clearDuration: 1200
 

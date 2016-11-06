@@ -68,8 +68,6 @@
       a.btn.btn-med.waves-effect.waves-light.blue click="setDuration"
         | Set Duration
 
-.c-notification__container
-  each notifications as |notification|
-    = notification-message notification=notification
+= notification-container
 
 = outlet

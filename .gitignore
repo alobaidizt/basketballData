@@ -17,6 +17,7 @@
 # compiled output
 /dist
 /tmp
+/backups
 /spare
 
 # dependencies

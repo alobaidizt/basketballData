@@ -1,8 +1,8 @@
 .player-cell.center
-  label.player-number class={colorClass actionCellClass} data-target={concat '#' model.id '-player-' model.playerNumber} click="openModal"
+  label.player-number class={colorClass actionId} click="openModal"
     | {{playerNumber}}
 
-  = action-highlights-modal title=playerNumber modalId=(concat model.id '-player-' model.playerNumber) close=(action 'close')
+  = action-highlights-modal title=playerNumber modalId=actionId close=(action 'close')
     .detailed-view
       .row.some-class
         if hasActions

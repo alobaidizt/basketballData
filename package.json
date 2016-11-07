@@ -72,8 +72,10 @@
     "mongoose": "4.6.5"
   },
   "devDependencies": {
+    "ember-animatable": "1.0.0",
     "ember-cli-notifications": "4.0.10",
     "ember-cli-toggle": "2.0.2",
+    "ember-component-css": "0.2.1",
     "ember-jwplayer": "0.1.3",
     "socket.io-client": "1.5.1"
   }

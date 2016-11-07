@@ -39,6 +39,9 @@ module.exports = function(environment) {
       includedThemes: ['light', 'default', 'flip'],
       defaultTheme: 'light'
     },
+    'ember-animatable': {
+        include: ['bounce']
+    },
     contentSecurityPolicy: {
 	  'default-src': " https://www.youtube.com/ ", // Use 'none' if empty
 	  'script-src': "'self' 'unsafe-eval' https://www.youtube.com/ https://s.ytimg.com/ ",

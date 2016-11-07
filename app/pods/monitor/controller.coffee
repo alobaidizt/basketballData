@@ -5,7 +5,7 @@
 MonitorController = Ember.Controller.extend WebsocketMixin,
   columns:       columns
   customClasses: customClasses
-  session:       'test'
+  session:       'run 3'
 
   init: ->
     @_super(arguments...)

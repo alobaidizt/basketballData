@@ -7,13 +7,11 @@ WebsocketMixin = Ember.Mixin.create
     @willRender()
 
   willRender: ->
-    @socket = io('http://104.131.117.229:7000')
-    @socket.on('update', (data) => @updateDataHandler(data))
+    @set 'socket', io('http://127.0.0.1:7000')
+    @get('socket').on('update', (data) =>
+      @updateDataHandler(data))
 
   updateDataHandler: ({session}) ->
     @updateData(session)
-
-  willDestroyElement: () ->
-    @socket.disconnect()
 
 `export default WebsocketMixin`

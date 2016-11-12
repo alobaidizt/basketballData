@@ -3,9 +3,12 @@ var Stat     = require('../../models/stat');
 var map      = require('arr-map');
 var app      = require('../../app');
 
-module.exports.getStats = function(req, res) {  
-    var session = req.query.session;
-    Stat.find({sessionName: session}, function(err, stats) {
+module.exports.getStats = function(req, res) {
+  var session = req.query.session;
+  Stat
+    .find({ sessionName: session })
+    .sort('playerNumber')
+    .exec(function(err, stats) {
         if (err) {
             res.send(err);
         }
@@ -13,7 +16,7 @@ module.exports.getStats = function(req, res) {
     });
 };
 
-module.exports.postStats = function(req, res) {  
+module.exports.postStats = function(req, res) {
     var io = app.io;
     var query = req.body;
     var videoRef = query['stat[videoRef]'];

@@ -1,20 +1,22 @@
-.row
-  .input-field.offset-s5.col.s2
-    input#session-name.gold type="text" value=session
-    label for="session-name" Session Name
-  .col.s2
-    a.btn.btn-med.waves-effect.waves-light.look-up click="lookupSession"
-      | Look-up
-.row
-  .table-container
-    = models-table [
-      data=model
-      columns=columns
-      customClasses=customClasses
-      multipleColumnsSorting=false
-      showTableFooter=false
-      showColumnsDropdown=false
-      useFilteringByColumns=false
-      showGlobalFilter=false
-      columnsAreUpdateable=true
-    ]
+.monitor-page
+  .row
+    .input-field.offset-s5.col.s2
+      input#session-name.gold type="text" value=session
+      label for="session-name" Session Name
+    .col.s2
+      a.btn.btn-med.waves-effect.waves-light.look-up click="lookupSession"
+        | Look-up
+  .row
+    .table-container
+      = models-table [
+        data=model
+        columns=columns
+        customClasses=customClasses
+        multipleColumnsSorting=false
+        pageSize=13
+        showTableFooter=false
+        showColumnsDropdown=false
+        useFilteringByColumns=false
+        showGlobalFilter=false
+        columnsAreUpdateable=true
+      ]

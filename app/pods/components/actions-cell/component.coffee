@@ -4,6 +4,7 @@
 
 ActionsCellComponent = Ember.Component.extend HelpersMixin,
   classNames: ['action-cell']
+  tagName: 'td'
 
   api:        Ember.inject.service()
   appPresets: Ember.inject.service('app-presets')
@@ -60,6 +61,10 @@ ActionsCellComponent = Ember.Component.extend HelpersMixin,
   stamps: Ember.computed 'model.{assist,foul,steal,rebound,turnover,twoPointAttempt,twoPointMade,threePointAttempt,threePointMade,freeThrowAttempt,freeThrowMade}.stamps', 'type', ->
     type = @get('type')
     @get("model.#{type}.stamps")
+
+  players: Ember.computed 'model.{assist,foul,steal,rebound,turnover,twoPointAttempt,twoPointMade,threePointAttempt,threePointMade,freeThrowAttempt,freeThrowMade}.players', 'type', ->
+    type = @get('type')
+    @get("model.#{type}.players")
 
   actions:
     clicked: (model, actionTime) ->

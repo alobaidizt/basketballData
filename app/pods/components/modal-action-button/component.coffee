@@ -8,7 +8,7 @@ ModalActionButtonComponent = Ember.Component.extend HelpersMixin,
 
   actionType: Em.computed 'type', ->
     type = @get('type')
-    
+
     switch type
       when 'twoPointAttempt' then '2 Pt. A'
       when 'twoPointMade' then '2 Pt. M'
@@ -22,11 +22,11 @@ ModalActionButtonComponent = Ember.Component.extend HelpersMixin,
       when 'turnover' then 'T/O'
       when 'steal' then 'Steal'
 
-  player: Em.computed 'model.playerNumber', ->
-    if Em.isEqual(player, '99999')
-      return ''
-
+  player: Em.computed 'model.playerNumber', 'playerNumber', ->
     player = @get('model.playerNumber')
+    if Em.isEqual(player, 'Total')
+      return "##{@get('playerNumber')}"
+
     "#" + player
 
 `export default ModalActionButtonComponent`

@@ -5,7 +5,9 @@
 MonitorController = Ember.Controller.extend WebsocketMixin,
   columns:       columns
   customClasses: customClasses
-  session:       'run 3'
+  session:       'test'
+
+  api: Ember.inject.service()
 
   init: ->
     @_super(arguments...)
@@ -15,13 +17,28 @@ MonitorController = Ember.Controller.extend WebsocketMixin,
     params =
       session: sessionName
 
-    @store.query('stat', params).then (stats) =>
-      @set('model', stats)
+    @store.query('stat', params)
+      .then (stats) =>
+        @set('model', stats)
+      .then =>
+        @get('api').getTotals(sessionName)
+      .then ({ stats }) =>
+        totals = stats?[0]
+        for key in _.keys(totals)
+          if _.has(totals[key], 'players')
+            totals[key].players = _.flatMap(totals[key].players)
+            totals[key].stamps = _.flatMap(totals[key].stamps)
+        record = @store.createRecord('stat', totals)
+        model = _.concat(@get('model').toArray().rejectBy('playerNumber', 'Total'), record)
+        @set 'model', model
 
   actions:
     lookupSession: ->
       session   = $('#session-name').val()
       @set 'session', session
       @updateData(session)
+
+    addTotals: (session) ->
+      @addTotals()
 
 `export default MonitorController`

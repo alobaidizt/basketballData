@@ -6,10 +6,11 @@
       .row.some-class
         if hasStamps
           ul.list-container.col.s3
-            each stamps as |stamp|
+            each stamps as |stamp i|
               li
                 = modal-action-button [
                   model=model
+                  playerNumber=(object-at i players)
                   type=type
                   stamp=stamp
                   clicked=(action "clicked" model stamp)

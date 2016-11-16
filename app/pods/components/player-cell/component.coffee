@@ -2,6 +2,8 @@
 `import HelpersMixin from 'insight-sports/mixins/helpers'`
 
 PlayerCellComponent = Ember.Component.extend HelpersMixin,
+  tagName: 'td'
+
   api:                Ember.inject.service()
   appPresets: Ember.inject.service('app-presets')
 

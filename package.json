@@ -34,7 +34,7 @@
     "ember-cli-htmlbars-inline-precompile": "0.3.5",
     "ember-ajax": "2.5.2",
     "ember-cli-inject-live-reload": "1.4.1",
-    "ember-cli-materialize": "0.22.0-beta.0",
+    "ember-cli-materialize": "0.19.1",
     "ember-cli-moment-shim": "2.2.1",
     "ember-cli-notifications": "4.0.10",
     "ember-cli-stylus": "drewcovi/ember-cli-stylus#9dd7669c401afd221de6b987aed3cd33eaa19ffd",
@@ -76,6 +76,7 @@
     "ember-cli-notifications": "4.0.10",
     "ember-cli-toggle": "2.0.2",
     "ember-component-css": "0.2.1",
+    "ember-composable-helpers": "1.1.2",
     "ember-jwplayer": "0.1.3",
     "socket.io-client": "1.5.1"
   }

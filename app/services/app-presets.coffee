@@ -7,7 +7,7 @@ AppPresetsService = Ember.Service.extend
   api: Em.inject.service()
 
   init: ->
-    @get('api').getDuration().then ({duration}) =>
-      @set 'videoDuration', duration
+    @get('api').getAppConfig().then ({clipDuration}) =>
+      @set 'videoDuration', clipDuration
 
 `export default AppPresetsService`

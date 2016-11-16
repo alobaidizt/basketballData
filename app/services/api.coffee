@@ -10,13 +10,6 @@ ApiService = Ember.Service.extend
       url: @get('host') + "/api/keywords/",
     })
 
-  getKeywordByName: (name) ->
-    # returns a promise
-    $.ajax({
-      type: "GET",
-      url: @get('host') + "/api/keywords/name/#{name}",
-    })
-
   updateKeywordByName: (name, mask) ->
     # returns a promise
     $.ajax({
@@ -38,18 +31,15 @@ ApiService = Ember.Service.extend
     })
 
   addHistoryRecord: (record) ->
-    # returns a promise
-    size = record.structuredOutput?.length
     $.ajax({
       type: "POST",
       url: @get('host') + "/api/histories",
       data:
-        sessionId:            record.sessionId
-        timestamp:            record.timestamp
-        beforeEnhancement:    record.beforeEnhancement
-        afterEnhancement:     record.afterEnhancement
-        structuredOutput:     record.structuredOutput
-        structuredOutputSize: size
+        session:           record.sessionId
+        timestamp:         record.timestamp
+        beforeEnhancement: record.beforeEnhancement
+        afterEnhancement:  record.afterEnhancement
+        structuredOutput:  record.structuredOutput
     })
 
   getDetectableActions: ->
@@ -98,13 +88,31 @@ ApiService = Ember.Service.extend
       url: @get('host') + "/api/config/duration",
     })
 
-  addStat: (record) ->
-    # returns a promise
-    size = record.structuredOutput?.length
+  addStat: ({ stat }) ->
     $.ajax({
       type: "POST",
       url: @get('host') + "/api/stats",
-      data: record
+      data:
+        stat: stat
+    })
+
+  getTotals: (session) ->
+    $.ajax({
+      type: "GET",
+      url: @get('host') + "/api/stats/total?session=#{session}",
+    })
+
+  getAppConfig: ->
+    $.ajax({
+      type: "GET",
+      url: @get('host') + "/api/config"
+    })
+
+  updateAppConfig: (data) ->
+    $.ajax({
+      type: "POST",
+      url: @get('host') + "/api/config"
+      data: data
     })
 
 `export default ApiService`

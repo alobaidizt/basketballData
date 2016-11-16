@@ -27,11 +27,14 @@ CalibrationController = Ember.Controller.extend
   setPreRoll: ->
     # in seconds
     preRoll    = parseInt($('#pre-roll').val())
-
-    @get('api').setDelay(preRoll).then =>
-      $('#pre-roll').val('')
-      @get('api').getDelay().then ({delay}) =>
-        @set 'delay', delay
+    if _.isNumber(preRoll)
+      @set 'delay', preRoll
+      @setProperties
+        delay: preRoll
+        config:
+          actionCaptureDelay: preRoll
+      @get('api').updateAppConfig(@get('config')).then ->
+        $('#pre-roll').val('')
 
   setDuration: ->
     # in seconds
@@ -43,8 +46,11 @@ CalibrationController = Ember.Controller.extend
   addStitch: ->
     stitchIn    = $('#stitch-in').val().toLowerCase()
     stitchOut   = $('#stitch-out').val().toLowerCase()
+    @get('config.stitchesHash').pushObject
+      "#{stitchIn}": stitchOut
 
-    @get('api').addStitch(stitchIn, stitchOut).then ->
+    @get('api').updateAppConfig(@get('config')).then ->
+      console.log 'updated stitches'
       $('#stitch-in').val('')
       $('#stitch-out').val('')
 

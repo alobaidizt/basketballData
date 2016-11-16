@@ -20,13 +20,12 @@ LogicMixin = Ember.Mixin.create
     @getData()
 
   getData: ->
-    @get('api').getDetectableActions().then ({actions}) =>
-      @set 'detectableActions', actions
-    @get('api').getStitches().then ({stitches}) =>
-      @set 'stitches', stitches
-
-    @get('api').getDelay().then ({delay}) =>
-      @set 'delay', delay
+    @get('api').getAppConfig().then ({ config }) =>
+      @setProperties
+        config:            config
+        detectableActions: config.detectableActions
+        stitches:          config.stitchesHash
+        delay:             config.actionCaptureDelay
 
     @get('api').getAllKeywords()
       .then ({keywords}) =>
@@ -115,11 +114,12 @@ LogicMixin = Ember.Mixin.create
 
   setContext: (arr,lastPlayer, current_i,type, action, timestamp) ->
     context = []
-    @statObj = {}
-    @statObj.videoRef = @get('videoUrl')
-    @statObj.sessionId = @get('sessionId')
-    @statObj.actionType = type
-    @statObj.timestamp = timestamp
+    @statObj =
+      subject:    null
+      videoRef:   @get('videoUrl')
+      sessionId:  @get('sessionId')
+      actionType: type
+      timestamp:  timestamp
     contextComplete = false
     if type == "before"
       if Em.isEqual(action,'assist')

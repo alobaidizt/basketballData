@@ -31,6 +31,9 @@ io
 routes = require('./routes/index')
 api    = require('./routes/api')
 
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'jade')
+
 allowCrossDomain = (req, res, next) ->
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')

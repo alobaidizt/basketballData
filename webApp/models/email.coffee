@@ -1,5 +1,5 @@
 mongoose = require('mongoose')
-Schema = mongoose.Schema
+Schema   = mongoose.Schema
 
 EmailSchema = new Schema(
   email: String

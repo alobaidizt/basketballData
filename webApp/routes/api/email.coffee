@@ -1,8 +1,9 @@
-mongoose = require('mongoose')
 Email = require('../../models/email')
+co    = require("bluebird").coroutine
 
-module.exports.postEmail = (req) ->
-  obj = req.body.email
-  email = new Email({"email": obj.email})
-  email.save (err)
+postEmail = co (email) ->
+  email = new Email(email: email)
+  yield Email.save(email)
 
+module.exports =
+  postEmail: postEmail

@@ -1,5 +1,5 @@
 mongoose = require('mongoose')
-Schema = mongoose.Schema
+Schema   = mongoose.Schema
 
 ConfigSchema = new Schema(
   clipDuration:       Number

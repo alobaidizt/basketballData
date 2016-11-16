@@ -1,6 +1,6 @@
 mongoose = require('mongoose')
-Schema = mongoose.Schema
-Mixed = Schema.Types.Mixed
+Schema   = mongoose.Schema
+Mixed    = Schema.Types.Mixed
 
 StatSchema = new Schema(
   sessionName:        String

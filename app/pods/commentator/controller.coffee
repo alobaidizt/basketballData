@@ -54,27 +54,6 @@ CommentatorController = Ember.Controller.extend LogicMixin, FiltersMixin, Helper
     else
       'play_circle_filled'
 
-  buildReportSummary: ->
-    data = @get('playersData').sort((a,b) -> b.length - a.length)
-    startingNode = document.getElementById('report-summary')
-    startingNode.removeChild(startingNode.childNodes[0]) if startingNode.hasChildNodes()
-    table = document.createElement('table')
-    table.setAttribute('class','centered hoverable table-max-height')
-    tableHeader = table.createTHead()
-    tableHeader.insertRow(0)
-    tableHeader.setAttribute('class','red-text')
-    tableBody = document.createElement('tbody')
-    tableBody.setAttribute('class','red-text text-lighten-1 data-table')
-    for playerStats,i in data
-      tableHeader.rows[0].insertCell(i).innerHTML = playerStats[0]
-      while tableBody.rows.length < (playerStats.length - 1)
-        tableBody.insertRow(tableBody.rows.length)
-      for stat,j in playerStats
-        if j != 0
-          tableBody.rows[j - 1].insertCell(i).innerHTML = stat
-    table.appendChild(tableBody)
-    startingNode.appendChild(table)
-
   actions:
     # jwplayer actions
     setupError: (msg) ->
@@ -104,31 +83,8 @@ CommentatorController = Ember.Controller.extend LogicMixin, FiltersMixin, Helper
         @emberYoutube.player?.pauseVideo()
         recognition.stop()
         @set 'stopTime', moment()
-        @buildReportSummary()
-
 
     goToCalibrate: ->
       @transitionToRoute('calibration')
-
-    addDummyData: ->
-      num = @getRandomIntInclusive(5,15)
-      stat =
-        videoRef:     @get('videoUrl')
-        sessionId:    @get('sessionId')
-        timestamp:    parseInt(null ? @get('delay')) - @get('delay')
-        actionType:   "after"
-        action:       "steal"
-        subject:      "number-#{num}"
-        localContext: ['test']
-
-      @get('api').addStat({stat: stat}).then ->
-        console.log('add a stat')
-
-    testData: ->
-      #assist in the middle test case = "number 12 pass to number 3, number-3 attempt a three-points shot and makes a three-points shot in number-23 steal the ball"
-      sentence = "number 12 pass to number 3, number-3 attempt a three-points shot and makes a three-points shot in number-23 steal the ball"
-      @set('outputTS', [10])
-      @set('output', [])
-      @filter([sentence])
 
 `export default CommentatorController`

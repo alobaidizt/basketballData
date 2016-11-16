@@ -12,6 +12,6 @@ WebsocketMixin = Ember.Mixin.create
       @updateDataHandler(data))
 
   updateDataHandler: ({session}) ->
-    @updateData(session)
+    @updateData?(session)
 
 `export default WebsocketMixin`

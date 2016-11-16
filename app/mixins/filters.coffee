@@ -212,8 +212,13 @@ Filters = Ember.Mixin.create
           @addNotification('Ignored a duplicate action')
           _frIndex--
         else
-          @get('api').addStat({stat: @statObj}).then ->
-            console.log('stat added')
+
+          unless isNaN(@statObj.subject) ||
+          @statObj.subject?.length > 2 ||
+          !@statObj.action?
+
+            @get('api').addStat({stat: @statObj}).then ->
+              console.log('stat added')
 
           @addNotification(@get('notificationMessage'))
           finalResults[_frIndex].unshift("Item #{finalResults_i + 1}", timestamp)

@@ -3,7 +3,7 @@
 LogicMixin = Ember.Mixin.create
 
   checkForDuplicates: false
-  getTimestampsFromVideo: false
+  getTimestampsFromVideo: true
 
   init: ->
     @_super()

@@ -51,8 +51,8 @@ router.route('/stats/total')
 
 router.route('/emails')
   .post co (req, res) ->
-    email = req.body.email
-    yield email.postEmail(email)
+    emailAddress = req.body.email
+    yield email.postEmail(emailAddress)
     res.sendStatus(200)
 
 module.exports = router

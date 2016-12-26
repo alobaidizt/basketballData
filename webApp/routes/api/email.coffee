@@ -1,9 +1,9 @@
 Email = require('../../models/email')
 co    = require("bluebird").coroutine
 
-postEmail = co (email) ->
-  email = new Email(email: email)
-  yield Email.save(email)
+postEmail = co ({ email }) ->
+  record = new Email(email: email)
+  yield record.save()
 
 module.exports =
   postEmail: postEmail

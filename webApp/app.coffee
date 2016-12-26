@@ -18,6 +18,7 @@ if app.get('env') == 'development'
   console.log('development')
   setupWebsocket()
 else
+  console.log('production')
   privateKey  = fs.readFileSync('server.key', 'utf8')
   certificate = fs.readFileSync('server.cert', 'utf8')
 

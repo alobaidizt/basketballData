@@ -1,6 +1,8 @@
-Stat = require('../../models/stat')
-co   = require("bluebird").coroutine
-io   = require('../../websocket')
+Stat            = require('../../models/stat')
+co              = require("bluebird").coroutine
+{ getIOServer } = require('../../websocket')
+
+io = getIOServer()
 
 getStats = co (sessionName) ->
   yield Stat
@@ -20,7 +22,6 @@ postStats = co (data) ->
     videoPath:    videoRef
     playerNumber: subject
 
-  #console.log queryHash
   yield Stat.update(queryHash, { $set: queryHash }, { new: true, upsert: true })
 
   findQueryHash =
@@ -33,7 +34,6 @@ postStats = co (data) ->
           #$gte: timestamp - 5
           #$lte: timestamp
 
-  #console.log findQueryHash
   incrementHash =
     "#{action}.count": 1
   pushLinkHash =
@@ -103,64 +103,42 @@ getTotals = co (sessionName) ->
         in: $cond: [ { $gte: [ "$twoPointAttempt.stamps", 1 ] }, "$playerNumber", "$haox" ]
 
     .group
-      _id: "$data.sessionName"
-      sessionName: $last: "$data.sessionName"
-      videoPath: $last: "$data.videoPath"
-      twoPointAttemptCount:
-        $sum: "$data.twoPointAttempt.count"
-      twoPointAttemptStamps:
-        $addToSet: "$data.twoPointAttempt.stamps"
-      twoPointAttemptPlayer: $addToSet: $ifNull: [ "$twoPointAttempt.player", "$hoax"]
-      twoPointMadeCount:
-        $sum: "$data.twoPointMade.count"
-      twoPointMadeStamps:
-        $addToSet: "$data.twoPointMade.stamps"
-      twoPointMadePlayer: $addToSet: $ifNull: [ "$threePointMade.player", "$hoax"]
-      threePointAttemptCount:
-        $sum: "$data.threePointAttempt.count"
-      threePointAttemptStamps:
-        $addToSet: "$data.threePointAttempt.stamps"
+      _id:                     "$data.sessionName"
+      sessionName:             $last: "$data.sessionName"
+      videoPath:               $last: "$data.videoPath"
+      twoPointAttemptCount:    $sum: "$data.twoPointAttempt.count"
+      twoPointAttemptStamps:   $addToSet: "$data.twoPointAttempt.stamps"
+      twoPointAttemptPlayer:   $addToSet: $ifNull: [ "$twoPointAttempt.player", "$hoax"]
+      twoPointMadeCount:       $sum: "$data.twoPointMade.count"
+      twoPointMadeStamps:      $addToSet: "$data.twoPointMade.stamps"
+      twoPointMadePlayer:      $addToSet: $ifNull: [ "$threePointMade.player", "$hoax"]
+      threePointAttemptCount:  $sum: "$data.threePointAttempt.count"
+      threePointAttemptStamps: $addToSet: "$data.threePointAttempt.stamps"
       threePointAttemptPlayer: $addToSet: $ifNull: [ "$threePointAttempt.player", "$hoax"]
-      threePointMadeCount:
-        $sum: "$data.threePointMade.count"
-      threePointMadeStamps:
-        $addToSet: "$data.threePointMade.stamps"
-      threePointMadePlayer: $addToSet: $ifNull: [ "$threePointMade.player", "$hoax"]
-      freeThrowAttemptCount:
-        $sum: "$data.freeThrowAttempt.count"
-      freeThrowAttemptStamps:
-        $addToSet: "$data.freeThrowAttempt.stamps"
-      freeThrowAttemptPlayer: $addToSet: $ifNull: [ "$freeThrowAttempt.player", "$hoax"]
-      freeThrowMadeCount:
-        $sum: "$data.freeThrowMade.count"
-      freeThrowMadeStamps:
-        $addToSet: "$data.freeThrowMade.stamps"
-      freeThrowMadePlayer: $addToSet: $ifNull: [ "$freeThrowMade.player", "$hoax"]
-      assistCount:
-        $sum: "$data.assist.count"
-      assistStamps:
-        $addToSet: "$data.assist.stamps"
-      assistPlayer: $addToSet: $ifNull: [ "$assist.player", "$hoax"]
-      foulCount:
-        $sum: "$data.foul.count"
-      foulStamps:
-        $addToSet: "$data.foul.stamps"
-      foulPlayer: $addToSet: $ifNull: [ "$foul.player", "$hoax"]
-      reboundCount:
-        $sum: "$data.rebound.count"
-      reboundStamps:
-        $addToSet: "$data.rebound.stamps"
-      reboundPlayer: $addToSet: $ifNull: [ "$rebound.player", "$hoax"]
-      turnoverCount:
-        $sum: "$data.turnover.count"
-      turnoverStamps:
-        $addToSet: "$data.turnover.stamps"
-      turnoverPlayer: $addToSet: $ifNull: [ "$turnover.player", "$hoax"]
-      stealCount:
-        $sum: "$data.steal.count"
-      stealStamps:
-        $addToSet: "$data.steal.stamps"
-      stealPlayer: $addToSet: $ifNull: [ "$steal.player", "$hoax"]
+      threePointMadeCount:     $sum: "$data.threePointMade.count"
+      threePointMadeStamps:    $addToSet: "$data.threePointMade.stamps"
+      threePointMadePlayer:    $addToSet: $ifNull: [ "$threePointMade.player", "$hoax"]
+      freeThrowAttemptCount:   $sum: "$data.freeThrowAttempt.count"
+      freeThrowAttemptStamps:  $addToSet: "$data.freeThrowAttempt.stamps"
+      freeThrowAttemptPlayer:  $addToSet: $ifNull: [ "$freeThrowAttempt.player", "$hoax"]
+      freeThrowMadeCount:      $sum: "$data.freeThrowMade.count"
+      freeThrowMadeStamps:     $addToSet: "$data.freeThrowMade.stamps"
+      freeThrowMadePlayer:     $addToSet: $ifNull: [ "$freeThrowMade.player", "$hoax"]
+      assistCount:             $sum: "$data.assist.count"
+      assistStamps:            $addToSet: "$data.assist.stamps"
+      assistPlayer:            $addToSet: $ifNull: [ "$assist.player", "$hoax"]
+      foulCount:               $sum: "$data.foul.count"
+      foulStamps:              $addToSet: "$data.foul.stamps"
+      foulPlayer:              $addToSet: $ifNull: [ "$foul.player", "$hoax"]
+      reboundCount:            $sum: "$data.rebound.count"
+      reboundStamps:           $addToSet: "$data.rebound.stamps"
+      reboundPlayer:           $addToSet: $ifNull: [ "$rebound.player", "$hoax"]
+      turnoverCount:           $sum: "$data.turnover.count"
+      turnoverStamps:          $addToSet: "$data.turnover.stamps"
+      turnoverPlayer:          $addToSet: $ifNull: [ "$turnover.player", "$hoax"]
+      stealCount:              $sum: "$data.steal.count"
+      stealStamps:             $addToSet: "$data.steal.stamps"
+      stealPlayer:             $addToSet: $ifNull: [ "$steal.player", "$hoax"]
     .project
       _id: 1
       sessionName: "$sessionName"

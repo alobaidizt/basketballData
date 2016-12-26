@@ -1,8 +1,15 @@
-ioServer     = require('socket.io')
+ioServer = require('socket.io')
 
-io = new ioServer(7000, {serverClient: false})
+getIOServer = => @io
+setupWebsocket = (server = null) =>
+  if server?
+    @io = ioServer.listen(server)
+  else
+    @io = new ioServer(7000, {serverClient: false})
 
-io.on 'connection', (socket) ->
-  console.log('a user connected')
+  @io.on 'connection', (socket) ->
+    console.log('a user connected')
 
-module.exports = io
+module.exports =
+  getIOServer:      getIOServer
+  setupWebsocket: setupWebsocket

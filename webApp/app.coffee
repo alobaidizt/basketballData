@@ -1,32 +1,33 @@
-Promise  = require("bluebird")
-co       = Promise.coroutine
-express      = Promise.promisifyAll(require('express'))
-https        = require('https')
-http         = require('http')
-path         = require('path')
-fs           = Promise.promisifyAll(require('fs'))
-logger       = require('morgan')
-bodyParser   = require('body-parser')
-mongoose     = require('mongoose')
-cookieParser = require('cookie-parser')
-io           = require('./websocket')
+Promise            = require("bluebird")
+co                 = Promise.coroutine
+express            = Promise.promisifyAll(require('express'))
+https              = require('https')
+http               = require('http')
+path               = require('path')
+fs                 = Promise.promisifyAll(require('fs'))
+logger             = require('morgan')
+bodyParser         = require('body-parser')
+mongoose           = require('mongoose')
+cookieParser       = require('cookie-parser')
+{ setupWebsocket } = require('./websocket')
 
 app = express()
 mongoose.connect('mongodb://localhost/webApp')
 
 if app.get('env') == 'development'
   console.log('development')
+  setupWebsocket()
 else
   privateKey  = fs.readFileSync('server.key', 'utf8')
   certificate = fs.readFileSync('server.cert', 'utf8')
 
   credentials = {key: privateKey, cert: certificate}
-  https.createServer(credentials, app).listen(443)
+  secureServer = https.createServer(credentials, app).listen(443)
+  setupWebsocket(secureServer)
 
 http.createServer(app).listen(3000)
 console.log('starting to run')
 
-io
 
 routes = require('./routes/index')
 api    = require('./routes/api')

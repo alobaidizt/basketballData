@@ -1,11 +1,15 @@
 // development
 
 window.webService = {
-  servicePrefix:  'http://localhost:3000',
+  servicePrefix: 'http://localhost:3000',
+  websocket:     'http://127.0.0.1:7000'
+  mongo:         'mongodb://localhost/webApp'
 };
 
 // live
 
-//window.webService = {
-//  servicePrefix:  'https://104.131.117.229:444', 
-//};
+window.webService = {
+  servicePrefix: 'https://162.243.50.221',
+  websocket:     'https://162.243.50.221:443'
+  mongo:         'mongodb://162.243.50.221/webApp'
+};

@@ -3,7 +3,7 @@ ioServer = require('socket.io')
 getIOServer = => @io
 setupWebsocket = (server = null) =>
   if server?
-    @io = ioServer.listen(server)
+    @io = ioServer(server)
   else
     @io = new ioServer(7000, {serverClient: false})
 

@@ -23,7 +23,8 @@ else
   certificate = fs.readFileSync('server.cert', 'utf8')
 
   credentials = {key: privateKey, cert: certificate}
-  secureServer = https.createServer(credentials, app).listen(7000)
+  secureServer = https.createServer(credentials, app)
+  secureServer.listen(443)
   setupWebsocket(secureServer)
 
 http.createServer(app).listen(3000)

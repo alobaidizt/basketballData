@@ -103,7 +103,7 @@ LogicMixin = Ember.Mixin.create
 
   getActionParamsType: (element) ->
     beforeType = ['make','attempt','2pt-attempt','miss','grab','shoot','attempt','score','take','lose','layup','rebound','turnover','assist','foul', 'steal']
-    afterType = ['turnover-on','turnover-for','foul-on','foul-by','no-basket-for','steal-for','layup-for','rebound-for','rebound-by', 'steal-for', 'steal-by']
+    afterType = ['turnover-on','turnover-for','foul-on','foul-by','no-basket-for','steal-for','layup-for','rebound-for','rebound-by', 'steal-for', 'steal-by', 'turnover-by']
     bothType = ['pass','inbound','bounce']
     if beforeType.indexOf(element) > -1
       return "before"
@@ -200,15 +200,21 @@ LogicMixin = Ember.Mixin.create
 
     @_setActionForStat ['assist'],  'assist', context
     @_setActionForStat ['attempt','two-points'],  'twoPointAttempt', context
+    @_setActionForStat ['miss','two-points'],  'twoPointAttempt', context
     @_setActionForStat ['make','two-points'],  'twoPointMade', context
     @_setActionForStat ['make'],  'twoPointMade', context
     @_setActionForStat ['attempt','three-points'],  'threePointAttempt', context
+    @_setActionForStat ['miss','three-points'],  'threePointAttempt', context
     @_setActionForStat ['make','three-points'],  'threePointMade', context
     @_setActionForStat ['make'],  'threePointMade', context
     @_setActionForStat ['attempt','free-throw'],  'freeThrowAttempt', context
     @_setActionForStat ['attempt','1st'],  'freeThrowAttempt', context
     @_setActionForStat ['attempt','2nd'],  'freeThrowAttempt', context
     @_setActionForStat ['attempt','3rd'],  'freeThrowAttempt', context
+    @_setActionForStat ['miss','free-throw'],  'freeThrowAttempt', context
+    @_setActionForStat ['miss','1st'],  'freeThrowAttempt', context
+    @_setActionForStat ['miss','2nd'],  'freeThrowAttempt', context
+    @_setActionForStat ['miss','3rd'],  'freeThrowAttempt', context
     @_setActionForStat ['make','free-throw'],  'freeThrowMade', context
     @_setActionForStat ['make','1st'],  'freeThrowMade', context
     @_setActionForStat ['make','2nd'],  'freeThrowMade', context
@@ -216,6 +222,7 @@ LogicMixin = Ember.Mixin.create
     @_setActionForStat ['make'],  'freeThrowMade', context
     @_setActionForStat ['turnover-on'],  'turnover', context
     @_setActionForStat ['turnover-for'], 'turnover', context
+    @_setActionForStat ['turnover-by'], 'turnover', context
     @_setActionForStat ['turnover'], 'turnover', context
     @_setActionForStat ['foul-on'],      'foul', context
     @_setActionForStat ['foul-by'],      'foul', context

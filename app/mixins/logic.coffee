@@ -230,8 +230,9 @@ LogicMixin = Ember.Mixin.create
     @_setActionForStat ['steal-for'],    'steal', context
     @_setActionForStat ['steal-by'],     'steal', context
     @_setActionForStat ['steal'],     'steal', context
-    @_setActionForStat ['layup-for'],    'twoPointAttempt', context
+    #@_setActionForStat ['layup-for'],    'twoPointAttempt', context
     @_setActionForStat ['rebound-for'],  'rebound', context
+    @_setActionForStat ['rebound-by'],  'rebound', context
     @_setActionForStat ['rebound'],  'rebound', context
     @_setActionForStat ['pass'],  'pass', context
 

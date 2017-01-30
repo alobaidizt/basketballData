@@ -102,8 +102,8 @@ LogicMixin = Ember.Mixin.create
         return timestamp
 
   getActionParamsType: (element) ->
-    beforeType = ['make','attempt','2pt-attempt','miss','grab','shoot','attempt','score','take','lose','layup','rebound','turnover','assist','foul', 'steal']
-    afterType = ['turnover-on','turnover-for','foul-on','foul-by','no-basket-for','steal-for','layup-for','rebound-for','rebound-by', 'steal-for', 'steal-by', 'turnover-by']
+    beforeType = ['make','attempt','miss','shoot','attempt','score','take','lose','rebound','turnover','assist','foul','steal']
+    afterType = ['turnover-on','turnover-for','foul-by','steal-for','rebound-for','rebound-by','steal-for','steal-by','turnover-by']
     bothType = ['pass','inbound','bounce']
     if beforeType.indexOf(element) > -1
       return "before"
@@ -224,13 +224,11 @@ LogicMixin = Ember.Mixin.create
     @_setActionForStat ['turnover-for'], 'turnover', context
     @_setActionForStat ['turnover-by'], 'turnover', context
     @_setActionForStat ['turnover'], 'turnover', context
-    @_setActionForStat ['foul-on'],      'foul', context
     @_setActionForStat ['foul-by'],      'foul', context
     @_setActionForStat ['foul'],      'foul', context
     @_setActionForStat ['steal-for'],    'steal', context
     @_setActionForStat ['steal-by'],     'steal', context
     @_setActionForStat ['steal'],     'steal', context
-    #@_setActionForStat ['layup-for'],    'twoPointAttempt', context
     @_setActionForStat ['rebound-for'],  'rebound', context
     @_setActionForStat ['rebound-by'],  'rebound', context
     @_setActionForStat ['rebound'],  'rebound', context

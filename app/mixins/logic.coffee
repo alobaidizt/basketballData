@@ -147,6 +147,8 @@ LogicMixin = Ember.Mixin.create
           if @isAction(arr[current_i])
             @set('checkForDuplicates', true)
           if @isID(arr[current_i])
+            playerID = arr[current_i]
+            @set('lastID', playerID)
             @set('checkForDuplicates', false)
     else if type == "after"
       while (!contextComplete)

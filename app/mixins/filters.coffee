@@ -148,15 +148,15 @@ Filters = Ember.Mixin.create
         output.push(parsedResult.toString())
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
+      else if parsedResult.toString().includes('turnover-by')
+        output.push(parsedResult.toString())
+        if purpose == 'filter'
+          @set('lastAction', parsedResult.toString())
       else if parsedResult.toString().includes('turnover')
         output.push(parsedResult.toString())
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())
       if parsedResult.toString().includes('foul-by')
-        output.push(parsedResult.toString())
-        if purpose == 'filter'
-          @set('lastAction', parsedResult.toString())
-      else if parsedResult.toString().includes('foul-on')
         output.push(parsedResult.toString())
         if purpose == 'filter'
           @set('lastAction', parsedResult.toString())

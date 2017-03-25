@@ -152,12 +152,15 @@ LogicMixin = Ember.Mixin.create
             @set('checkForDuplicates', false)
     else if type == "after"
       while (!contextComplete)
+        console.log arr[current_i]
         context.push(arr[current_i++])
         if (typeof (arr[current_i]) == 'undefined')
           currentIndex = current_i - 1
           contextComplete = true
           break
         if (@isID(arr[current_i]))
+          console.log 'found id', arr[current_i]
+          console.log 'possible duplicate', @possibleDuplicateAction(@get('currentSubject'), action)
           playerID = arr[current_i]
           context.push(playerID)
           @statObj.subject = @formatPlayer(playerID) unless @possibleDuplicateAction(@get('currentSubject'), action)
@@ -263,7 +266,7 @@ LogicMixin = Ember.Mixin.create
     unless @get('checkForDuplicates')
       return false
 
-    if Em.isEqual(action,'make')
+    if action in ['make','miss','attempt']
       return false
 
     if !@get('previousAction')?

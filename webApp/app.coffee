@@ -12,6 +12,7 @@ cookieParser       = require('cookie-parser')
 { setupWebsocket } = require('./websocket')
 
 app = express()
+#mongoose.connect('mongodb://162.243.28.136/webApp')
 mongoose.connect('mongodb://localhost/webApp')
 
 if app.get('env') == 'development'
